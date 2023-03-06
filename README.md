@@ -16,15 +16,15 @@ To install and play Alice Garden Game Console, follow the steps below:
 
 bash
 
-git clone https://github.com/your-username/alice-garden-game.git
+git clone https://github.com/XelaRy/AliceGardenExtreme
 
-    Navigate to the project directory using the following command:
+    cd AliceGardenExtreme
 
 bash
 
 cd alice-garden-game
 
-    Compile the game using the following command:
+    gcc main.c -o Alice.exe
 
 css
 
@@ -44,9 +44,9 @@ Screenshots
 
 ## Credits
 
-Alice Garden Game was created by :
-Alexandre R. @xelary
-Arnaud .M @arnaud.MRL
+Alice Garden Game was created by :\n
+Alexandre R. @xelary\n
+Arnaud .M @arnaud.MRL\n
 License
 
 Alice Garden Game Console is released under the MIT License. See LICENSE for more information.
