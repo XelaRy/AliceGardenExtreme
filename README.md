@@ -1,12 +1,14 @@
-#Alice Garden Game Console
+# Alice Garden Game Console
 
 Alice Garden Game Logo
 
 Welcome to the console version of Alice Garden Game, a project created for academic purposes. This project aims to recreate the popular game "Alice Garden" using the C programming language.
-About the Game
+
+## About the Game
 
 Alice Garden Game is a puzzle game where the player must guide Alice through a garden filled with obstacles and traps. The player must use logic and problem-solving skills to help Alice reach the end of each level. The game features multiple levels with increasing difficulty, and the player must complete each level to progress to the next.
-Installation
+
+## Installation
 
 To install and play Alice Garden Game Console, follow the steps below:
 
@@ -36,15 +38,15 @@ bash
 
 Screenshots
 
-Alice Garden Game Screenshot 1
+### Alice Garden Game Screenshot 1
 
-Alice Garden Game Screenshot 2
-Contributing
+### Alice Garden Game Screenshot 2
 
-If you would like to contribute to the development of Alice Garden Game Console, please open a pull request on GitHub.
-Credits
+## Credits
 
-Alice Garden Game Console was created by Your Name Here.
+Alice Garden Game was created by :
+Alexandre R. @xelary
+Arnaud .M @arnaud.MRL
 License
 
 Alice Garden Game Console is released under the MIT License. See LICENSE for more information.
