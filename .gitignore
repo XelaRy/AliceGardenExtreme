@@ -1,5 +1,7 @@
 *
 !*/
 !*.*
-.exe
+*.exe
 .json
+.vscode
+projet2023
