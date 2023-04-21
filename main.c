@@ -203,7 +203,11 @@ void printPiece(Piece piece) {
 }
 
 int main() {
+Piece Mypiece;
+int choix=2;
+GenPiece(choix,&Mypiece);
+printPiece(Mypiece);
+
 
     return 0;
 }
-
