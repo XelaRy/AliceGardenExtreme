@@ -109,4 +109,5 @@ InitBoard(&plato);
 TestBoard(&plato);
 
     return 0;
+    
 }
