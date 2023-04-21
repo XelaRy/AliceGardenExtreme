@@ -3,13 +3,48 @@
 typedef struct square {
     int x;
     int y;
-    char symbol;
+    int symbol;
 } Square;
 
 
 typedef struct piece {
     Square squares[4];
 } Piece;
+
+
+typedef struct board {
+    Square grid[8][6];
+} Board;
+
+void InitBoard(Board* board){
+    int i,j;
+    for(i=0;i<8;i++)
+        {
+            for(j=0;j<6;j++)
+            {
+                board->grid[i][j].x=i;
+                board->grid[i][j].y=j;
+                board->grid[i][j].symbol=0;
+            }
+        }
+};
+
+void TestBoard(Board* board){
+int i,j;
+for(i=0;i<8;i++)
+    {
+        for(j=0;j<6;j++)
+        {
+            printf("%d",board->grid[i][j].x);
+            printf("%d",board->grid[i][j].y);
+            printf("%d",board->grid[i][j].symbol);
+            printf("   ");
+        }
+    printf("\n\n");
+    }
+};
+
+
 
 
 void rotatePiece(Piece* piece) {
@@ -69,75 +104,9 @@ void printPiece(Piece piece) {
 }
 
 int main() {
-    Piece myPiece = {
-        {
-            { 0, 0, 'X' },
-            { 0, 1, 'X' },
-            { 0, 2, 'X' },
-            { 1, 2, 'X' }
-        }
-    };
+Board plato;
+InitBoard(&plato);
+TestBoard(&plato);
 
-    printf("Before rotation:\n");
-    printPiece(myPiece);
-
-    int rot=0,i;
-    while (rot<3)
-    {
-
-    printf("\nAfter rotation:\n");
-    rotatePiece(&myPiece);
-//............................................................
-// PLACER LA PIECE SUR LA GAUCHE
-    int test=myPiece.squares[0].x;
-    for(i=1;i<4;i++)
-    {
-        if (myPiece.squares[i].x<test)
-            test=myPiece.squares[i].x;
-    }
-    for(i=0;i<4;i++)
-    myPiece.squares[i].x-=(test);
-// PLACER LA PIECE SUR LE HAUT
-    test=myPiece.squares[0].y;
-    for(i=1;i<4;i++)
-    {
-        if (myPiece.squares[i].y<test)
-            test=myPiece.squares[i].y;
-    }
-    for(i=0;i<4;i++)
-    myPiece.squares[i].y-=(test);
-//............................................................
-    printPiece(myPiece);
-    rot+=1;
-    }
-
-
-
-    printf("\nAfter invertion:\n");
-    invertPiece(&myPiece);
-
- //............................................................
-// PLACER LA PIECE SUR LA GAUCHE
-    int test=myPiece.squares[0].x;
-    for(i=1;i<4;i++)
-    {
-        if (myPiece.squares[i].x<test)
-            test=myPiece.squares[i].x;
-    }
-    for(i=0;i<4;i++)
-    myPiece.squares[i].x-=(test);
-// PLACER LA PIECE SUR LE HAUT
-    test=myPiece.squares[0].y;
-    for(i=1;i<4;i++)
-    {
-        if (myPiece.squares[i].y<test)
-            test=myPiece.squares[i].y;
-    }
-    for(i=0;i<4;i++)
-    myPiece.squares[i].y-=(test);
-//............................................................
-
-
-    printPiece(myPiece);
     return 0;
 }
