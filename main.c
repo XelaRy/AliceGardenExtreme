@@ -35,17 +35,18 @@ int i;
 for (i=0;i<4;i++)
 randNum[i]=(rand()%5) +1;
 
-    if (Pack==1){
+    switch(Pack){
+   case 1 :{
         for (i=0;i<4;i++){
             piece->squares[i].x=1;
             piece->squares[i].y=i+1;
             piece->squares[i].symbol=randNum[i];
-
+        break;
         }
     }
 
 
-    if (Pack==2){
+    case 2 :{
         for (i=0;i<3;i++){
             piece->squares[i].x=1;
             piece->squares[i].y=i+1;
@@ -54,10 +55,11 @@ randNum[i]=(rand()%5) +1;
         piece->squares[4].y=3;
         for (i=0;i<4;i++)
         piece->squares[i].symbol=randNum[i];
+        break;
     }
 
 
-    if (Pack==3){
+     case 3 :{
         for (i=0;i<3;i++){
             piece->squares[i].x=1;
             piece->squares[i].y=i+1;
@@ -66,10 +68,11 @@ randNum[i]=(rand()%5) +1;
         piece->squares[4].y=2;
         for (i=0;i<4;i++)
         piece->squares[i].symbol=randNum[i];
+        break;
     }
 
 
-    if (Pack==4){
+     case 4 :{
         for (i=0;i<2;i++){
             piece->squares[i].x=1;
             piece->squares[i].y=i+1;
@@ -80,10 +83,11 @@ randNum[i]=(rand()%5) +1;
         }
         for (i=0;i<4;i++)
         piece->squares[i].symbol=randNum[i];
+        break;
     }
 
 
-    if (Pack==5){
+     case 5 :{
         for (i=0;i<2;i++){
             piece->squares[i].x=1;
             piece->squares[i].y=i+1;
@@ -94,15 +98,19 @@ randNum[i]=(rand()%5) +1;
         }
         for (i=0;i<4;i++)
         piece->squares[i].symbol=randNum[i];
+        break;
     }
 
 
-    if (Pack==6){
+     case 6 :{
             piece->squares[0].x=1;
             piece->squares[0].y=1;
             piece->squares[0].symbol=randNum[1];
+            break;
     }
-};
+}
+}
+;
 
 
 
