@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include<math.h>
+#include <time.h>
 typedef struct square {
     int x;
     int y;
@@ -15,6 +17,97 @@ typedef struct piece {
 typedef struct board {
     Square grid[8][6];
 } Board;
+
+typedef struct player {
+    int PlayerNumber;
+    char name[20];
+    Piece ChosenPiece;
+    Board board;
+    int score;
+}Player;
+
+
+
+void GenPiece(int Pack,Piece *piece){
+
+int randNum[4];
+int i;
+for (i=0;i<4;i++)
+randNum[i]=(rand()%5) +1;
+
+    if (Pack==1){
+        for (i=0;i<4;i++){
+            piece->squares[i].x=1;
+            piece->squares[i].y=i+1;
+            piece->squares[i].symbol=randNum[i];
+
+        }
+    }
+
+
+    if (Pack==2){
+        for (i=0;i<3;i++){
+            piece->squares[i].x=1;
+            piece->squares[i].y=i+1;
+        }
+        piece->squares[4].x=2;
+        piece->squares[4].y=3;
+        for (i=0;i<4;i++)
+        piece->squares[i].symbol=randNum[i];
+    }
+
+
+    if (Pack==3){
+        for (i=0;i<3;i++){
+            piece->squares[i].x=1;
+            piece->squares[i].y=i+1;
+        }
+        piece->squares[4].x=2;
+        piece->squares[4].y=2;
+        for (i=0;i<4;i++)
+        piece->squares[i].symbol=randNum[i];
+    }
+
+
+    if (Pack==4){
+        for (i=0;i<2;i++){
+            piece->squares[i].x=1;
+            piece->squares[i].y=i+1;
+        }
+        for (i=2;i<4;i++){
+            piece->squares[i].x=2;
+            piece->squares[i].y=i-1;
+        }
+        for (i=0;i<4;i++)
+        piece->squares[i].symbol=randNum[i];
+    }
+
+
+    if (Pack==5){
+        for (i=0;i<2;i++){
+            piece->squares[i].x=1;
+            piece->squares[i].y=i+1;
+        }
+        for (i=2;i<4;i++){
+            piece->squares[i].x=2;
+            piece->squares[i].y=i;
+        }
+        for (i=0;i<4;i++)
+        piece->squares[i].symbol=randNum[i];
+    }
+
+
+    if (Pack==6){
+            piece->squares[0].x=1;
+            piece->squares[0].y=1;
+            piece->squares[0].symbol=randNum[1];
+    }
+};
+
+
+
+
+
 
 void InitBoard(Board* board){
     int i,j;
@@ -43,8 +136,6 @@ for(i=0;i<8;i++)
     printf("\n\n");
     }
 };
-
-
 
 
 void rotatePiece(Piece* piece) {
@@ -104,10 +195,7 @@ void printPiece(Piece piece) {
 }
 
 int main() {
-Board plato;
-InitBoard(&plato);
-TestBoard(&plato);
 
     return 0;
-    
 }
+
