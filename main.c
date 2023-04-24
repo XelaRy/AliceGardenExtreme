@@ -189,7 +189,9 @@ void printPiece(Piece piece) {
     for (int i = 0; i < 4; i++) {
         int x = piece.squares[i].x;
         int y = piece.squares[i].y;
-        char symbol = piece.squares[i].symbol;
+        char symbol;
+        if (piece.squares[i]symbol=!0)
+        symbol="X";
         grid[y][x] = symbol;
     }
 
