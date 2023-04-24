@@ -102,10 +102,17 @@ randNum[i]=(rand()%5)+1;
     }
 
 
-     case 6 :{
+     case 6 :{                                //1x1 square with a symbol, other squares are empty
             piece->squares[0].x=1;
             piece->squares[0].y=1;
             piece->squares[0].symbol=randNum[1];
+
+            for (i=1;i<4;i++){
+                piece->squares[i].x=1;
+                piece->squares[i].y=i+2;
+                piece->squares[i].symbol=0;
+            }
+
             break;
     }
 }
@@ -228,16 +235,14 @@ void printPiece(Piece piece) {
 }
 
 int main() {
-Piece Mypiece;
 int choix;
-for (choix=1;choix<6;choix++)
-{
+for(choix=1;choix<7;choix++){
+    Piece Mypiece;
     GenPiece(choix,&Mypiece);
     PositionPiece(&Mypiece);
     printPiece(Mypiece);
     printf("\n\n");
-
-}
+    }
 
     return 0;
 }
