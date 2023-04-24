@@ -33,16 +33,16 @@ void GenPiece(int Pack,Piece *piece){
 int randNum[4];
 int i;
 for (i=0;i<4;i++)
-randNum[i]=(rand()%5) +1;
+randNum[i]=(rand()%5)+1;
 
     switch(Pack){
    case 1 :{
         for (i=0;i<4;i++){
-            piece->squares[i].x=1;
+            piece->squares[i].x=0;
             piece->squares[i].y=i+1;
             piece->squares[i].symbol=randNum[i];
-        break;
         }
+    break;
     }
 
 
@@ -51,8 +51,8 @@ randNum[i]=(rand()%5) +1;
             piece->squares[i].x=1;
             piece->squares[i].y=i+1;
         }
-        piece->squares[4].x=2;
-        piece->squares[4].y=3;
+        piece->squares[3].x=2;
+        piece->squares[3].y=3;
         for (i=0;i<4;i++)
         piece->squares[i].symbol=randNum[i];
         break;
@@ -64,8 +64,8 @@ randNum[i]=(rand()%5) +1;
             piece->squares[i].x=1;
             piece->squares[i].y=i+1;
         }
-        piece->squares[4].x=2;
-        piece->squares[4].y=2;
+        piece->squares[3].x=2;
+        piece->squares[3].y=2;
         for (i=0;i<4;i++)
         piece->squares[i].symbol=randNum[i];
         break;
@@ -111,7 +111,32 @@ randNum[i]=(rand()%5) +1;
 }
 }
 ;
+void PositionPiece(Piece *myPiece){ //Align piece on left and up
+//............................................................
+int i;
+// PLACER LA PIECE SUR LA GAUCHE
+    int test=myPiece->squares[0].x;
+    for(i=1;i<4;i++)
+    {
+        if (myPiece->squares[i].x<test)
+            test=myPiece->squares[i].x;
+    }
+    for(i=0;i<4;i++)
+    myPiece->squares[i].x-=(test);
 
+
+// PLACER LA PIECE SUR LE HAUT
+    test=myPiece->squares[0].y;
+    for(i=1;i<4;i++)
+    {
+        if (myPiece->squares[i].y<test)
+            test=myPiece->squares[i].y;
+    }
+    for(i=0;i<4;i++)
+    myPiece->squares[i].y-=(test);
+//............................................................
+
+}
 
 
 
@@ -181,7 +206,7 @@ void printPiece(Piece piece) {
     // Initialize the grid with spaces
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
-            grid[i][j] = ' ';
+            grid[i][j] =' ';
         }
     }
 
@@ -189,10 +214,8 @@ void printPiece(Piece piece) {
     for (int i = 0; i < 4; i++) {
         int x = piece.squares[i].x;
         int y = piece.squares[i].y;
-        char symbol;
-        if (piece.squares[i].symbol!=0)
-            symbol='X';
-        grid[y][x] = symbol;
+        if (piece.squares[i].symbol!=0) // i c'est 0 la case est vide, sinon elle a un signe, on verra après pour les diférencier
+        grid[y][x] ='X';
     }
 
     // Print the grid
@@ -206,10 +229,15 @@ void printPiece(Piece piece) {
 
 int main() {
 Piece Mypiece;
-int choix=2;
-GenPiece(choix,&Mypiece);
-printPiece(Mypiece);
+int choix;
+for (choix=1;choix<6;choix++)
+{
+    GenPiece(choix,&Mypiece);
+    PositionPiece(&Mypiece);
+    printPiece(Mypiece);
+    printf("\n\n");
 
+}
 
     return 0;
 }
