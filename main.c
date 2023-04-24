@@ -190,8 +190,8 @@ void printPiece(Piece piece) {
         int x = piece.squares[i].x;
         int y = piece.squares[i].y;
         char symbol;
-        if (piece.squares[i]symbol=!0)
-        symbol="X";
+        if (piece.squares[i].symbol!=0)
+            symbol='X';
         grid[y][x] = symbol;
     }
 
