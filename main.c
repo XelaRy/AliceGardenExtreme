@@ -143,7 +143,7 @@ void DEBUG_printPiece(Piece piece) {
 		int y = piece.squares[i].y;
 
 		if (piece.squares[i].symbol != 0)
-			grid[y][x] ='X';
+			grid[y][x] = 'X';
 	}
 
 	// Print the grid
@@ -162,23 +162,23 @@ void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
     printf("\n\n");
     int i;
     if (RoundNumber>1){
-        for (i=0;i<=NumberOfPlayers;i++){
+        for (i=0;i<NumberOfPlayers;i++){
             GeneratePiece(&PickedPieces[i],bag);
         }
     }
     else{
-        for (i=0;i<=NumberOfPlayers+1;i++){
+        for (i=0;i<NumberOfPlayers+1;i++){
             GeneratePiece(&PickedPieces[i],bag);
         }
     }
 }
 
 int main() {
-int Roundnumber=2,NumberOfPlayers=4;
-Piece pickedpieces[NumberOfPlayers+1];
+int Roundnumber=2,NumberOfPlayers=2;
+Piece pickedpieces[NumberOfPlayers];
 PickPieces(Roundnumber,NumberOfPlayers,pickedpieces);
 int i;
-for (i=0;i<NumberOfPlayers+1;i++){
+for (i=0;i<NumberOfPlayers;i++){
     normalizePiece(&pickedpieces[i]);
     DEBUG_printPiece(pickedpieces[i]);
     printf("\n");
