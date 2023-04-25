@@ -79,16 +79,13 @@ void PositionPiece(Piece* myPiece) {
 
 
 void InitBoard(Board* board) {
-	int i, j;
-	for (i = 0; i < 8; i++)
-	{
-		for (j = 0; j < 6; j++)
-		{
-			board->grid[i][j].x = i;
-			board->grid[i][j].y = j;
-			board->grid[i][j].symbol = 0;
-		}
-	}
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 6; j++) {
+            board->grid[i][j].x = i;
+            board->grid[i][j].y = j;
+            board->grid[i][j].symbol = 0;
+        }
+    }
 }
 
 
