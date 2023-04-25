@@ -27,10 +27,10 @@ typedef struct player {
 	Piece ChosenPiece;
 	Board board;
 	int score;
-}Player;
+} Player;
 
 
-// IDEA : renvoyer une piece au lieu de modifier la piece en parametre
+// IDEA : return a piece instead of modifying the parameter
 void GeneratePiece(Piece* piece, int Pack) {
     // Positions[Pack][Square][0 = x, 1 = y] 
     // Pack[] : 0 = I, 1 = L, 2 = O, 3 = T, 4 = S
@@ -50,14 +50,13 @@ void GeneratePiece(Piece* piece, int Pack) {
 }
 
 
-void PositionPiece(Piece* myPiece) {
+void normalizePiece(Piece* myPiece) {
 	//Align piece on left and up
 	//............................................................
 	int i;
 	// PLACER LA PIECE SUR LA GAUCHE
 	int test = myPiece->squares[0].x;
-	for (i = 1; i < 4; i++)
-	{
+	for (i = 1; i < 4; i++) {
 		if (myPiece->squares[i].x < test)
 			test = myPiece->squares[i].x;
 	}
@@ -67,8 +66,7 @@ void PositionPiece(Piece* myPiece) {
 
 	// PLACER LA PIECE SUR LE HAUT
 	test = myPiece->squares[0].y;
-	for (i = 1; i < 4; i++)
-	{
+	for (i = 1; i < 4; i++) {
 		if (myPiece->squares[i].y < test)
 			test = myPiece->squares[i].y;
 	}
@@ -78,7 +76,7 @@ void PositionPiece(Piece* myPiece) {
 }
 
 
-void InitBoard(Board* board) {
+void initEmptyBoard(Board* board) {
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 6; j++) {
             board->grid[i][j].x = i;
@@ -89,12 +87,9 @@ void InitBoard(Board* board) {
 }
 
 
-void TestBoard(Board* board) {
-	int i, j;
-	for (i = 0; i < 8; i++)
-	{
-		for (j = 0; j < 6; j++)
-		{
+void testBoard(Board* board) {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 6; j++) {
 			printf("%d", board->grid[i][j].x);
 			printf("%d", board->grid[i][j].y);
 			printf("%d", board->grid[i][j].symbol);
@@ -135,7 +130,7 @@ void invertPiece(Piece* piece) {
 }
 
 
-void printPiece(Piece piece) {
+void DEBUG_printPiece(Piece piece) {
 	char grid[10][10];
 
 	// Initialize the grid with spaces
@@ -170,8 +165,8 @@ int main() {
 	for (choix = 1; choix < 7; choix++) {
 		Piece Mypiece;
 		GeneratePiece(&Mypiece, choix);
-		PositionPiece(&Mypiece);
-		printPiece(Mypiece);
+		//normalizePiece(&Mypiece);
+		DEBUG_printPiece(Mypiece);
 		printf("\n\n");
 	}
 
