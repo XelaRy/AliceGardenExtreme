@@ -143,7 +143,7 @@ void DEBUG_printPiece(Piece piece) {
 		int y = piece.squares[i].y;
 
 		if (piece.squares[i].symbol != 0)
-			grid[y][x] = 'X';
+			grid[y][x] ='X';
 	}
 
 	// Print the grid
@@ -156,8 +156,7 @@ void DEBUG_printPiece(Piece piece) {
 }
 
 void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
-    printf("\nChoose a bag between 1 and 55
-	 : \n");
+    printf("\nChoose a bag between 1 and 5 : \n");
     int bag;
     scanf("%d",&bag);
     printf("\n\n");
