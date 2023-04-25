@@ -3,11 +3,6 @@
 #include <math.h>
 #include <time.h>
 
-#define POSITIONS {{{0,1}, {0,2}, {0,3}, {0,4}}, {{1,1}, {1,2}, {1,3}, {2,3}}, {{1,1}, {1,2}, {1,3}, {2,2}}, {{1,1}, {1,2}, {2,1}, {2,2}}, {{1,1}, {1,2}, {2,2}, {2,3}}}}
-
-// Positions[Pack][Square][0 = x, 1 = y]
-// Pack[] : 0 = I, 1 = L, 2 = o, 3 = T, 4 = S
-
 
 typedef struct square {
 	int x;
@@ -35,13 +30,10 @@ typedef struct player {
 }Player;
 
 
-//
+// IDEA : renvoyer une piece au lieu de modifier la piece en parametre
 void GeneratePiece(Piece* piece, int Pack) {
-	int i;
-	// Assign random symbols (1 to 5) to the 4 squares of the piece
-	for (i = 0; i < 4; i++)
-		piece->squares[i].symbol = (rand() % 5) + 1;
-
+    // Positions[Pack][Square][0 = x, 1 = y] 
+    // Pack[] : 0 = I, 1 = L, 2 = O, 3 = T, 4 = S
 	int positions[5][4][2] = {
 	{{0,0}, {0,1}, {0,2}, {0,3}},	// Pack 1
 	{{0,0}, {0,1}, {0,2}, {1,2}},	// Pack 2
@@ -50,7 +42,7 @@ void GeneratePiece(Piece* piece, int Pack) {
 	{{0,0}, {0,1}, {1,1}, {1,2}}	// Pack 5
 	};
 
-	for (i = 0; i < 4; i++) {
+	for (int i = 0; i < 4; i++) {
 		piece->squares[i].x = positions[Pack - 1][i][0];
 		piece->squares[i].y = positions[Pack - 1][i][1];
 		piece->squares[i].symbol = (rand() % 5) + 1;
