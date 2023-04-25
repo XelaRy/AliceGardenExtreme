@@ -35,11 +35,11 @@ void GeneratePiece(Piece* piece, int Pack) {
     // Positions[Pack][Square][0 = x, 1 = y] 
     // Pack[] : 0 = I, 1 = L, 2 = O, 3 = T, 4 = S
 	int positions[5][4][2] = {
-	{{0,0}, {0,1}, {0,2}, {0,3}},	// Pack 1
-	{{0,0}, {0,1}, {0,2}, {1,2}},	// Pack 2
-	{{0,0}, {0,1}, {0,2}, {1,1}},	// Pack 3
-	{{0,0}, {0,1}, {1,0}, {1,1}},	// Pack 4
-	{{0,0}, {0,1}, {1,1}, {1,2}}	// Pack 5
+	{{0,0}, {0,1}, {0,2}, {0,3}},
+	{{0,0}, {0,1}, {0,2}, {1,2}},
+	{{0,0}, {0,1}, {0,2}, {1,1}},
+	{{0,0}, {0,1}, {1,0}, {1,1}},
+	{{0,0}, {0,1}, {1,1}, {1,2}}
 	};
 
 	for (int i = 0; i < 4; i++) {
@@ -51,10 +51,8 @@ void GeneratePiece(Piece* piece, int Pack) {
 
 
 void normalizePiece(Piece* myPiece) {
-	//Align piece on left and up
-	//............................................................
 	int i;
-	// PLACER LA PIECE SUR LA GAUCHE
+	// Normalize the piece to the left
 	int test = myPiece->squares[0].x;
 	for (i = 1; i < 4; i++) {
 		if (myPiece->squares[i].x < test)
@@ -64,7 +62,7 @@ void normalizePiece(Piece* myPiece) {
 		myPiece->squares[i].x -= (test);
 
 
-	// PLACER LA PIECE SUR LE HAUT
+	// Normalize the piece to the top
 	test = myPiece->squares[0].y;
 	for (i = 1; i < 4; i++) {
 		if (myPiece->squares[i].y < test)
@@ -72,7 +70,6 @@ void normalizePiece(Piece* myPiece) {
 	}
 	for (i = 0; i < 4; i++)
 		myPiece->squares[i].y -= (test);
-	//............................................................
 }
 
 
@@ -145,7 +142,6 @@ void DEBUG_printPiece(Piece piece) {
 		int x = piece.squares[i].x;
 		int y = piece.squares[i].y;
 
-		// i c'est 0 la case est vide, sinon elle a un signe, on verra après pour les diférencier
 		if (piece.squares[i].symbol != 0)
 			grid[y][x] = 'X';
 	}
