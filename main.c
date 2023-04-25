@@ -156,7 +156,8 @@ void DEBUG_printPiece(Piece piece) {
 }
 
 void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
-    printf("\nChoose a bag between 1 and 6 : \n");
+    printf("\nChoose a bag between 1 and 55
+	 : \n");
     int bag;
     scanf("%d",&bag);
     printf("\n\n");
