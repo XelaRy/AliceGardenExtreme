@@ -221,10 +221,11 @@ int main() {
         return 1;
     }
 
-
+    // Game Loop Exit Variable
     bool quit = false;
     SDL_Event event;
 
+    // Game Loop
     while (!quit) {
         // Handle events
         while (SDL_PollEvent(&event)) {
@@ -233,6 +234,7 @@ int main() {
                     quit = true;
                     break;
                 case SDL_KEYDOWN:
+                    // Handle Keyboard Inputs
                     if (event.key.keysym.sym == SDLK_ESCAPE) {
                         quit = true;
                     }
