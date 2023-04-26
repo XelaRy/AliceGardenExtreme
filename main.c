@@ -19,7 +19,7 @@ typedef struct piece {
 
 
 typedef struct board {
-	Square grid[8][6];
+	Square grid[6][8];
 } Board;
 
 
@@ -175,6 +175,55 @@ void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
     }
 }
 
+void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squareHeight)
+{
+    SDL_Rect squareRect;
+    squareRect.w = squareWidth;
+    squareRect.h = squareHeight;
+
+    for (int y = 0; y < 6; y++) {
+        for (int x = 0; x < 8; x++) {
+            // Set the color of the square based on the value in the grid
+            switch (grid[y][x]) {
+                case 0:
+                    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                    break;
+                case 1:
+                    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                    break;
+                case 2:
+                    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                    break;
+                case 3:
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+                    break;
+                case 4:
+                    SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+                    break;
+                case 5:
+                    SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
+                    break;
+                default:
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    break;
+            }
+
+            // Render the square
+            squareRect.x = x * squareWidth;
+            squareRect.y = y * squareHeight;
+            SDL_RenderFillRect(renderer, &squareRect);
+        }
+    }
+}
+
+void fun(int grid[6][8]) {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 8; j++) {
+            grid[i][j] = rand() % 6;  // assign a random value between 0 and 5
+        }
+    }
+}
+
 int main() {
     // int Roundnumber=2,NumberOfPlayers=2;
     // Piece pickedpieces[NumberOfPlayers];
@@ -186,14 +235,18 @@ int main() {
     //     printf("\n");
     // }
 
+    srand(time(NULL));
+    int grid[6][8];
+    fun(grid);
+
     // Symbol Colors :
     int colors[6][3] = {
         { 0, 0, 0 },        // 0 : black
         { 255, 0, 0 },      // 1 : red
         { 0, 255, 0 },      // 2 : green
         { 0, 0, 255 },      // 3 : blue
-        { 255, 0, 255 }     // 4 : purple
-        { 255, 255, 255 },  // 5 : white
+        { 255, 0, 255 },    // 4 : purple
+        { 255, 255, 255 }   // 5 : white
     };
 
 
@@ -206,8 +259,8 @@ int main() {
         "Alice's Garden",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        640,
-        480,
+        800,
+        600,
         SDL_WINDOW_OPENGL
     );
 
@@ -240,15 +293,21 @@ int main() {
                     if (event.key.keysym.sym == SDLK_ESCAPE) {
                         quit = true;
                     }
+                    else {
+                        fun(grid);
+                    }
                     break;
                 default:
                     break;
             }
         }
 
-        // Draw to renderer
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        // Update game state
+
+        // Render screen
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
+        renderGrid(renderer, grid, 100, 100);
         SDL_RenderPresent(renderer);
 
         // Wait for a few milliseconds
