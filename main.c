@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -18,7 +19,7 @@ typedef struct piece {
 
 
 typedef struct board {
-	Square grid[8][6];
+	Square grid[6][8];
 } Board;
 
 
@@ -212,10 +213,35 @@ int main() {
         return 1;
     }
 
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
-    SDL_Delay(3000);
+
+    bool quit = false;
+    SDL_Event event;
+
+    while (!quit) {
+        // Handle events
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.sym == SDLK_ESCAPE) {
+                        quit = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Draw to renderer
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderClear(renderer);
+        SDL_RenderPresent(renderer);
+
+        // Wait for a few milliseconds
+        SDL_Delay(10);
+    }
 
 
     // Clean up and exit
