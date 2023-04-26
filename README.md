@@ -44,9 +44,10 @@ Screenshots
 
 ## Credits
 
-Alice Garden Game was created by :\n
-Alexandre R. @xelary\n
-Arnaud .M @arnaud.MRL\n
-License
+Alice Garden Game was created by :  
+Alexandre R. @xelary  
+Arnaud .M @arnaud.MRLN
+
+## License
 
 Alice Garden Game Console is released under the MIT License. See LICENSE for more information.
