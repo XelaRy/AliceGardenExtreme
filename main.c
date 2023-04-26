@@ -177,6 +177,16 @@ void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
 
 void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squareHeight)
 {
+    // Symbol Colors :
+    int colors[6][3] = {
+        { 0, 0, 0 },        // 0 : black
+        { 255, 0, 0 },      // 1 : red
+        { 0, 255, 0 },      // 2 : green
+        { 0, 0, 255 },      // 3 : blue
+        { 255, 0, 255 },    // 4 : purple
+        { 255, 255, 255 }   // 5 : white
+    };
+
     SDL_Rect squareRect;
     squareRect.w = squareWidth;
     squareRect.h = squareHeight;
@@ -184,29 +194,7 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squ
     for (int y = 0; y < 6; y++) {
         for (int x = 0; x < 8; x++) {
             // Set the color of the square based on the value in the grid
-            switch (grid[y][x]) {
-                case 0:
-                    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-                    break;
-                case 1:
-                    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-                    break;
-                case 2:
-                    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-                    break;
-                case 3:
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-                    break;
-                case 4:
-                    SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-                    break;
-                case 5:
-                    SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
-                    break;
-                default:
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                    break;
-            }
+            SDL_SetRenderDrawColor(renderer, colors[grid[y][x]][0], colors[grid[y][x]][1], colors[grid[y][x]][2], 255);
 
             // Render the square
             squareRect.x = x * squareWidth;
@@ -238,17 +226,6 @@ int main() {
     srand(time(NULL));
     int grid[6][8];
     fun(grid);
-
-    // Symbol Colors :
-    int colors[6][3] = {
-        { 0, 0, 0 },        // 0 : black
-        { 255, 0, 0 },      // 1 : red
-        { 0, 255, 0 },      // 2 : green
-        { 0, 0, 255 },      // 3 : blue
-        { 255, 0, 255 },    // 4 : purple
-        { 255, 255, 255 }   // 5 : white
-    };
-
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         printf("Error initializing SDL: %s\n", SDL_GetError());
