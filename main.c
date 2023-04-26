@@ -19,7 +19,7 @@ typedef struct piece {
 
 
 typedef struct board {
-	Square grid[6][8];
+	Square grid[8][6];
 } Board;
 
 
@@ -187,12 +187,14 @@ int main() {
     // }
 
     // Symbol Colors :
-    // 0 : Black
-    // 1 : White
-    // 2 : Green
-    // 3 : Red
-    // 4 : Blue
-    // 5 : Purple
+    int colors[6][3] = {
+        { 0, 0, 0 },        // 0 : black
+        { 255, 0, 0 },      // 1 : red
+        { 0, 255, 0 },      // 2 : green
+        { 0, 0, 255 },      // 3 : blue
+        { 255, 0, 255 }     // 4 : purple
+        { 255, 255, 255 },  // 5 : white
+    };
 
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
