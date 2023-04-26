@@ -186,6 +186,14 @@ int main() {
     //     printf("\n");
     // }
 
+    // Symbol Colors :
+    // 0 : Black
+    // 1 : White
+    // 2 : Green
+    // 3 : Red
+    // 4 : Blue
+    // 5 : Purple
+
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         printf("Error initializing SDL: %s\n", SDL_GetError());
@@ -193,12 +201,12 @@ int main() {
     }
 
     SDL_Window *window = SDL_CreateWindow(
-    "My Window",
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    640,
-    480,
-    SDL_WINDOW_OPENGL
+        "Alice's Garden",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        640,
+        480,
+        SDL_WINDOW_OPENGL
     );
 
     if (window == NULL) {
