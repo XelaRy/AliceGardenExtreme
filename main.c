@@ -1,3 +1,4 @@
+#include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -174,15 +175,52 @@ void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
 }
 
 int main() {
-int Roundnumber=2,NumberOfPlayers=2;
-Piece pickedpieces[NumberOfPlayers];
-PickPieces(Roundnumber,NumberOfPlayers,pickedpieces);
-int i;
-for (i=0;i<NumberOfPlayers;i++){
-    normalizePiece(&pickedpieces[i]);
-    DEBUG_printPiece(pickedpieces[i]);
-    printf("\n");
-}
+    // int Roundnumber=2,NumberOfPlayers=2;
+    // Piece pickedpieces[NumberOfPlayers];
+    // PickPieces(Roundnumber,NumberOfPlayers,pickedpieces);
+    // int i;
+    // for (i=0;i<NumberOfPlayers;i++){
+    //     normalizePiece(&pickedpieces[i]);
+    //     DEBUG_printPiece(pickedpieces[i]);
+    //     printf("\n");
+    // }
 
+
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("Error initializing SDL: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    SDL_Window *window = SDL_CreateWindow(
+    "My Window",
+    SDL_WINDOWPOS_UNDEFINED,
+    SDL_WINDOWPOS_UNDEFINED,
+    640,
+    480,
+    SDL_WINDOW_OPENGL
+    );
+
+    if (window == NULL) {
+        printf("Error creating window: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
+
+    if (renderer == NULL) {
+        printf("Error creating renderer: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+    SDL_Delay(3000);
+
+
+    // Clean up and exit
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
     return 0;
 }
