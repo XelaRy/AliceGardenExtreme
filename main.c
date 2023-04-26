@@ -192,18 +192,34 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squ
     squareRect.w = squareWidth;
     squareRect.h = squareHeight;
 
+    // Load the image for 0
+    SDL_Surface* image = IMG_Load("textures/erbe.jpg");
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, image);
+    SDL_FreeSurface(image);
+
     for (int y = 0; y < 6; y++) {
         for (int x = 0; x < 8; x++) {
-            // Set the color of the square based on the value in the grid
-            SDL_SetRenderDrawColor(renderer, colors[grid[y][x]][0], colors[grid[y][x]][1], colors[grid[y][x]][2], 255);
+            if (grid[y][x] == 0) {
+                // Render the texture instead of the square
+                squareRect.x = x * squareWidth;
+                squareRect.y = y * squareHeight;
+                SDL_RenderCopy(renderer, texture, NULL, &squareRect);
+            } else {
+                // Set the color of the square based on the value in the grid
+                SDL_SetRenderDrawColor(renderer, colors[grid[y][x]][0], colors[grid[y][x]][1], colors[grid[y][x]][2], 255);
 
-            // Render the square
-            squareRect.x = x * squareWidth;
-            squareRect.y = y * squareHeight;
-            SDL_RenderFillRect(renderer, &squareRect);
+                // Render the square
+                squareRect.x = x * squareWidth;
+                squareRect.y = y * squareHeight;
+                SDL_RenderFillRect(renderer, &squareRect);
+            }
         }
     }
+
+    // Destroy the texture when done
+    SDL_DestroyTexture(texture);
 }
+
 
 void fun(int grid[6][8]) {
     for (int i = 0; i < 6; i++) {
