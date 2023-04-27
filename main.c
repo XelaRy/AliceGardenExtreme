@@ -8,9 +8,9 @@
 
 
 typedef struct square {
-	int x;
-	int y;
-	int symbol;
+	unsigned char x;
+	unsigned char y;
+	unsigned char symbol;
 } Square;
 
 
