@@ -237,6 +237,37 @@ void fun(int grid[6][8]) {
     }
 }
 
+int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth, int screenHeight) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("Error initializing SDL: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    *window = SDL_CreateWindow(
+        "Alice's Garden",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        screenWidth,
+        screenHeight,
+        SDL_WINDOW_OPENGL
+    );
+
+    if (*window == NULL) {
+        printf("Error creating window: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    *renderer = SDL_CreateRenderer(*window, -1, 0);
+
+    if (*renderer == NULL) {
+        printf("Error creating renderer: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    return 0;
+}
+
+
 int main() {
     // int Roundnumber=2,NumberOfPlayers=2;
     // Piece pickedpieces[NumberOfPlayers];
@@ -248,34 +279,15 @@ int main() {
     //     printf("\n");
     // }
 
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+
+    if (initializeSDL(&window, &renderer, 800, 600) != 0) {
+        return 1;
+    }
+
     srand(time(NULL));
     int grid[6][8] = {0};
-
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("Error initializing SDL: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    SDL_Window *window = SDL_CreateWindow(
-        "Alice's Garden",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        800,
-        600,
-        SDL_WINDOW_OPENGL
-    );
-
-    if (window == NULL) {
-        printf("Error creating window: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
-
-    if (renderer == NULL) {
-        printf("Error creating renderer: %s\n", SDL_GetError());
-        return 1;
-    }
 
     // Game Loop Exit Variable
     bool quit = false;
