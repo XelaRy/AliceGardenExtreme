@@ -1,3 +1,6 @@
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -17,7 +20,7 @@ typedef struct piece {
 
 
 typedef struct board {
-	Square grid[8][6];
+	Square grid[6][8];
 } Board;
 
 
@@ -173,16 +176,151 @@ void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
     }
 }
 
-int main() {
-int Roundnumber=2,NumberOfPlayers=2;
-Piece pickedpieces[NumberOfPlayers];
-PickPieces(Roundnumber,NumberOfPlayers,pickedpieces);
-int i;
-for (i=0;i<NumberOfPlayers;i++){
-    normalizePiece(&pickedpieces[i]);
-    DEBUG_printPiece(pickedpieces[i]);
-    printf("\n");
+void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squareHeight)
+{
+    // Symbol Colors :
+    int colors[6][3] = {
+        { 0, 0, 0 },        // 0 : black
+        { 255, 0, 0 },      // 1 : red
+        { 0, 255, 0 },      // 2 : green
+        { 0, 0, 255 },      // 3 : blue
+        { 255, 0, 255 },    // 4 : purple
+        { 255, 255, 255 }   // 5 : white
+    };
+
+    SDL_Rect squareRect;
+    squareRect.w = squareWidth;
+    squareRect.h = squareHeight;
+
+    // Load the texture for 0
+    SDL_Surface* grass = IMG_Load("textures/erbe.jpg");
+    SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grass);
+    SDL_FreeSurface(grass);
+
+    // Load the texture for the chessboard
+    SDL_Surface* chessboard = IMG_Load("textures/echec.jpg");
+    SDL_Texture* chessboardTexture = SDL_CreateTextureFromSurface(renderer, chessboard);
+    SDL_FreeSurface(chessboard);
+
+    for (int y = 0; y < 6; y++) {
+        for (int x = 0; x < 8; x++) {
+            if (grid[y][x] == 0) {
+                // Render the texture instead of the square
+                squareRect.x = x * squareWidth;
+                squareRect.y = y * squareHeight;
+                (x == 3 || x == 4) ?
+                SDL_RenderCopy(renderer, chessboardTexture, NULL, &squareRect):
+                SDL_RenderCopy(renderer, grassTexture, NULL, &squareRect);
+            } else {
+                // Set the color of the square based on the value in the grid
+                SDL_SetRenderDrawColor(renderer, colors[grid[y][x]][0], colors[grid[y][x]][1], colors[grid[y][x]][2], 255);
+
+                // Render the square
+                squareRect.x = x * squareWidth;
+                squareRect.y = y * squareHeight;
+                SDL_RenderFillRect(renderer, &squareRect);
+            }
+        }
+    }
+
+    // Destroy the texture when done
+    SDL_DestroyTexture(grassTexture);
+    SDL_DestroyTexture(chessboardTexture);
 }
 
+
+void fun(int grid[6][8]) {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 8; j++) {
+            grid[i][j] = rand() % 6;  // assign a random value between 0 and 5
+        }
+    }
+}
+
+int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth, int screenHeight) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("Error initializing SDL: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    *window = SDL_CreateWindow(
+        "Alice's Garden",
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        screenWidth,
+        screenHeight,
+        SDL_WINDOW_OPENGL
+    );
+
+    if (*window == NULL) {
+        printf("Error creating window: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    *renderer = SDL_CreateRenderer(*window, -1, 0);
+
+    if (*renderer == NULL) {
+        printf("Error creating renderer: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    return 0;
+}
+
+
+int main() {
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+
+    if (initializeSDL(&window, &renderer, 800, 600) != 0) {
+        return 1;
+    }
+
+    srand(time(NULL));
+    int grid[6][8] = {0};
+
+    // Game Loop Exit Variable
+    bool quit = false;
+    SDL_Event event;
+
+    // Game Loop
+    while (!quit) {
+        // Handle events
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+                case SDL_KEYDOWN:
+                    // Handle Keyboard Inputs
+                    if (event.key.keysym.sym == SDLK_ESCAPE) {
+                        quit = true;
+                    }
+                    else {
+                        fun(grid);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Update game state
+
+        // Render screen
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+        renderGrid(renderer, grid, 100, 100);
+        SDL_RenderPresent(renderer);
+
+        // Wait for a few milliseconds
+        SDL_Delay(10);
+    }
+
+
+    // Clean up and exit
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
     return 0;
 }
