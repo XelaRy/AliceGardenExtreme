@@ -269,9 +269,11 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
 
 
 int main() {
+    // SDL Variables
     SDL_Window* window;
     SDL_Renderer* renderer;
 
+    // Initialize SDL and exit if failed to do so
     if (initializeSDL(&window, &renderer, 800, 600) != 0) {
         return 1;
     }
