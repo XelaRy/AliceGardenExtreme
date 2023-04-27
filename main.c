@@ -6,31 +6,7 @@
 #include <math.h>
 #include <time.h>
 
-
-typedef struct square {
-	unsigned char x;
-	unsigned char y;
-	unsigned char symbol;
-} Square;
-
-
-typedef struct piece {
-	Square squares[4];
-} Piece;
-
-
-typedef struct board {
-	Square grid[6][8];
-} Board;
-
-
-typedef struct player {
-	int PlayerNumber;
-	char name[20];
-	Piece ChosenPiece;
-	Board board;
-	int score;
-} Player;
+#include "game_data_structures.h"
 
 
 // IDEA : return a piece instead of modifying the parameter
