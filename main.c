@@ -269,16 +269,6 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
 
 
 int main() {
-    // int Roundnumber=2,NumberOfPlayers=2;
-    // Piece pickedpieces[NumberOfPlayers];
-    // PickPieces(Roundnumber,NumberOfPlayers,pickedpieces);
-    // int i;
-    // for (i=0;i<NumberOfPlayers;i++){
-    //     normalizePiece(&pickedpieces[i]);
-    //     DEBUG_printPiece(pickedpieces[i]);
-    //     printf("\n");
-    // }
-
     SDL_Window* window;
     SDL_Renderer* renderer;
 
