@@ -52,30 +52,6 @@ void normalizePiece(Piece* myPiece) {
 }
 
 
-void initEmptyBoard(Board* board) {
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 6; j++) {
-            board->grid[i][j].x = i;
-            board->grid[i][j].y = j;
-            board->grid[i][j].symbol = 0;
-        }
-    }
-}
-
-
-void testBoard(Board* board) {
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 6; j++) {
-			printf("%d", board->grid[i][j].x);
-			printf("%d", board->grid[i][j].y);
-			printf("%d", board->grid[i][j].symbol);
-			printf("   ");
-		}
-		printf("\n\n");
-	}
-}
-
-
 void rotatePiece(Piece* piece) {
 	int centerX = 0;
 	int centerY = 0;
