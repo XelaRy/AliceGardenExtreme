@@ -273,7 +273,6 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
 }
 
 typedef enum GameState {
-        MainMenu,
         BagSelection,
         PieceSelection,
         PiecePlacement
@@ -362,8 +361,6 @@ int main() {
         renderGrid(renderer, grid, 100, 100);
 
         switch (gameState) {
-            case MainMenu:
-                break;
             case BagSelection:
                 // Bag Selection Phase
                 renderBags(renderer, bagWidth, windowWidth, windowHeight, pos);
