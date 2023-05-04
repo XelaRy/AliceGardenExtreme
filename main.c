@@ -73,12 +73,18 @@ void rotatePiece(Piece* piece) {
 		piece->squares[i].x -= 1;
 		piece->squares[i].y += 1;
 	}
+
+    // DEBUG FIX LATER
+    normalizePiece(piece);
 }
 
 
 void flipPiece(Piece* piece) {
 	for (int i = 0; i < 4; i++)
 		piece->squares[i].x = 4 - piece->squares[i].x;
+
+    // DEBUG FIX LATER
+    normalizePiece(piece);
 }
 
 
@@ -233,6 +239,35 @@ void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWid
 }
 
 
+void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth) {
+    // Symbol Colors :
+    int colors[6][3] = {
+        { 0, 0, 0 },        // 0 : black
+        { 255, 0, 0 },      // 1 : red
+        { 0, 255, 0 },      // 2 : green
+        { 0, 0, 255 },      // 3 : blue
+        { 255, 0, 255 },    // 4 : purple
+        { 255, 255, 255 }   // 5 : white
+    };
+    SDL_Rect squareRect;
+    int offset = squareWidth / 2;
+
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+
+    // Loop for every square
+    for (int j = 0; j < 4; j++) {
+        squareRect.w = squareWidth;
+        squareRect.h = squareWidth;
+
+        squareRect.x = mouseX - offset + piece.squares[j].x * squareWidth;
+        squareRect.y = mouseY - offset + piece.squares[j].y * squareWidth;
+
+        SDL_SetRenderDrawColor(renderer, colors[piece.squares[j].symbol][0],colors[piece.squares[j].symbol][1],colors[piece.squares[j].symbol][3],255);
+        SDL_RenderFillRect(renderer, &squareRect);
+    }
+}
+
 
 void fun(int grid[6][8]) {
     for (int i = 0; i < 6; i++) {
@@ -297,6 +332,7 @@ int main() {
     int bagWidth = 50;
     int pos[5];
     Piece pieces[5];
+    Piece playerPiece;
 
     // Game Loop Exit Variable
     bool quit = false;
@@ -313,42 +349,121 @@ int main() {
 
         // Handle events
         while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    quit = true;
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                    if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
-                        int x = event.button.x;
-                        int y = event.button.y;
-                        //int bagY = windowWidth * 0.85;
-                        for (int i = 0; i < 5; i++)
-                            if (x >= pos[i] && x <= pos[i]+bagWidth && y >= windowWidth * 0.85 && y <= windowWidth * 0.85+bagWidth) {
+            switch (gameState) {
+                case BagSelection:
+                    switch (event.type) {
+                        case SDL_QUIT:
+                            quit = true;
+                            break;
+                        case SDL_MOUSEBUTTONDOWN:
+                            if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
+                                int x = event.button.x;
+                                int y = event.button.y;
+                                int bagY = windowWidth * 0.85;
+                                for (int i = 0; i < 5; i++)
+                                    if (x >= pos[i] && x <= pos[i]+bagWidth && y >= bagY && y <= bagY + bagWidth) {
 
-                                for (int j = 0; j < 5; j++)
-                                    GeneratePiece(pieces+j, i);
-                                DEBUG_printPiece(pieces[i]);
-                                gameState = PieceSelection;
+                                        for (int j = 0; j < 5; j++)
+                                            GeneratePiece(pieces+j, i);
+                                        DEBUG_printPiece(pieces[i]);
+                                        gameState = PieceSelection;
+                                    }
                             }
+                            break;
+                        case SDL_KEYDOWN:
+                            // Handle Keyboard Inputs
+                            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                                quit = true;
+                            }
+                            else {
+                                fun(grid);
+                            }
+                            break;
+                        case SDL_WINDOWEVENT:
+                            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                                windowWidth = event.window.data1;
+                                windowHeight = event.window.data2;
+                            }
+                            break;
+                        default:
+                            break;
                     }
                     break;
-                case SDL_KEYDOWN:
-                    // Handle Keyboard Inputs
-                    if (event.key.keysym.sym == SDLK_ESCAPE) {
-                        quit = true;
-                    }
-                    else {
-                        fun(grid);
+                case PieceSelection:
+                    switch (event.type) {
+                        case SDL_QUIT:
+                            quit = true;
+                            break;
+                        case SDL_MOUSEBUTTONDOWN:
+                            if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
+                                int x = event.button.x;
+                                int y = event.button.y;
+                                int pieceY = windowWidth * 0.8;
+                                for (int i = 0; i < 5; i++)
+                                    if (x >= pos[i] && x <= pos[i]+bagWidth && y >= pieceY && y <= pieceY + bagWidth) {
+                                        playerPiece = pieces[i];
+                                        DEBUG_printPiece(playerPiece);
+                                        gameState = PiecePlacement;
+                                    }
+                            }
+                            break;
+                        case SDL_KEYDOWN:
+                            // Handle Keyboard Inputs
+                            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                                quit = true;
+                            }
+                            else {
+                            }
+                            break;
+                        case SDL_WINDOWEVENT:
+                            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                                windowWidth = event.window.data1;
+                                windowHeight = event.window.data2;
+                            }
+                            break;
+                        default:
+                            break;
                     }
                     break;
-                case SDL_WINDOWEVENT:
-                    if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                        windowWidth = event.window.data1;
-                        windowHeight = event.window.data2;
+                case PiecePlacement:
+                    switch (event.type) {
+                        case SDL_QUIT:
+                            quit = true;
+                            break;
+                        case SDL_MOUSEBUTTONDOWN:
+                            if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
+                                int x = event.button.x;
+                                int y = event.button.y;
+                                int pieceY = windowWidth * 0.8;
+                                for (int i = 0; i < 5; i++)
+                                    if (x >= pos[i] && x <= pos[i]+bagWidth && y >= pieceY && y <= pieceY + bagWidth) {
+                                        playerPiece = pieces[i];
+                                        DEBUG_printPiece(playerPiece);
+                                        gameState = PiecePlacement;
+                                    }
+                            }
+                            break;
+                        case SDL_KEYDOWN:
+                            // Handle Keyboard Inputs
+                            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                                quit = true;
+                            }
+                            else if (event.key.keysym.sym == SDLK_r) {
+                                rotatePiece(&playerPiece);
+                            }
+                            else if (event.key.keysym.sym == SDLK_f) {
+                                flipPiece(&playerPiece);
+                            }
+                            break;
+                        case SDL_WINDOWEVENT:
+                            if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                                windowWidth = event.window.data1;
+                                windowHeight = event.window.data2;
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                    break;
-                default:
-                    break;
             }
         }
 
@@ -370,6 +485,7 @@ int main() {
                 renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, pos);
                 break;
             case PiecePlacement:
+                renderPieceOnMouse(renderer, playerPiece, 100);
                 break;
         }
         
