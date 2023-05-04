@@ -22,8 +22,8 @@ void GeneratePiece(Piece* piece, int Pack) {
 	};
 
 	for (int i = 0; i < 4; i++) {
-		piece->squares[i].x = positions[Pack - 1][i][0];
-		piece->squares[i].y = positions[Pack - 1][i][1];
+		piece->squares[i].x = positions[Pack][i][0];
+		piece->squares[i].y = positions[Pack][i][1];
 		piece->squares[i].symbol = (rand() % 5) + 1;
 	}
 }
@@ -152,6 +152,10 @@ void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
     }
 }
 
+void renderMenu(SDL_Renderer* renderer) {
+    return;
+}
+
 void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squareHeight)
 {
     // Symbol Colors :
@@ -168,7 +172,7 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squ
     squareRect.w = squareWidth;
     squareRect.h = squareHeight;
 
-    // Load the texture for 0
+    // Load the texture for the grass
     SDL_Surface* grass = IMG_Load("textures/erbe.jpg");
     SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grass);
     SDL_FreeSurface(grass);
@@ -203,6 +207,55 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squ
     SDL_DestroyTexture(grassTexture);
     SDL_DestroyTexture(chessboardTexture);
 }
+
+void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int windowHeight, int pos[5]) {
+    int spacing = (windowWidth - squareWidth * 5) / 6;
+    SDL_Rect squareRect;
+
+    for (int i = 0; i < 5; i++) {
+        squareRect.w = squareWidth;
+        squareRect.h = squareWidth;
+
+        squareRect.x = (i + 1) * spacing + squareWidth * i;
+        squareRect.y = windowHeight * 0.85;
+
+        pos[i] = squareRect.x;
+        
+        SDL_SetRenderDrawColor(renderer, 255,255,255,255);
+        SDL_RenderDrawRect(renderer, &squareRect);
+    }
+}
+
+void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWidth, int windowWidth, int windowHeight, int pos[5]) {
+    // Symbol Colors :
+    int colors[6][3] = {
+        { 0, 0, 0 },        // 0 : black
+        { 255, 0, 0 },      // 1 : red
+        { 0, 255, 0 },      // 2 : green
+        { 0, 0, 255 },      // 3 : blue
+        { 255, 0, 255 },    // 4 : purple
+        { 255, 255, 255 }   // 5 : white
+    };
+    int spacing = (windowWidth - squareWidth * 5) / 6;
+    SDL_Rect squareRect;
+
+    // Loop for each piece
+    for (int i = 0; i < 5; i++) {
+        // Loop for every square
+        pos[i] = (i + 1) * spacing + squareWidth * i;
+        for (int j = 0; j < 4; j++) {
+            squareRect.w = squareWidth;
+            squareRect.h = squareWidth;
+
+            squareRect.x = (i + 1) * spacing + squareWidth * i + squareWidth * pieces[i].squares[j].x;
+            squareRect.y = windowHeight * 0.8 + squareWidth * pieces[i].squares[j].y;
+
+            SDL_SetRenderDrawColor(renderer, colors[pieces[i].squares[j].symbol][0],colors[pieces[i].squares[j].symbol][1],colors[pieces[i].squares[j].symbol][3],255);
+            SDL_RenderDrawRect(renderer, &squareRect);
+        }
+    }
+}
+
 
 
 void fun(int grid[6][8]) {
@@ -243,19 +296,32 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
     return 0;
 }
 
-
+typedef enum GameState {
+        MainMenu,
+        BagSelection,
+        PieceSelection,
+        PiecePlacement
+    } GameState;
 int main() {
     // SDL Variables
     SDL_Window* window;
     SDL_Renderer* renderer;
+    int windowWidth = 800;
+    int windowHeight = 800;
 
     // Initialize SDL and exit if failed to do so
-    if (initializeSDL(&window, &renderer, 800, 600) != 0) {
+    if (initializeSDL(&window, &renderer, windowWidth, windowHeight) != 0) {
         return 1;
     }
 
+    
+    GameState gameState = BagSelection;
+
     srand(time(NULL));
     int grid[6][8] = {0};
+    int bagWidth = 50;
+    int pos[5];
+    Piece pieces[5];
 
     // Game Loop Exit Variable
     bool quit = false;
@@ -263,11 +329,33 @@ int main() {
 
     // Game Loop
     while (!quit) {
+        // Main Menu
+        // renderMenu(renderer);
+        // while (SDL_PollEvent(&event)) {
+
+        // }
+
+
         // Handle events
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
                     quit = true;
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
+                        int x = event.button.x;
+                        int y = event.button.y;
+                        //int bagY = windowWidth * 0.85;
+                        for (int i = 0; i < 5; i++)
+                            if (x >= pos[i] && x <= pos[i]+bagWidth && y >= windowWidth * 0.85 && y <= windowWidth * 0.85+bagWidth) {
+
+                                for (int j = 0; j < 5; j++)
+                                    GeneratePiece(pieces+j, i);
+                                DEBUG_printPiece(pieces[i]);
+                                gameState = PieceSelection;
+                            }
+                    }
                     break;
                 case SDL_KEYDOWN:
                     // Handle Keyboard Inputs
@@ -276,6 +364,12 @@ int main() {
                     }
                     else {
                         fun(grid);
+                    }
+                    break;
+                case SDL_WINDOWEVENT:
+                    if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                        windowWidth = event.window.data1;
+                        windowHeight = event.window.data2;
                     }
                     break;
                 default:
@@ -288,7 +382,25 @@ int main() {
         // Render screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
+
         renderGrid(renderer, grid, 100, 100);
+
+        switch (gameState) {
+            case MainMenu:
+                break;
+            case BagSelection:
+                // Bag Selection Phase
+                renderBags(renderer, bagWidth, windowWidth, windowHeight, pos);
+                break;
+            case PieceSelection:
+                // Piece Selection Phase
+                renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, pos);
+                break;
+            case PiecePlacement:
+                break;
+        }
+        
+
         SDL_RenderPresent(renderer);
 
         // Wait for a few milliseconds
