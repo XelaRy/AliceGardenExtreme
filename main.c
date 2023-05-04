@@ -135,7 +135,6 @@ void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
 }
 
 void renderMenu(SDL_Renderer* renderer) {
-    return;
 }
 
 void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squareHeight)
@@ -403,6 +402,7 @@ int main() {
                                     if (x >= pos[i] && x <= pos[i]+bagWidth && y >= pieceY && y <= pieceY + bagWidth) {
                                         playerPiece = pieces[i];
                                         DEBUG_printPiece(playerPiece);
+                                        SDL_ShowCursor(SDL_DISABLE);
                                         gameState = PiecePlacement;
                                     }
                             }
@@ -439,7 +439,10 @@ int main() {
                                     if (x >= pos[i] && x <= pos[i]+bagWidth && y >= pieceY && y <= pieceY + bagWidth) {
                                         playerPiece = pieces[i];
                                         DEBUG_printPiece(playerPiece);
-                                        gameState = PiecePlacement;
+
+                                        // SWITCH TO NEXT PLAYER
+                                        // SWITCH GAMESTATE
+                                        SDL_ShowCursor(SDL_ENABLE);
                                     }
                             }
                             break;
