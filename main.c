@@ -76,7 +76,7 @@ void rotatePiece(Piece* piece) {
 }
 
 
-void invertPiece(Piece* piece) {
+void flipPiece(Piece* piece) {
 	for (int i = 0; i < 4; i++)
 		piece->squares[i].x = 4 - piece->squares[i].x;
 }
