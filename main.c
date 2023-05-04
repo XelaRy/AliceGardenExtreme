@@ -51,30 +51,17 @@ void normalizePiece(Piece* myPiece) {
 		myPiece->squares[i].y -= (test);
 }
 
-
 void rotatePiece(Piece* piece) {
-	int centerX = 0;
-	int centerY = 0;
+    int x, y;
 
-	// Calculate the center of the piece
-	for (int i = 0; i < 4; i++) {
-		centerX += piece->squares[i].x;
-		centerY += piece->squares[i].y;
-	}
-	centerX = centerX / 4;
-	centerY /= 4;
+    for (int i = 0; i < 4; i++) {
+        x = piece->squares[i].x - 4;
+        y = piece->squares[i].y - 4;
 
-	// Rotate each square around the center
-	for (int i = 0; i < 4; i++) {
-		int relativeX = piece->squares[i].x - (centerX);
-		int relativeY = piece->squares[i].y + (centerY);
-		piece->squares[i].x = centerX + relativeY;
-		piece->squares[i].y = centerY - relativeX;
-		piece->squares[i].x -= 1;
-		piece->squares[i].y += 1;
-	}
+        piece->squares[i].x = y;
+        piece->squares[i].y = -x;
+    }
 
-    // DEBUG FIX LATER
     normalizePiece(piece);
 }
 
@@ -137,7 +124,7 @@ void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
 void renderMenu(SDL_Renderer* renderer) {
 }
 
-void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squareHeight)
+void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight)
 {
     // Symbol Colors :
     int colors[6][3] = {
@@ -151,7 +138,9 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squ
 
     SDL_Rect squareRect;
     squareRect.w = squareWidth;
-    squareRect.h = squareHeight;
+    squareRect.h = squareWidth;
+
+    int offsetX = (windowWidth - squareWidth * 8) / 2;
 
     // Load the texture for the grass
     SDL_Surface* grass = IMG_Load("textures/erbe.jpg");
@@ -165,10 +154,11 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squ
 
     for (int y = 0; y < 6; y++) {
         for (int x = 0; x < 8; x++) {
+            squareRect.x = offsetX + x * squareWidth;
+            squareRect.y = y * squareWidth;
             if (grid[y][x] == 0) {
                 // Render the texture instead of the square
-                squareRect.x = x * squareWidth;
-                squareRect.y = y * squareHeight;
+                
                 (x == 3 || x == 4) ?
                 SDL_RenderCopy(renderer, chessboardTexture, NULL, &squareRect):
                 SDL_RenderCopy(renderer, grassTexture, NULL, &squareRect);
@@ -177,8 +167,6 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int squ
                 SDL_SetRenderDrawColor(renderer, colors[grid[y][x]][0], colors[grid[y][x]][1], colors[grid[y][x]][2], 255);
 
                 // Render the square
-                squareRect.x = x * squareWidth;
-                squareRect.y = y * squareHeight;
                 SDL_RenderFillRect(renderer, &squareRect);
             }
         }
@@ -358,13 +346,11 @@ int main() {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                int bagY = windowWidth * 0.85;
+                                int bagY = windowHeight * 0.85;
                                 for (int i = 0; i < 5; i++)
                                     if (x >= pos[i] && x <= pos[i]+bagWidth && y >= bagY && y <= bagY + bagWidth) {
-
                                         for (int j = 0; j < 5; j++)
                                             GeneratePiece(pieces+j, i);
-                                        DEBUG_printPiece(pieces[i]);
                                         gameState = PieceSelection;
                                     }
                             }
@@ -397,11 +383,10 @@ int main() {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                int pieceY = windowWidth * 0.8;
+                                int pieceY = windowHeight * 0.8;
                                 for (int i = 0; i < 5; i++)
                                     if (x >= pos[i] && x <= pos[i]+bagWidth && y >= pieceY && y <= pieceY + bagWidth) {
                                         playerPiece = pieces[i];
-                                        DEBUG_printPiece(playerPiece);
                                         SDL_ShowCursor(SDL_DISABLE);
                                         gameState = PiecePlacement;
                                     }
@@ -434,7 +419,7 @@ int main() {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                int pieceY = windowWidth * 0.8;
+                                int pieceY = windowHeight * 0.8;
                                 for (int i = 0; i < 5; i++)
                                     if (x >= pos[i] && x <= pos[i]+bagWidth && y >= pieceY && y <= pieceY + bagWidth) {
                                         playerPiece = pieces[i];
@@ -476,7 +461,7 @@ int main() {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        renderGrid(renderer, grid, 100, 100);
+        renderGrid(renderer, grid, 100, windowWidth, windowHeight);
 
         switch (gameState) {
             case BagSelection:
