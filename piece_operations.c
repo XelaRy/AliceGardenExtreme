@@ -22,7 +22,6 @@ void generatePiece(Piece* piece, int Pack) {
 	}
 }
 
-
 void normalizePiece(Piece* myPiece) {
 	int i;
 	// Normalize the piece to the left
@@ -59,11 +58,39 @@ void rotatePiece(Piece* piece) {
     normalizePiece(piece);
 }
 
-
 void flipPiece(Piece* piece) {
 	for (int i = 0; i < 4; i++)
 		piece->squares[i].x = 4 - piece->squares[i].x;
 
     // DEBUG FIX LATER
     normalizePiece(piece);
+}
+
+void pieceMax(Piece piece, int* max_x, int* max_y) {
+	*max_x = piece.squares[0].x;
+	*max_y = piece.squares[0].y;
+
+	for (int i = 1; i < 4; i++) {
+		if (piece.squares[i].x > *max_x)
+			*max_x = piece.squares[i].x;
+		if (piece.squares[i].y > *max_y)
+			*max_y = piece.squares[i].y;
+	}
+}
+
+void pieceMin(Piece piece, int* min_x, int* min_y) {
+	*min_x = piece.squares[0].x;
+	*min_y = piece.squares[0].y;
+
+	for (int i = 1; i < 4; i++) {
+		if (piece.squares[i].x < *min_x)
+			*min_x = piece.squares[i].x;
+		if (piece.squares[i].y < *min_y)
+			*min_y = piece.squares[i].y;
+	}
+}
+
+void pieceMinMax(Piece piece, int* min_x, int* min_y, int* max_x, int* max_y) {
+	pieceMin(piece, min_x, min_y);
+	pieceMax(piece, max_x, max_y);
 }

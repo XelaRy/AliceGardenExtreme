@@ -5,5 +5,8 @@ void generatePiece(Piece* piece, int Pack);
 void normalizePiece(Piece* myPiece);
 void rotatePiece(Piece* piece);
 void flipPiece(Piece* piece);
+void pieceMax(Piece piece, int* max_x, int* max_y);
+void pieceMin(Piece piece, int* min_x, int* min_y);
+void pieceMinMax(Piece piece, int* min_x, int* min_y, int* max_x, int* max_y);
 
 #endif
