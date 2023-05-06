@@ -277,11 +277,12 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
     return 0;
 }
 
-typedef enum GameState {
-        BagSelection,
-        PieceSelection,
-        PiecePlacement
-    } GameState;
+typedef enum {
+    BagSelection,
+    PieceSelection,
+    PiecePlacement
+} GameState;
+
 int main(int argc, char** argv) {
     // SDL Variables
     SDL_Window* window;
@@ -333,7 +334,7 @@ int main(int argc, char** argv) {
                                 for (int i = 0; i < 5; i++)
                                     if (x >= pos[i] && x <= pos[i]+bagWidth && y >= bagY && y <= bagY + bagWidth) {
                                         for (int j = 0; j < 5; j++)
-                                            GeneratePiece(pieces+j, i);
+                                            generatePiece(pieces+j, i);
                                         gameState = PieceSelection;
                                     }
                             }
