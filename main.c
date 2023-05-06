@@ -10,7 +10,7 @@
 
 
 // IDEA : return a piece instead of modifying the parameter
-void GeneratePiece(Piece* piece, int Pack) {
+void generatePiece(Piece* piece, int Pack) {
     // Positions[Pack][Square][0 = x, 1 = y]
     // Pack[] : 0 = I, 1 = L, 2 = O, 3 = T, 4 = S
 	int positions[5][4][2] = {
@@ -103,23 +103,6 @@ void DEBUG_printPiece(Piece piece) {
 	}
 }
 
-void PickPieces(int RoundNumber, int NumberOfPlayers,Piece PickedPieces[]){
-    printf("\nChoose a bag between 1 and 5 : \n");
-    int bag;
-    scanf("%d",&bag);
-    printf("\n\n");
-    int i;
-    if (RoundNumber>1){
-        for (i=0;i<NumberOfPlayers;i++){
-            GeneratePiece(&PickedPieces[i],bag);
-        }
-    }
-    else{
-        for (i=0;i<NumberOfPlayers+1;i++){
-            GeneratePiece(&PickedPieces[i],bag);
-        }
-    }
-}
 
 void renderMenu(SDL_Renderer* renderer) {
 }
