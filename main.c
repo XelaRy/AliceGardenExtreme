@@ -58,18 +58,6 @@ void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int wi
     // }
 }
 
-// void initBagButtons(Button* buttons, int squareWidth, int windowWidth, int windowHeight) {
-//     int spacing = (windowWidth - squareWidth * 5) / 6;
-//     int buttonY = windowHeight - squareWidth * 1.5;
-
-//     for (int i = 0; i < 5; i++) {
-//         buttons[i].x = (i + 1) * spacing + squareWidth * i;
-//         buttons[i].y = buttonY;
-//         buttons[i].w = squareWidth;
-//         buttons[i].h = squareWidth;
-//         buttons[i].id = i;
-//     }
-// }
 
 void initButtons(Button* buttons, int squareWidth, int squareHeight, int windowWidth, int windowHeight, GameState gameState, int playerCount) {
     int spacing, buttonY;
