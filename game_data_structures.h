@@ -1,5 +1,5 @@
-#ifndef GAME_DATA_STRUCTURES
-#define GAME_DATA_STRUCTURES
+#ifndef game_data_structures
+#define game_data_structures
 
 typedef struct {
 	unsigned char x;
@@ -26,4 +26,4 @@ typedef struct {
 	int score;
 } Player;
 
-#endif // GAME_DATA_STRUCTURES
+#endif
