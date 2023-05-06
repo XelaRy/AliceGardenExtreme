@@ -262,6 +262,8 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
         SDL_WINDOW_OPENGL
     );
 
+    SDL_SetWindowResizable(*window, SDL_TRUE);
+
     if (*window == NULL) {
         printf("Error creating window: %s\n", SDL_GetError());
         return 1;
