@@ -8,82 +8,92 @@
 
 #include "game_data_structures.h"
 #include "piece_operations.h"
+#include "rendering.h"
+
+typedef enum {
+    BagSelection,
+    PieceSelection,
+    PiecePlacement
+} GameState;
+
+// Type button
+typedef struct {
+    int x;
+    int y;
+    int w;
+    int h;
+    int id;
+} Button;
 
 void renderMenu(SDL_Renderer* renderer) {
 }
 
-void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight)
-{
-    // Symbol Colors :
-    int colors[6][3] = {
-        { 0, 0, 0 },        // 0 : black
-        { 255, 0, 0 },      // 1 : red
-        { 0, 255, 0 },      // 2 : green
-        { 0, 0, 255 },      // 3 : blue
-        { 255, 0, 255 },    // 4 : purple
-        { 255, 255, 255 }   // 5 : white
-    };
 
-    SDL_Rect squareRect;
-    squareRect.w = squareWidth;
-    squareRect.h = squareWidth;
-
-    int offsetX = (windowWidth - squareWidth * 8) / 2;
-
-    // Load the texture for the grass
-    SDL_Surface* grass = IMG_Load("textures/erbe.jpg");
-    SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grass);
-    SDL_FreeSurface(grass);
-
-    // Load the texture for the chessboard
-    SDL_Surface* chessboard = IMG_Load("textures/echec.jpg");
-    SDL_Texture* chessboardTexture = SDL_CreateTextureFromSurface(renderer, chessboard);
-    SDL_FreeSurface(chessboard);
-
-    for (int y = 0; y < 6; y++) {
-        for (int x = 0; x < 8; x++) {
-            squareRect.x = offsetX + x * squareWidth;
-            squareRect.y = y * squareWidth;
-            if (grid[y][x] == 0) {
-                // Render the texture instead of the square
-                
-                (x == 3 || x == 4) ?
-                SDL_RenderCopy(renderer, chessboardTexture, NULL, &squareRect):
-                SDL_RenderCopy(renderer, grassTexture, NULL, &squareRect);
-            } else {
-                // Set the color of the square based on the value in the grid
-                SDL_SetRenderDrawColor(renderer, colors[grid[y][x]][0], colors[grid[y][x]][1], colors[grid[y][x]][2], 255);
-
-                // Render the square
-                SDL_RenderFillRect(renderer, &squareRect);
-            }
-        }
+void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int windowHeight, Button* buttons) {
+    // Convert buttons to SDL_Rect
+    SDL_Rect buttonRect;
+    for (int i = 0; i < 5; i++) {
+        buttonRect.x = buttons[i].x;
+        buttonRect.y = buttons[i].y;
+        buttonRect.w = buttons[i].w;
+        buttonRect.h = buttons[i].h;
+        SDL_SetRenderDrawColor(renderer, 255,255,255,255);
+        SDL_RenderDrawRect(renderer, &buttonRect);
     }
 
-    // Destroy the texture when done
-    SDL_DestroyTexture(grassTexture);
-    SDL_DestroyTexture(chessboardTexture);
+    // int spacing = (windowWidth - squareWidth * 5) / 6;
+    // SDL_Rect squareRect;
+
+    // for (int i = 0; i < 5; i++) {
+    //     squareRect.w = squareWidth;
+    //     squareRect.h = squareWidth;
+
+    //     squareRect.x = (i + 1) * spacing + squareWidth * i;
+    //     squareRect.y = windowHeight * 0.85;
+
+    //     pos[i] = squareRect.x;
+        
+    //     SDL_SetRenderDrawColor(renderer, 255,255,255,255);
+    //     SDL_RenderDrawRect(renderer, &squareRect);
+    // }
 }
 
-void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int windowHeight, int pos[5]) {
-    int spacing = (windowWidth - squareWidth * 5) / 6;
-    SDL_Rect squareRect;
+// void initBagButtons(Button* buttons, int squareWidth, int windowWidth, int windowHeight) {
+//     int spacing = (windowWidth - squareWidth * 5) / 6;
+//     int buttonY = windowHeight - squareWidth * 1.5;
+
+//     for (int i = 0; i < 5; i++) {
+//         buttons[i].x = (i + 1) * spacing + squareWidth * i;
+//         buttons[i].y = buttonY;
+//         buttons[i].w = squareWidth;
+//         buttons[i].h = squareWidth;
+//         buttons[i].id = i;
+//     }
+// }
+
+void initButtons(Button* buttons, int squareWidth, int squareHeight, int windowWidth, int windowHeight, GameState gameState, int playerCount) {
+    int spacing, buttonY;
+    switch(gameState) {
+        case BagSelection:
+            spacing = (windowWidth - squareWidth * 5) / 6;
+            buttonY = windowHeight - squareWidth * 1.5;
+            break;
+        case PieceSelection:
+            spacing = (windowWidth - squareWidth * (playerCount + 1)) / (playerCount + 2);
+            buttonY = windowHeight - squareHeight * 2;
+            break;
+    }
 
     for (int i = 0; i < 5; i++) {
-        squareRect.w = squareWidth;
-        squareRect.h = squareWidth;
-
-        squareRect.x = (i + 1) * spacing + squareWidth * i;
-        squareRect.y = windowHeight * 0.85;
-
-        pos[i] = squareRect.x;
-        
-        SDL_SetRenderDrawColor(renderer, 255,255,255,255);
-        SDL_RenderDrawRect(renderer, &squareRect);
+        buttons[i].x = (i + 1) * spacing + squareWidth * i;
+        buttons[i].y = buttonY;
+        buttons[i].w = squareWidth;
+        buttons[i].h = squareHeight;
+        buttons[i].id = i;
     }
 }
 
-void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWidth, int windowWidth, int windowHeight, int pos[5]) {
+void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWidth, int windowWidth, int windowHeight, Button* buttons, int playerCount) {
     // Symbol Colors :
     int colors[6][3] = {
         { 0, 0, 0 },        // 0 : black
@@ -93,53 +103,31 @@ void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWid
         { 255, 0, 255 },    // 4 : purple
         { 255, 255, 255 }   // 5 : white
     };
-    int spacing = (windowWidth - squareWidth * 5) / 6;
-    SDL_Rect squareRect;
 
+    SDL_Rect squareRect;
+    int max_X, max_Y;
+
+    pieceMax(pieces[0], &max_X, &max_Y);
+    buttons[0].w = squareWidth * (max_X + 1);
+    buttons[0].h = squareWidth * (max_Y + 1);
+    initButtons(buttons, buttons[0].w, buttons[0].h, windowWidth, windowHeight, PieceSelection, playerCount);
     // Loop for each piece
     for (int i = 0; i < 5; i++) {
         // Loop for every square
-        pos[i] = (i + 1) * spacing + squareWidth * i;
         for (int j = 0; j < 4; j++) {
             squareRect.w = squareWidth;
             squareRect.h = squareWidth;
 
-            squareRect.x = (i + 1) * spacing + squareWidth * i + squareWidth * pieces[i].squares[j].x;
-            squareRect.y = windowHeight * 0.8 + squareWidth * pieces[i].squares[j].y;
+            // Using the button[i] to get the x position of the square
+            squareRect.x = buttons[i].x + squareWidth * pieces[i].squares[j].x;
+            squareRect.y = buttons[i].y + squareWidth * pieces[i].squares[j].y;
+
+            //squareRect.x = (i + 1) * spacing + squareWidth * i + squareWidth * pieces[i].squares[j].x;
+            //squareRect.y = windowHeight * 0.8 + squareWidth * pieces[i].squares[j].y;
 
             SDL_SetRenderDrawColor(renderer, colors[pieces[i].squares[j].symbol][0],colors[pieces[i].squares[j].symbol][1],colors[pieces[i].squares[j].symbol][3],255);
             SDL_RenderDrawRect(renderer, &squareRect);
         }
-    }
-}
-
-
-void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth) {
-    // Symbol Colors :
-    int colors[6][3] = {
-        { 0, 0, 0 },        // 0 : black
-        { 255, 0, 0 },      // 1 : red
-        { 0, 255, 0 },      // 2 : green
-        { 0, 0, 255 },      // 3 : blue
-        { 255, 0, 255 },    // 4 : purple
-        { 255, 255, 255 }   // 5 : white
-    };
-    SDL_Rect squareRect;
-    int offset = squareWidth / 2;
-
-    int mouseX, mouseY;
-    SDL_GetMouseState(&mouseX, &mouseY);
-
-    // Loop for every square
-    for (int j = 0; j < 4; j++) {
-        squareRect.w = squareWidth;
-        squareRect.h = squareWidth;
-
-        squareRect.x = mouseX - offset + piece.squares[j].x * squareWidth;
-        squareRect.y = mouseY - offset + piece.squares[j].y * squareWidth;
-
-        SDL_SetRenderDrawColor(renderer, colors[piece.squares[j].symbol][0],colors[piece.squares[j].symbol][1],colors[piece.squares[j].symbol][3],255);
-        SDL_RenderFillRect(renderer, &squareRect);
     }
 }
 
@@ -152,43 +140,6 @@ void fun(int grid[6][8]) {
     }
 }
 
-int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth, int screenHeight) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        printf("Error initializing SDL: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    *window = SDL_CreateWindow(
-        "Alice's Garden",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        screenWidth,
-        screenHeight,
-        SDL_WINDOW_OPENGL
-    );
-
-    SDL_SetWindowResizable(*window, SDL_TRUE);
-
-    if (*window == NULL) {
-        printf("Error creating window: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    *renderer = SDL_CreateRenderer(*window, -1, 0);
-
-    if (*renderer == NULL) {
-        printf("Error creating renderer: %s\n", SDL_GetError());
-        return 1;
-    }
-
-    return 0;
-}
-
-typedef enum {
-    BagSelection,
-    PieceSelection,
-    PiecePlacement
-} GameState;
 
 int main(int argc, char** argv) {
     // SDL Variables
@@ -204,12 +155,19 @@ int main(int argc, char** argv) {
     
     GameState gameState = BagSelection;
 
+    // Create a cursor pointer
+    SDL_Cursor* pointer = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+    // Create default cursor
+    SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+
     srand(time(NULL));
     int grid[6][8] = {0};
     int bagWidth = 50;
     int pos[5];
     Piece pieces[5];
     Piece playerPiece;
+    bool newTurn = true;
+    bool initPhase = true;
 
     // Game Loop Exit Variable
     bool quit = false;
@@ -218,11 +176,19 @@ int main(int argc, char** argv) {
     // Game Loop
     while (!quit) {
         // Main Menu
+        // Create text boxes for player names and a + and - button to add or remove players
+
+
         // renderMenu(renderer);
         // while (SDL_PollEvent(&event)) {
 
         // }
 
+        bool first_turn = true;
+        int playerCount = 4;
+
+        // Create an array of n + 1 buttons
+        Button buttons[10];
 
         // Handle events
         while (SDL_PollEvent(&event)) {
@@ -236,13 +202,23 @@ int main(int argc, char** argv) {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                int bagY = windowHeight * 0.85;
-                                for (int i = 0; i < 5; i++)
-                                    if (x >= pos[i] && x <= pos[i]+bagWidth && y >= bagY && y <= bagY + bagWidth) {
+
+                                for (int i = 0; i < 5; i++) {
+                                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                                         for (int j = 0; j < 5; j++)
-                                            generatePiece(pieces+j, i);
+                                            generatePiece(pieces+j, buttons[i].id);
+                                        initPhase = true;
                                         gameState = PieceSelection;
                                     }
+                                }
+                                
+                                // int bagY = windowHeight * 0.85;
+                                // for (int i = 0; i < 5; i++)
+                                //     if (x >= pos[i] && x <= pos[i]+bagWidth && y >= bagY && y <= bagY + bagWidth) {
+                                //         for (int j = 0; j < 5; j++)
+                                //             generatePiece(pieces+j, i);
+                                //         gameState = PieceSelection;
+                                //     }
                             }
                             break;
                         case SDL_KEYDOWN:
@@ -258,6 +234,7 @@ int main(int argc, char** argv) {
                             if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                                 windowWidth = event.window.data1;
                                 windowHeight = event.window.data2;
+                                initPhase = true;
                             }
                             break;
                         default:
@@ -273,13 +250,14 @@ int main(int argc, char** argv) {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                int pieceY = windowHeight * 0.8;
-                                for (int i = 0; i < 5; i++)
-                                    if (x >= pos[i] && x <= pos[i]+bagWidth && y >= pieceY && y <= pieceY + bagWidth) {
+                                
+                                for (int i = 0; i < playerCount + 1; i++) {
+                                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                                         playerPiece = pieces[i];
                                         SDL_ShowCursor(SDL_DISABLE);
                                         gameState = PiecePlacement;
                                     }
+                                }
                             }
                             break;
                         case SDL_KEYDOWN:
@@ -294,6 +272,7 @@ int main(int argc, char** argv) {
                             if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                                 windowWidth = event.window.data1;
                                 windowHeight = event.window.data2;
+                                initPhase = true;
                             }
                             break;
                         default:
@@ -313,7 +292,6 @@ int main(int argc, char** argv) {
                                 for (int i = 0; i < 5; i++)
                                     if (x >= pos[i] && x <= pos[i]+bagWidth && y >= pieceY && y <= pieceY + bagWidth) {
                                         playerPiece = pieces[i];
-                                        DEBUG_printPiece(playerPiece);
 
                                         // SWITCH TO NEXT PLAYER
                                         // SWITCH GAMESTATE
@@ -351,14 +329,45 @@ int main(int argc, char** argv) {
 
         renderGrid(renderer, grid, 100, windowWidth, windowHeight);
 
+        int x, y;
+        bool hovering = false;
         switch (gameState) {
             case BagSelection:
                 // Bag Selection Phase
-                renderBags(renderer, bagWidth, windowWidth, windowHeight, pos);
+                if (initPhase) {
+                    initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
+                    initPhase = false;
+                }
+
+                SDL_GetMouseState(&x, &y);
+                for (int i = 0; i < playerCount + 1; i++) {
+                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
+                        hovering = true;
+                        break;
+                    }
+                }
+                SDL_SetCursor(hovering ? pointer : cursor);    
+                
+
+                renderBags(renderer, bagWidth, windowWidth, windowHeight, buttons);
                 break;
             case PieceSelection:
                 // Piece Selection Phase
-                renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, pos);
+                if (initPhase) {
+                    initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, playerCount);
+                    initPhase = false;
+                }
+                
+                SDL_GetMouseState(&x, &y);
+                for (int i = 0; i < playerCount + 1; i++) {
+                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
+                        hovering = true;
+                        break;
+                    }
+                }
+                SDL_SetCursor(hovering ? pointer : cursor); 
+
+                renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, buttons, playerCount);
                 break;
             case PiecePlacement:
                 renderPieceOnMouse(renderer, playerPiece, 100);
