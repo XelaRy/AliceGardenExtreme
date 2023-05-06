@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "game_data_structures.h"
 #include "piece_operations.h"
@@ -67,33 +66,4 @@ void flipPiece(Piece* piece) {
 
     // DEBUG FIX LATER
     normalizePiece(piece);
-}
-
-
-void DEBUG_printPiece(Piece piece) {
-	char grid[10][10];
-
-	// Initialize the grid with spaces
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			grid[i][j] = ' ';
-		}
-	}
-
-	// Fill in the squares of the piece
-	for (int i = 0; i < 4; i++) {
-		int x = piece.squares[i].x;
-		int y = piece.squares[i].y;
-
-		if (piece.squares[i].symbol != 0)
-			grid[y][x] = 'X';
-	}
-
-	// Print the grid
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			printf("%c ", grid[i][j]);
-		}
-		printf("\n");
-	}
 }
