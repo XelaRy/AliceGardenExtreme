@@ -299,7 +299,7 @@ typedef enum GameState {
         PieceSelection,
         PiecePlacement
     } GameState;
-int main() {
+int main(int argc, char** argv) {
     // SDL Variables
     SDL_Window* window;
     SDL_Renderer* renderer;
