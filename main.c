@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
     srand(time(NULL));
     int grid[6][8] = {0};
     int bagWidth = 50;
-    int pos[5];
+    int gridOriginX, gridOriginY;
     Piece pieces[5];
     Piece playerPiece;
     bool newTurn = true;
@@ -263,7 +263,7 @@ int main(int argc, char** argv) {
                                 int y = event.button.y;
                                 int pieceY = windowHeight * 0.8;
                                 for (int i = 0; i < 5; i++)
-                                    if (x >= pos[i] && x <= pos[i]+bagWidth && y >= pieceY && y <= pieceY + bagWidth) {
+                                    if (x >= gridOriginX && x <= gridOriginX + i * bagWidth && y >= gridOriginY && y <= gridOriginY + i * bagWidth) {
                                         playerPiece = pieces[i];
 
                                         // SWITCH TO NEXT PLAYER
