@@ -1,6 +1,13 @@
 #ifndef game_data_structures
 #define game_data_structures
 
+typedef enum {
+    BagSelection,
+    PieceSelection,
+    PiecePlacement
+} GameState;
+
+
 typedef struct {
 	unsigned char x;
 	unsigned char y;

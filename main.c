@@ -10,11 +10,6 @@
 #include "piece_operations.h"
 #include "rendering.h"
 
-typedef enum {
-    BagSelection,
-    PieceSelection,
-    PiecePlacement
-} GameState;
 
 // Type button
 typedef struct {
@@ -199,14 +194,6 @@ int main(int argc, char** argv) {
                                         gameState = PieceSelection;
                                     }
                                 }
-                                
-                                // int bagY = windowHeight * 0.85;
-                                // for (int i = 0; i < 5; i++)
-                                //     if (x >= pos[i] && x <= pos[i]+bagWidth && y >= bagY && y <= bagY + bagWidth) {
-                                //         for (int j = 0; j < 5; j++)
-                                //             generatePiece(pieces+j, i);
-                                //         gameState = PieceSelection;
-                                //     }
                             }
                             break;
                         case SDL_KEYDOWN:
@@ -252,8 +239,6 @@ int main(int argc, char** argv) {
                             // Handle Keyboard Inputs
                             if (event.key.keysym.sym == SDLK_ESCAPE) {
                                 quit = true;
-                            }
-                            else {
                             }
                             break;
                         case SDL_WINDOWEVENT:
@@ -358,6 +343,12 @@ int main(int argc, char** argv) {
                 renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, buttons, playerCount);
                 break;
             case PiecePlacement:
+                // Piece Placement Phase
+                if (initPhase) {
+                    initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
+                    initPhase = false;
+                }
+
                 renderPieceOnMouse(renderer, playerPiece, 100);
                 break;
         }
