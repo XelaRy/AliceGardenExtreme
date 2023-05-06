@@ -296,7 +296,6 @@ int main(int argc, char** argv) {
     if (initializeSDL(&window, &renderer, windowWidth, windowHeight) != 0) {
         return 1;
     }
-
     
     GameState gameState = BagSelection;
 
@@ -441,8 +440,6 @@ int main(int argc, char** argv) {
             }
         }
 
-        // Update game state
-
         // Render screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
@@ -463,7 +460,6 @@ int main(int argc, char** argv) {
                 break;
         }
         
-
         SDL_RenderPresent(renderer);
 
         // Wait for a few milliseconds
