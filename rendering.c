@@ -1,8 +1,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <stdbool.h>
 #include <stdio.h>
 
+#include "buttons.h"
 #include "game_data_structures.h"
+#include "piece_operations.h"
 #include "rendering.h"
 
 
@@ -38,8 +41,7 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
     return 0;
 }
 
-
-void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight)
+int renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight)
 {
     // Symbol Colors :
     int colors[6][3] = {
@@ -92,7 +94,6 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int win
     SDL_DestroyTexture(chessboardTexture);
 }
 
-
 void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth) {
     // Symbol Colors :
     int colors[6][3] = {
@@ -117,7 +118,45 @@ void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth) {
         squareRect.x = mouseX - offset + piece.squares[j].x * squareWidth;
         squareRect.y = mouseY - offset + piece.squares[j].y * squareWidth;
 
-        SDL_SetRenderDrawColor(renderer, colors[piece.squares[j].symbol][0],colors[piece.squares[j].symbol][1],colors[piece.squares[j].symbol][3],255);
+        SDL_SetRenderDrawColor(renderer, colors[piece.squares[j].symbol][0],colors[piece.squares[j].symbol][1],colors[piece.squares[j].symbol][2],255);
         SDL_RenderFillRect(renderer, &squareRect);
+    }
+}
+
+void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWidth, int windowWidth, int windowHeight, Button* buttons, int playerCount) {
+    // Symbol Colors :
+    int colors[6][3] = {
+        { 0, 0, 0 },        // 0 : black
+        { 255, 0, 0 },      // 1 : red
+        { 0, 255, 0 },      // 2 : green
+        { 0, 0, 255 },      // 3 : blue
+        { 255, 0, 255 },    // 4 : purple
+        { 255, 255, 255 }   // 5 : white
+    };
+
+    SDL_Rect squareRect;
+    int max_X, max_Y;
+
+    pieceMax(pieces[0], &max_X, &max_Y);
+    buttons[0].w = squareWidth * (max_X + 1);
+    buttons[0].h = squareWidth * (max_Y + 1);
+    initButtons(buttons, buttons[0].w, buttons[0].h, windowWidth, windowHeight, PieceSelection, playerCount);
+    // Loop for each piece
+    for (int i = 0; i < 5; i++) {
+        // Loop for every square
+        for (int j = 0; j < 4; j++) {
+            squareRect.w = squareWidth;
+            squareRect.h = squareWidth;
+
+            // Using the button[i] to get the x position of the square
+            squareRect.x = buttons[i].x + squareWidth * pieces[i].squares[j].x;
+            squareRect.y = buttons[i].y + squareWidth * pieces[i].squares[j].y;
+
+            //squareRect.x = (i + 1) * spacing + squareWidth * i + squareWidth * pieces[i].squares[j].x;
+            //squareRect.y = windowHeight * 0.8 + squareWidth * pieces[i].squares[j].y;
+
+            SDL_SetRenderDrawColor(renderer, colors[pieces[i].squares[j].symbol][0],colors[pieces[i].squares[j].symbol][1],colors[pieces[i].squares[j].symbol][2],255);
+            SDL_RenderDrawRect(renderer, &squareRect);
+        }
     }
 }

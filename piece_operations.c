@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdlib.h>
 
 #include "game_data_structures.h"
@@ -93,4 +94,21 @@ void pieceMin(Piece piece, int* min_x, int* min_y) {
 void pieceMinMax(Piece piece, int* min_x, int* min_y, int* max_x, int* max_y) {
 	pieceMin(piece, min_x, min_y);
 	pieceMax(piece, max_x, max_y);
+}
+
+bool pieceOverlap(Piece piece, int grid[6][8], int x, int y) {
+	int min_x, min_y, max_x, max_y;
+	pieceMinMax(piece, &min_x, &min_y, &max_x, &max_y);
+
+	for (int i = 0; i < 4; i++) {
+		if (grid[piece.squares[i].y + y][piece.squares[i].x + x] != 0)
+			return true;
+	}
+
+	return false;
+}
+
+void placePiece(Piece piece, int grid[6][8], int x, int y) {
+	for (int i = 0; i < 4; i++)
+		grid[piece.squares[i].y + y][piece.squares[i].x + x] = piece.squares[i].symbol;
 }

@@ -21,16 +21,10 @@ typedef struct {
 
 
 typedef struct {
-	Square grid[6][8];
-} Board;
-
-
-typedef struct {
-	int PlayerNumber;
 	char name[20];
-	Piece ChosenPiece;
-	Board board;
+	int board[6][8];
 	int score;
+	Piece piece;
 } Player;
 
 #endif

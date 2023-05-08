@@ -8,5 +8,7 @@ void flipPiece(Piece* piece);
 void pieceMax(Piece piece, int* max_x, int* max_y);
 void pieceMin(Piece piece, int* min_x, int* min_y);
 void pieceMinMax(Piece piece, int* min_x, int* min_y, int* max_x, int* max_y);
+bool pieceOverlap(Piece piece, int grid[6][8], int x, int y);
+void placePiece(Piece piece, int grid[6][8], int x, int y);
 
 #endif

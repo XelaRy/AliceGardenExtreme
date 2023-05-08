@@ -1,24 +1,17 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdbool.h>
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
 
+#include "buttons.h"
 #include "game_data_structures.h"
 #include "piece_operations.h"
 #include "rendering.h"
 
-
-// Type button
-typedef struct {
-    int x;
-    int y;
-    int w;
-    int h;
-    int id;
-} Button;
 
 void renderMenu(SDL_Renderer* renderer) {
 }
@@ -34,92 +27,6 @@ void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int wi
         buttonRect.h = buttons[i].h;
         SDL_SetRenderDrawColor(renderer, 255,255,255,255);
         SDL_RenderDrawRect(renderer, &buttonRect);
-    }
-
-    // int spacing = (windowWidth - squareWidth * 5) / 6;
-    // SDL_Rect squareRect;
-
-    // for (int i = 0; i < 5; i++) {
-    //     squareRect.w = squareWidth;
-    //     squareRect.h = squareWidth;
-
-    //     squareRect.x = (i + 1) * spacing + squareWidth * i;
-    //     squareRect.y = windowHeight * 0.85;
-
-    //     pos[i] = squareRect.x;
-        
-    //     SDL_SetRenderDrawColor(renderer, 255,255,255,255);
-    //     SDL_RenderDrawRect(renderer, &squareRect);
-    // }
-}
-
-
-void initButtons(Button* buttons, int squareWidth, int squareHeight, int windowWidth, int windowHeight, GameState gameState, int playerCount) {
-    int spacing, buttonY;
-    switch(gameState) {
-        case BagSelection:
-            spacing = (windowWidth - squareWidth * 5) / 6;
-            buttonY = windowHeight - squareWidth * 1.5;
-            break;
-        case PieceSelection:
-            spacing = (windowWidth - squareWidth * (playerCount + 1)) / (playerCount + 2);
-            buttonY = windowHeight - squareHeight * 2;
-            break;
-    }
-
-    for (int i = 0; i < 5; i++) {
-        buttons[i].x = (i + 1) * spacing + squareWidth * i;
-        buttons[i].y = buttonY;
-        buttons[i].w = squareWidth;
-        buttons[i].h = squareHeight;
-        buttons[i].id = i;
-    }
-}
-
-void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWidth, int windowWidth, int windowHeight, Button* buttons, int playerCount) {
-    // Symbol Colors :
-    int colors[6][3] = {
-        { 0, 0, 0 },        // 0 : black
-        { 255, 0, 0 },      // 1 : red
-        { 0, 255, 0 },      // 2 : green
-        { 0, 0, 255 },      // 3 : blue
-        { 255, 0, 255 },    // 4 : purple
-        { 255, 255, 255 }   // 5 : white
-    };
-
-    SDL_Rect squareRect;
-    int max_X, max_Y;
-
-    pieceMax(pieces[0], &max_X, &max_Y);
-    buttons[0].w = squareWidth * (max_X + 1);
-    buttons[0].h = squareWidth * (max_Y + 1);
-    initButtons(buttons, buttons[0].w, buttons[0].h, windowWidth, windowHeight, PieceSelection, playerCount);
-    // Loop for each piece
-    for (int i = 0; i < 5; i++) {
-        // Loop for every square
-        for (int j = 0; j < 4; j++) {
-            squareRect.w = squareWidth;
-            squareRect.h = squareWidth;
-
-            // Using the button[i] to get the x position of the square
-            squareRect.x = buttons[i].x + squareWidth * pieces[i].squares[j].x;
-            squareRect.y = buttons[i].y + squareWidth * pieces[i].squares[j].y;
-
-            //squareRect.x = (i + 1) * spacing + squareWidth * i + squareWidth * pieces[i].squares[j].x;
-            //squareRect.y = windowHeight * 0.8 + squareWidth * pieces[i].squares[j].y;
-
-            SDL_SetRenderDrawColor(renderer, colors[pieces[i].squares[j].symbol][0],colors[pieces[i].squares[j].symbol][1],colors[pieces[i].squares[j].symbol][3],255);
-            SDL_RenderDrawRect(renderer, &squareRect);
-        }
-    }
-}
-
-
-void fun(int grid[6][8]) {
-    for (int i = 0; i < 6; i++) {
-        for (int j = 0; j < 8; j++) {
-            grid[i][j] = rand() % 6;  // assign a random value between 0 and 5
-        }
     }
 }
 
@@ -146,6 +53,7 @@ int main(int argc, char** argv) {
     srand(time(NULL));
     int grid[6][8] = {0};
     int bagWidth = 50;
+    int squareWidth = 100;
     int gridOriginX, gridOriginY;
     Piece pieces[5];
     Piece playerPiece;
@@ -168,7 +76,7 @@ int main(int argc, char** argv) {
         // }
 
         bool first_turn = true;
-        int playerCount = 4;
+        int playerCount = 5;
 
         // Create an array of n + 1 buttons
         Button buttons[10];
@@ -201,14 +109,13 @@ int main(int argc, char** argv) {
                             if (event.key.keysym.sym == SDLK_ESCAPE) {
                                 quit = true;
                             }
-                            else {
-                                fun(grid);
-                            }
                             break;
                         case SDL_WINDOWEVENT:
                             if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                                 windowWidth = event.window.data1;
                                 windowHeight = event.window.data2;
+                                squareWidth = windowHeight * 0.8 / 6;
+                                SDL_SetWindowMinimumSize(window, 8 * squareWidth, 480);
                                 initPhase = true;
                             }
                             break;
@@ -245,6 +152,8 @@ int main(int argc, char** argv) {
                             if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                                 windowWidth = event.window.data1;
                                 windowHeight = event.window.data2;
+                                squareWidth = windowHeight * 0.8 / 6;
+                                SDL_SetWindowMinimumSize(window, 8 * squareWidth, 480);
                                 initPhase = true;
                             }
                             break;
@@ -261,15 +170,38 @@ int main(int argc, char** argv) {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                int pieceY = windowHeight * 0.8;
-                                for (int i = 0; i < 5; i++)
-                                    if (x >= gridOriginX && x <= gridOriginX + i * bagWidth && y >= gridOriginY && y <= gridOriginY + i * bagWidth) {
-                                        playerPiece = pieces[i];
+                                // Change Later
+                                gridOriginY = 0;
+                                
+                                // Loop over every square in the grid and check if the mouse click was inside it
+                                for (int i = 0; i < 6; i++) {
+                                    gridOriginX = (windowWidth - 8 * squareWidth) / 2;
+                                    for (int j = 0; j < 8; j++) {
+                                        if (x >= gridOriginX && x <= gridOriginX + squareWidth && y >= gridOriginY && y <= gridOriginY + squareWidth) {
+                                            // Check if piece is hanging off the edge of the board
+                                            int maxX, maxY;
+                                            pieceMax(playerPiece, &maxX, &maxY);
+                                            if (j + maxX > 7 || i + maxY > 5) {
+                                                printf("Invalid Hanging\n");
+                                                break;
+                                            }
+                                            printf("Placing piece at (%d, %d)\n", j, i);
+                                            // Check if piece is overlapping another piece
+                                            if (pieceOverlap(playerPiece, grid, j, i)) {
+                                                printf("Invalid Overlap\n");
+                                                break;
+                                            }
+                                            // Place piece
+                                            placePiece(playerPiece, grid, j, i);
 
-                                        // SWITCH TO NEXT PLAYER
-                                        // SWITCH GAMESTATE
-                                        SDL_ShowCursor(SDL_ENABLE);
+                                            SDL_ShowCursor(SDL_ENABLE);
+                                            initPhase = true;
+                                            gameState = BagSelection;
+                                        }
+                                        gridOriginX += squareWidth;
                                     }
+                                    gridOriginY += squareWidth;
+                                }
                             }
                             break;
                         case SDL_KEYDOWN:
@@ -288,6 +220,8 @@ int main(int argc, char** argv) {
                             if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                                 windowWidth = event.window.data1;
                                 windowHeight = event.window.data2;
+                                squareWidth = windowHeight * 0.8 / 6;
+                                SDL_SetWindowMinimumSize(window, 8 * squareWidth, 480);
                             }
                             break;
                         default:
@@ -300,7 +234,7 @@ int main(int argc, char** argv) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        renderGrid(renderer, grid, 100, windowWidth, windowHeight);
+        gridOriginX = renderGrid(renderer, grid, squareWidth, windowWidth, windowHeight);
 
         int x, y;
         bool hovering = false;
@@ -338,7 +272,7 @@ int main(int argc, char** argv) {
                         break;
                     }
                 }
-                SDL_SetCursor(hovering ? pointer : cursor); 
+                SDL_SetCursor(hovering ? pointer : cursor);
 
                 renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, buttons, playerCount);
                 break;
@@ -349,7 +283,7 @@ int main(int argc, char** argv) {
                     initPhase = false;
                 }
 
-                renderPieceOnMouse(renderer, playerPiece, 100);
+                renderPieceOnMouse(renderer, playerPiece, squareWidth);
                 break;
         }
         
