@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
@@ -7,7 +8,6 @@
 #include <math.h>
 #include <time.h>
 
-#include "buttons.h"
 #include "game_data_structures.h"
 #include "piece_operations.h"
 #include "rendering.h"
@@ -17,17 +17,49 @@ void renderMenu(SDL_Renderer* renderer) {
 }
 
 
-void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int windowHeight, Button* buttons) {
-    // Convert buttons to SDL_Rect
-    SDL_Rect buttonRect;
-    for (int i = 0; i < 5; i++) {
-        buttonRect.x = buttons[i].x;
-        buttonRect.y = buttons[i].y;
-        buttonRect.w = buttons[i].w;
-        buttonRect.h = buttons[i].h;
-        SDL_SetRenderDrawColor(renderer, 255,255,255,255);
-        SDL_RenderDrawRect(renderer, &buttonRect);
+void initButtons(Button* buttons, int squareWidth, int squareHeight, int windowWidth, int windowHeight, GameState gameState, int playerCount) {
+    int spacing, buttonY;
+    switch(gameState) {
+        case BagSelection:
+            spacing = (windowWidth - squareWidth * 5) / 6;
+            buttonY = windowHeight - squareWidth * 1.5;
+            break;
+        case PieceSelection:
+            spacing = (windowWidth - squareWidth * (playerCount + 1)) / (playerCount + 2);
+            buttonY = windowHeight - squareHeight * 2;
+            break;
     }
+
+    for (int i = 0; i < 5; i++) {
+        buttons[i].x = (i + 1) * spacing + squareWidth * i;
+        buttons[i].y = buttonY;
+        buttons[i].w = squareWidth;
+        buttons[i].h = squareHeight;
+        buttons[i].id = i;
+    }
+}
+
+void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, int x, int y, char* text, TTF_Font* font, int fontSize) {
+    // Display text box
+    SDL_Rect textbox_rect = { x, y, 200, 20 };
+    textbox_rect.w = 10 + strlen(text) * 14;
+    textbox_rect.h = fontSize + 4;
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &textbox_rect);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &textbox_rect);
+    
+
+    // Display text
+    SDL_Color color = { 255, 255, 255 };
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+    SDL_Rect text_rect = { x + 6, y - 7, 0, 0 };
+
+    SDL_QueryTexture(textTexture, NULL, NULL, &text_rect.w, &text_rect.h);
+    SDL_RenderCopy(renderer, textTexture, NULL, &text_rect);
+    SDL_FreeSurface(textSurface);
+    SDL_DestroyTexture(textTexture);
 }
 
 
@@ -64,22 +96,70 @@ int main(int argc, char** argv) {
     bool quit = false;
     SDL_Event event;
 
+    // Initialize Menu Variables
+    char name[50] = "";
+    int name_length = 0;
+    bool menu = true;
+    //Button *buttons = malloc(sizeof(Button) * 4);
+
+    // Initialize TTF
+    TTF_Init();
+    int fontSize = 24;
+    TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
+    SDL_StartTextInput();
+
+    // Main Menu
+    while (menu) {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    quit = true;
+                    menu = false;
+                    break;
+                case SDL_TEXTINPUT:
+                    if (name_length < 20)
+                        strcat(name, event.text.text); // append new characters to name buffer
+                    name_length = strlen(name);
+                    break;
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.sym == SDLK_BACKSPACE && name_length > 0) {
+                        name[name_length - 1] = '\0'; // remove last character from name buffer
+                        name_length = strlen(name);
+                        break;
+                    }
+                    if (event.key.keysym.sym == SDLK_ESCAPE) {
+                        quit = true;
+                        menu = false;
+                        break;
+                    }
+                case SDL_WINDOWEVENT:
+                        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                            windowWidth = event.window.data1;
+                            windowHeight = event.window.data2;
+                        }
+                        break;
+            }
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        renderTextBox(renderer, windowWidth, windowHeight, windowWidth / 2 - strlen(name) * 14, windowHeight / 2 - 10, name, font, fontSize);
+
+        SDL_RenderPresent(renderer);        
+
+        SDL_Delay(10);
+    }
+
+    Button buttons[10];
+        
+
     // Game Loop
     while (!quit) {
-        // Main Menu
-        // Create text boxes for player names and a + and - button to add or remove players
-
-
-        // renderMenu(renderer);
-        // while (SDL_PollEvent(&event)) {
-
-        // }
-
         bool first_turn = true;
         int playerCount = 5;
 
         // Create an array of n + 1 buttons
-        Button buttons[10];
 
         // Handle events
         while (SDL_PollEvent(&event)) {
