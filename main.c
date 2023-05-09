@@ -112,11 +112,10 @@ int main(int argc, char** argv) {
     // Initialize Player Variables
     int playerCount = 0;
     Player players[4];
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
         for (int j = 0; j < 6; j++)
             for (int k = 0; k < 8; k++)
                 players[i].board[j][k] = 0;
-    }
     
 
     // Game Loop Exit Variable
