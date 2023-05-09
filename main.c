@@ -62,6 +62,22 @@ void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, in
     SDL_DestroyTexture(textTexture);
 }
 
+// bool isPlaceable(int grid[6][8], Piece piece) {
+//     // First count the empty grid squares
+//     int emptySquares = 0;
+//     for (int i = 0; i < 6; i++)
+//         for (int j = 0; j < 8; j++)
+//             if (grid[i][j] == 0)
+//                 emptySquares++;
+    
+//     // Then checks if there are at least 4 empty squares to place the piece
+//     if (emptySquares < 4)
+//         return false;
+
+//     // Then check every position and rotation combinaison of the piece to see if it can be placed
+    
+
+// }
 
 int main(int argc, char** argv) {
     // SDL Variables
@@ -88,19 +104,36 @@ int main(int argc, char** argv) {
     int squareWidth = 100;
     int gridOriginX, gridOriginY;
     Piece pieces[5];
-    Piece playerPiece;
-    bool newTurn = true;
-    bool initPhase = true;
+    for (int i = 0; i < 5; i++) {
+        pieces[i].taken = false;
+        pieces[i].pickable = true;
+    }
+
+    // Initialize Player Variables
+    int playerCount = 0;
+    Player players[4];
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 6; j++)
+            for (int k = 0; k < 8; k++)
+                players[i].board[j][k] = 0;
+    }
+    
 
     // Game Loop Exit Variable
-    bool quit = false;
     SDL_Event event;
+    bool quit = false;
+    bool initPhase = true;
+    bool firstTurn = true;
+    bool newTurn = true;
+    int turn = 0;
+    int leader = 0;
 
     // Initialize Menu Variables
     char name[50] = "";
     int name_length = 0;
     bool menu = true;
-    //Button *buttons = malloc(sizeof(Button) * 4);
+    // Create a button that is 80% at the bottom of the screen centered horizontally
+    Button menuButton = { windowWidth * 0.1, windowHeight * 0.8, windowWidth * 0.8, windowHeight * 0.1, 0 };
 
     // Initialize TTF
     TTF_Init();
@@ -132,6 +165,32 @@ int main(int argc, char** argv) {
                         menu = false;
                         break;
                     }
+                    if (event.key.keysym.sym == SDLK_RETURN) {
+                        if (name[0] != '\0') {
+                            strcpy(players[playerCount].name, name);
+                            name[0] = '\0';
+                            playerCount++;
+                            if (playerCount == 4) {
+                                menu = false;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                case SDL_MOUSEBUTTONDOWN:
+                            if (event.button.button == SDL_BUTTON_LEFT) {
+                                // handle left mouse button click
+                                int x = event.button.x;
+                                int y = event.button.y;
+
+                                if (x > menuButton.x && x < menuButton.x + menuButton.w && y > menuButton.y && y < menuButton.y + menuButton.h) {
+                                    if (playerCount > 0) {
+                                        menu = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
                 case SDL_WINDOWEVENT:
                         if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                             windowWidth = event.window.data1;
@@ -144,8 +203,15 @@ int main(int argc, char** argv) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        renderTextBox(renderer, windowWidth, windowHeight, windowWidth / 2 - strlen(name) * 14, windowHeight / 2 - 10, name, font, fontSize);
+        renderTextBox(renderer, windowWidth, windowHeight, windowWidth / 2 - strlen(name) * 7, (windowHeight * 0.2 - 10) + playerCount * (windowHeight * 0.05), name, font, fontSize);
 
+        for (int i = 0; i < playerCount; i++) {
+            renderTextBox(renderer, windowWidth, windowHeight, (windowWidth / 2) - (strlen(players[i].name) * 7), (windowHeight * 0.2 - 10) + i * (windowHeight * 0.05), players[i].name, font, fontSize);
+        }
+
+        // Play Button
+        renderTextBox(renderer, windowWidth, windowHeight, menuButton.x, menuButton.y, "Play", font, fontSize);
+        
         SDL_RenderPresent(renderer);        
 
         SDL_Delay(10);
@@ -156,10 +222,6 @@ int main(int argc, char** argv) {
 
     // Game Loop
     while (!quit) {
-        bool first_turn = true;
-        int playerCount = 5;
-
-        // Create an array of n + 1 buttons
 
         // Handle events
         while (SDL_PollEvent(&event)) {
@@ -170,14 +232,25 @@ int main(int argc, char** argv) {
                             quit = true;
                             break;
                         case SDL_MOUSEBUTTONDOWN:
-                            if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
+                            if (event.button.button == SDL_BUTTON_LEFT) {
+                                // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
 
                                 for (int i = 0; i < 5; i++) {
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
-                                        for (int j = 0; j < 5; j++)
-                                            generatePiece(pieces+j, buttons[i].id);
+                                        if (firstTurn) {
+                                            for (int j = 0; j < playerCount + 1; j++)
+                                                generatePiece(pieces+j, buttons[i].id);
+                                            firstTurn = false;
+                                        }
+                                        else
+                                            for (int j = 0; j < playerCount + 1; j++) {
+                                                if (pieces[j].taken)
+                                                    generatePiece(pieces+j, buttons[i].id);
+                                                pieces[j].taken = false;
+                                            }
+
                                         initPhase = true;
                                         gameState = PieceSelection;
                                     }
@@ -215,9 +288,13 @@ int main(int argc, char** argv) {
                                 
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
-                                        playerPiece = pieces[i];
-                                        SDL_ShowCursor(SDL_DISABLE);
-                                        gameState = PiecePlacement;
+                                        if (pieces[i].pickable) {
+                                            players[turn].piece = pieces[i];
+                                            pieces[i].taken = true;
+                                            pieces[i].pickable = false;
+                                            SDL_ShowCursor(SDL_DISABLE);
+                                            gameState = PiecePlacement;
+                                        }
                                     }
                                 }
                             }
@@ -260,23 +337,32 @@ int main(int argc, char** argv) {
                                         if (x >= gridOriginX && x <= gridOriginX + squareWidth && y >= gridOriginY && y <= gridOriginY + squareWidth) {
                                             // Check if piece is hanging off the edge of the board
                                             int maxX, maxY;
-                                            pieceMax(playerPiece, &maxX, &maxY);
+                                            pieceMax(players[turn].piece, &maxX, &maxY);
                                             if (j + maxX > 7 || i + maxY > 5) {
                                                 printf("Invalid Hanging\n");
                                                 break;
                                             }
-                                            printf("Placing piece at (%d, %d)\n", j, i);
                                             // Check if piece is overlapping another piece
-                                            if (pieceOverlap(playerPiece, grid, j, i)) {
+                                            if (pieceOverlap(players[turn].piece, players[turn].board, j, i)) {
                                                 printf("Invalid Overlap\n");
                                                 break;
                                             }
                                             // Place piece
-                                            placePiece(playerPiece, grid, j, i);
+                                            placePiece(players[turn].piece, players[turn].board, j, i);
 
                                             SDL_ShowCursor(SDL_ENABLE);
                                             initPhase = true;
                                             gameState = BagSelection;
+
+                                            turn = (turn + 1) % playerCount;
+                                            if (turn == leader) {
+                                                // New leader is the previous leader's left neighbour
+                                                leader = (leader + playerCount - 1) % playerCount;
+                                                turn = leader;
+                                                for (int i = 0; i < playerCount + 1; i++) {
+                                                    pieces[i].pickable = true;
+                                                }
+                                            }
                                         }
                                         gridOriginX += squareWidth;
                                     }
@@ -290,10 +376,10 @@ int main(int argc, char** argv) {
                                 quit = true;
                             }
                             else if (event.key.keysym.sym == SDLK_r) {
-                                rotatePiece(&playerPiece);
+                                rotatePiece(&players[turn].piece);
                             }
                             else if (event.key.keysym.sym == SDLK_f) {
-                                flipPiece(&playerPiece);
+                                flipPiece(&players[turn].piece);
                             }
                             break;
                         case SDL_WINDOWEVENT:
@@ -314,12 +400,19 @@ int main(int argc, char** argv) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        gridOriginX = renderGrid(renderer, grid, squareWidth, windowWidth, windowHeight);
+        gridOriginX = renderGrid(renderer, players[turn].board, squareWidth, windowWidth, windowHeight);
 
         int x, y;
         bool hovering = false;
         switch (gameState) {
             case BagSelection:
+                if (turn != leader)
+                    gameState = PieceSelection;
+
+                // for (int i = 0; i < playerCount + 1; i++) {
+                //     pieces[i].taken = false;
+                // }
+
                 // Bag Selection Phase
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
@@ -342,14 +435,17 @@ int main(int argc, char** argv) {
                 // Piece Selection Phase
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, playerCount);
+                    printf("Player %d's turn\n", leader);
                     initPhase = false;
                 }
                 
                 SDL_GetMouseState(&x, &y);
                 for (int i = 0; i < playerCount + 1; i++) {
                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
-                        hovering = true;
-                        break;
+                        if (pieces[i].pickable) {
+                            hovering = true;
+                            break;
+                        }  
                     }
                 }
                 SDL_SetCursor(hovering ? pointer : cursor);
@@ -363,7 +459,7 @@ int main(int argc, char** argv) {
                     initPhase = false;
                 }
 
-                renderPieceOnMouse(renderer, playerPiece, squareWidth);
+                renderPieceOnMouse(renderer, players[turn].piece, squareWidth);
                 break;
         }
         

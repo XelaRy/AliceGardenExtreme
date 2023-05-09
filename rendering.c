@@ -206,7 +206,12 @@ void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWid
             //squareRect.x = (i + 1) * spacing + squareWidth * i + squareWidth * pieces[i].squares[j].x;
             //squareRect.y = windowHeight * 0.8 + squareWidth * pieces[i].squares[j].y;
 
+            if (!pieces[i].pickable) {
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            }
+            else {
             SDL_SetRenderDrawColor(renderer, colors[pieces[i].squares[j].symbol][0],colors[pieces[i].squares[j].symbol][1],colors[pieces[i].squares[j].symbol][2],255);
+            }
             SDL_RenderDrawRect(renderer, &squareRect);
         }
     }
