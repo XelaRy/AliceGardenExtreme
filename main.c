@@ -408,10 +408,6 @@ int main(int argc, char** argv) {
                 if (turn != leader)
                     gameState = PieceSelection;
 
-                // for (int i = 0; i < playerCount + 1; i++) {
-                //     pieces[i].taken = false;
-                // }
-
                 // Bag Selection Phase
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
