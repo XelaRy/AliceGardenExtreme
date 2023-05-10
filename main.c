@@ -86,7 +86,7 @@ int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
     int right = 0;
     int down = 0;
 
-    if (x > 8 || y > 6) {
+    if (x >= 8 || y >= 6) {
         return found;
     }
     if (grid[y][x + 1] == sym) {
@@ -106,8 +106,8 @@ int maxAdjacentSymbols(int grid[6][8], int symbol) {
     int max = 0;
     int tmp;
 
-    for (int i = 0; i < 6; i++)
-        for (int j = 0; j < 8; j++)
+    for (int i = 0; i < 5; i++)
+        for (int j = 0; j < 7; j++)
             gridCopy[i][j] = grid[i][j];
 
     for (int i = 0; i < 6; i++)
@@ -406,6 +406,9 @@ int main(int argc, char** argv) {
                                             SDL_ShowCursor(SDL_ENABLE);
                                             initPhase = true;
                                             gameState = BagSelection;
+
+                                            // DEBUG
+                                            printf("Max rose : %d\n", maxAdjacentSymbols(players[turn].board, 1));
 
                                             turn = (turn + 1) % playerCount;
                                             if (turn == leader) {
