@@ -1,7 +1,7 @@
 #ifndef rendering
 #define rendering
 
-int renderGrid(SDL_Renderer *renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight);
+void renderGrid(SDL_Renderer *renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight);
 int initializeSDL(SDL_Window **window, SDL_Renderer **renderer, int screenWidth, int screenHeight);
 //void renderPieceOnMouse(SDL_Renderer *renderer, Piece piece, int squareWidth);
 void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int windowHeight, Button* buttons);

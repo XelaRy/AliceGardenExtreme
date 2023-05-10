@@ -28,6 +28,8 @@ void initButtons(Button* buttons, int squareWidth, int squareHeight, int windowW
             spacing = (windowWidth - squareWidth * (playerCount + 1)) / (playerCount + 2);
             buttonY = windowHeight - squareHeight * 2;
             break;
+        case PiecePlacement:
+            break;
     }
 
     for (int i = 0; i < 5; i++) {
@@ -54,7 +56,7 @@ void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, in
     SDL_Color color = { 255, 255, 255 };
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    SDL_Rect text_rect = { x + 6, y - 7, 0, 0 };
+    SDL_Rect text_rect = { x + 6, y - 4, 0, 0 };
 
     SDL_QueryTexture(textTexture, NULL, NULL, &text_rect.w, &text_rect.h);
     SDL_RenderCopy(renderer, textTexture, NULL, &text_rect);
@@ -79,6 +81,51 @@ void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, in
 
 // }
 
+int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
+    int found = 1;
+    int right = 0;
+    int down = 0;
+
+    if (x > 8 || y > 6) {
+        return found;
+    }
+    if (grid[y][x + 1] == sym) {
+        right = 1;
+        grid[y][x + 1] = -1;
+    }
+    if (grid[y + 1][x] == sym) {
+        down = 1;
+        grid[y + 1][x] = -1;
+    }
+
+    return found + (right ? countAdjacentSquares(grid, sym, x + 1, y) : 0) + (down ? countAdjacentSquares(grid, sym, x, y + 1) : 0);
+}
+
+int maxAdjacentSymbols(int grid[6][8], int symbol) {
+    int gridCopy[6][8];
+    int max = 0;
+    int tmp;
+
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 8; j++)
+            gridCopy[i][j] = grid[i][j];
+
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 8; j++) {
+            tmp = countAdjacentSquares(gridCopy, symbol, i, j);
+            if (tmp > max)
+                max = tmp;
+        }
+
+    return max;
+}
+
+
+bool gameEnd(int grid[6][8]) {
+    // If there is less than 4 empty spaces adjacent, the player cannot place any normal piece
+    return maxAdjacentSymbols(grid, 0) < 4;
+}
+
 int main(int argc, char** argv) {
     // SDL Variables
     SDL_Window* window;
@@ -99,7 +146,7 @@ int main(int argc, char** argv) {
     SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 
     srand(time(NULL));
-    int grid[6][8] = {0};
+    int elapsedTime = 0;
     int bagWidth = 50;
     int squareWidth = 100;
     int gridOriginX, gridOriginY;
@@ -123,7 +170,6 @@ int main(int argc, char** argv) {
     bool quit = false;
     bool initPhase = true;
     bool firstTurn = true;
-    bool newTurn = true;
     int turn = 0;
     int leader = 0;
 
@@ -132,7 +178,7 @@ int main(int argc, char** argv) {
     int name_length = 0;
     bool menu = true;
     // Create a button that is 80% at the bottom of the screen centered horizontally
-    Button menuButton = { windowWidth * 0.1, windowHeight * 0.8, windowWidth * 0.8, windowHeight * 0.1, 0 };
+    Button playButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
 
     // Initialize TTF
     TTF_Init();
@@ -182,7 +228,7 @@ int main(int argc, char** argv) {
                                 int x = event.button.x;
                                 int y = event.button.y;
 
-                                if (x > menuButton.x && x < menuButton.x + menuButton.w && y > menuButton.y && y < menuButton.y + menuButton.h) {
+                                if (x > playButton.x && x < playButton.x + playButton.w && y > playButton.y && y < playButton.y + playButton.h) {
                                     if (playerCount > 0) {
                                         menu = false;
                                         break;
@@ -194,6 +240,10 @@ int main(int argc, char** argv) {
                         if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                             windowWidth = event.window.data1;
                             windowHeight = event.window.data2;
+                            playButton.x =  windowWidth / 2 - 28;
+                            playButton.y = windowHeight * 0.75;
+                            playButton.w = windowWidth * 0.8;
+                            playButton.h = windowHeight * 0.1;
                         }
                         break;
             }
@@ -209,7 +259,7 @@ int main(int argc, char** argv) {
         }
 
         // Play Button
-        renderTextBox(renderer, windowWidth, windowHeight, menuButton.x, menuButton.y, "Play", font, fontSize);
+        renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "Play", font, fontSize);
         
         SDL_RenderPresent(renderer);        
 
@@ -275,6 +325,8 @@ int main(int argc, char** argv) {
                             break;
                     }
                     break;
+
+
                 case PieceSelection:
                     switch (event.type) {
                         case SDL_QUIT:
@@ -317,6 +369,8 @@ int main(int argc, char** argv) {
                             break;
                     }
                     break;
+
+
                 case PiecePlacement:
                     switch (event.type) {
                         case SDL_QUIT:
@@ -361,6 +415,7 @@ int main(int argc, char** argv) {
                                                 for (int i = 0; i < playerCount + 1; i++) {
                                                     pieces[i].pickable = true;
                                                 }
+                                                quit = gameEnd(players[turn].board);
                                             }
                                         }
                                         gridOriginX += squareWidth;
@@ -399,7 +454,7 @@ int main(int argc, char** argv) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        gridOriginX = renderGrid(renderer, players[turn].board, squareWidth, windowWidth, windowHeight);
+        renderGrid(renderer, players[turn].board, squareWidth, windowWidth, windowHeight);
 
         int x, y;
         bool hovering = false;
@@ -426,11 +481,13 @@ int main(int argc, char** argv) {
 
                 renderBags(renderer, bagWidth, windowWidth, windowHeight, buttons);
                 break;
+
+
             case PieceSelection:
                 // Piece Selection Phase
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, playerCount);
-                    printf("Player %d's turn\n", leader);
+                    // printf("Player %d's turn\n", leader);
                     initPhase = false;
                 }
                 
@@ -447,11 +504,20 @@ int main(int argc, char** argv) {
 
                 renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, buttons, playerCount);
                 break;
+
+
             case PiecePlacement:
                 // Piece Placement Phase
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
                     initPhase = false;
+                }
+
+                if (elapsedTime > 3000) {
+                    // Display 'Cannot Place Piece ? / End Game' Button
+                }
+                else {
+                    elapsedTime += 10;
                 }
 
                 renderPieceOnMouse(renderer, players[turn].piece, squareWidth);

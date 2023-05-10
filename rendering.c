@@ -48,7 +48,7 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
     return 0;
 }
 
-int renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight) {
+void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight) {
     SDL_Rect squareRect;
     squareRect.w = squareWidth;
     squareRect.h = squareWidth;
@@ -142,9 +142,6 @@ void renderPieceWithSpritesheet(SDL_Renderer* renderer, Piece piece, int squareW
 }
 
 void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth) {
-    SDL_Rect squareRect;
-    int offset = squareWidth / 2;
-
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
 
