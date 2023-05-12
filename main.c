@@ -172,6 +172,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
         }
 
         // Quit Button
+        printf("TEST1");
         renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "QUIT", font, fontSize);
         SDL_RenderPresent(renderer);        
         SDL_Delay(10);
@@ -406,24 +407,6 @@ int main(int argc, char** argv) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
                                         printf("HAHAHHA");
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                                         quit = true;
                                     }
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
