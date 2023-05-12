@@ -142,34 +142,6 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                     quit = true;
                     endScreen = false;
                     break;
-                case SDL_TEXTINPUT:
-                    if (name_length < 20)
-                        strcat(name, event.text.text); // append new characters to name buffer
-                    name_length = strlen(name);
-                    break;
-                case SDL_KEYDOWN:
-                    if (event.key.keysym.sym == SDLK_BACKSPACE && name_length > 0) {
-                        name[name_length - 1] = '\0'; // remove last character from name buffer
-                        name_length = strlen(name);
-                        break;
-                    }
-                    if (event.key.keysym.sym == SDLK_ESCAPE) {
-                        quit = true;
-                        endScreen = false;
-                        break;
-                    }
-                    if (event.key.keysym.sym == SDLK_RETURN) {
-                        if (name[0] != '\0') {
-                            strcpy(players[playerCount].name, name);
-                            name[0] = '\0';
-                            playerCount++;
-                            if (playerCount == 4) {
-                                endScreen = false;
-                                break;
-                            }
-                        }
-                        break;
-                    }
                 case SDL_MOUSEBUTTONDOWN:
                             if (event.button.button == SDL_BUTTON_LEFT) {
                                 // handle left mouse button click
@@ -199,18 +171,9 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
 
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
-
-        renderTextBox(renderer, windowWidth, windowHeight, windowWidth / 2 - strlen(name) * 7, (windowHeight * 0.2 - 10) + playerCount * (windowHeight * 0.05), name, font, fontSize);
-
-        for (int i = 0; i < playerCount; i++) {
-            renderTextBox(renderer, windowWidth, windowHeight, (windowWidth / 2) - (strlen(players[i].name) * 7), (windowHeight * 0.2 - 10) + i * (windowHeight * 0.05), players[i].name, font, fontSize);
-        }
-
-        // Play Button
+        // Quit Button
         renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "QUIT", font, fontSize);
-        
         SDL_RenderPresent(renderer);        
-
         SDL_Delay(10);
     }
 
