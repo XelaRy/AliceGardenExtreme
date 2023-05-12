@@ -125,7 +125,7 @@ bool gameEnd(int grid[6][8]) {
     return maxAdjacentSymbols(grid, 0) < 4;
 }
 
-void endScreen(Player player[],int numberofplayer,SDL_Renderer* renderer){
+void endScreen(Player player[],int playerCount,SDL_Renderer* renderer){
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);        
