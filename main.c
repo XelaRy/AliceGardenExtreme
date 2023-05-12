@@ -136,6 +136,8 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
 
     // end screen
     while (endScreen) {
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        SDL_RenderClear(renderer);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
@@ -162,15 +164,13 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                             windowHeight = event.window.data2;
                             playButton.x =  windowWidth / 2 - 28;
                             playButton.y = windowHeight * 0.75;
-                            playButton.w = windowWidth * 0.8;
+                            playButton.w = windowWidth * 0.9;
                             playButton.h = windowHeight * 0.1;
                         }
                         break;
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_RenderClear(renderer);
         // Quit Button
         renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "QUIT", font, fontSize);
         SDL_RenderPresent(renderer);        
