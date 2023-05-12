@@ -143,11 +143,12 @@ void endScreen(Player player[],int playerCount,SDL_Renderer* renderer,int window
     TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
     SDL_StartTextInput();
     if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
-    int x = event.button.x;
-    int y = event.button.y;
-    if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
+    x = event.button.x;
+    y = event.button.y;
+    printf("HELLO TEST 1");
+        if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
         quit=true;
-    }
+        }
     } 
     renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "QUIT", font, fontSize);
     SDL_RenderPresent(renderer);        
