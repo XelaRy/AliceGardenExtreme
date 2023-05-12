@@ -357,7 +357,8 @@ int main(int argc, char** argv) {
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
                                         printf("HAHAHHA");
-                                        quit = true;
+                                        endScreen(players,playerCount,renderer);
+                                        //quit = true;
                                     }
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                                         if (pieces[i].pickable) {
