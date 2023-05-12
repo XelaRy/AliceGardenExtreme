@@ -126,10 +126,12 @@ bool gameEnd(int grid[6][8]) {
 }
 
 void endScreen(Player player[],int playerCount,SDL_Renderer* renderer){
+    while(!false){
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
+    }
 }
 
 
@@ -409,7 +411,7 @@ int main(int argc, char** argv) {
                                 for (int i = 0; i < 6; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
                                         printf("HAHAHHA");
-                                        quit = true;
+                                        //quit = true;
                                     }
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
                                     for (int j = 0; j < 8; j++) {
