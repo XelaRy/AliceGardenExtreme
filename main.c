@@ -153,6 +153,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                                 if (x > playButton.x && x < playButton.x + playButton.w && y > playButton.y && y < playButton.y + playButton.h) {
                                     if (playerCount > 0) {
                                         endScreen = false;
+                                        quit=true;
                                         break;
                                     }
                                 }
