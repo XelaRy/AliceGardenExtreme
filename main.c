@@ -125,10 +125,26 @@ bool gameEnd(int grid[6][8]) {
     return maxAdjacentSymbols(grid, 0) < 4;
 }
 
-void endScreen(Player player[],int playerCount,SDL_Renderer* renderer){
-    while(!false){
+void endScreen(Player player[],int playerCount,SDL_Renderer* renderer,int windowWidth,int windowHeight){
+    bool quit=false;
+    while(!quit){
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderClear(renderer);
+    Button quitbutton;
+    quitbutton.x =  windowWidth / 2 - 28;
+    quitbutton.w = windowWidth * 0.8;
+    quitbutton.y = windowHeight * 0.75;
+    quitbutton.h = windowHeight * 0.1; 
+    int x,y;
+    SDL_GetMouseState(&x, &y);
+    TTF_Init();
+    int fontSize = 24;
+    TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
+    SDL_StartTextInput();
+    if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
+        quit=true;
+    }
+    renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "QUIT", font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     }
@@ -359,7 +375,25 @@ int main(int argc, char** argv) {
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
                                         printf("HAHAHHA");
-                                        endScreen(players,playerCount,renderer);
+                                        endScreen(players,playerCount,renderer,windowWidth,windowHeight);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                         quit = true;
                                     }
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
