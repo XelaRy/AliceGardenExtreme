@@ -16,7 +16,6 @@
 void renderMenu(SDL_Renderer* renderer) {
 }
 
-int test123=0;
 void initButtons(Button* buttons, int squareWidth, int squareHeight, int windowWidth, int windowHeight, GameState gameState, int playerCount) {
     int spacing, buttonY;
     switch(gameState) {
