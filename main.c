@@ -125,7 +125,7 @@ bool gameEnd(int grid[6][8]) {
     return maxAdjacentSymbols(grid, 0) < 4;
 }
 
-void endScreen(Player player[],int playerCount,SDL_Renderer* renderer,int windowWidth,int windowHeight){
+void endScreen(Player player[],int playerCount,SDL_Renderer* renderer,int windowWidth,int windowHeight,SDL_Window* window){
     bool quit=false;
     while(!quit){
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
@@ -154,6 +154,9 @@ void endScreen(Player player[],int playerCount,SDL_Renderer* renderer,int window
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     }
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
 
@@ -381,7 +384,7 @@ int main(int argc, char** argv) {
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
                                         printf("HAHAHHA");
-                                        endScreen(players,playerCount,renderer,windowWidth,windowHeight);
+                                        endScreen(players,playerCount,renderer,windowWidth,windowHeight,window);
 
 
 
