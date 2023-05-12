@@ -125,6 +125,21 @@ bool gameEnd(int grid[6][8]) {
     return maxAdjacentSymbols(grid, 0) < 4;
 }
 
+void endScreen(Player player[],int numberofplayer,SDL_Renderer* renderer){
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);        
+    SDL_Delay(10);
+}
+
+
+
+
+
+
+
+
+
 int main(int argc, char** argv) {
     // SDL Variables
     SDL_Window* window;
@@ -266,7 +281,11 @@ int main(int argc, char** argv) {
     }
 
     Button buttons[10];
-        
+    Button quitbutton;
+    quitbutton.x =  windowWidth / 2 - 28;
+    quitbutton.w = windowWidth * 0.8;
+    quitbutton.y = windowHeight * 0.75;
+    quitbutton.h = windowHeight * 0.1;  
 
     // Game Loop
     while (!quit) {
@@ -335,8 +354,11 @@ int main(int argc, char** argv) {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                
                                 for (int i = 0; i < playerCount + 1; i++) {
+                                    if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
+                                        printf("HAHAHHA");
+                                        quit = true;
+                                    }
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                                         if (pieces[i].pickable) {
                                             players[turn].piece = pieces[i];
@@ -384,6 +406,10 @@ int main(int argc, char** argv) {
                                 
                                 // Loop over every square in the grid and check if the mouse click was inside it
                                 for (int i = 0; i < 6; i++) {
+                                    if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
+                                        printf("HAHAHHA");
+                                        quit = true;
+                                    }
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
                                     for (int j = 0; j < 8; j++) {
                                         if (x >= gridOriginX && x <= gridOriginX + squareWidth && y >= gridOriginY && y <= gridOriginY + squareWidth) {
@@ -494,6 +520,7 @@ int main(int argc, char** argv) {
                 }
                 
                 SDL_GetMouseState(&x, &y);
+                renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "QUIT", font, fontSize);
                 for (int i = 0; i < playerCount + 1; i++) {
                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                         if (pieces[i].pickable) {
@@ -514,7 +541,7 @@ int main(int argc, char** argv) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
                     initPhase = false;
                 }
-
+                renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "QUIT", font, fontSize);
                 if (elapsedTime > 3000) {
                     // Display 'Cannot Place Piece ? / End Game' Button
                 }
