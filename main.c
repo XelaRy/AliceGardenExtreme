@@ -505,8 +505,8 @@ int main(int argc, char** argv) {
                             break;
                     }
             }
-        printf("hello");
         }
+        printf("hello");
 
         // Render screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
