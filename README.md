@@ -28,7 +28,9 @@ Bash / Windows etc:
 
 Download the latest release from the [releases page](https://github.com/XelaRy/AliceGardenExtreme/releases).
 
-### Or Build from Source :
+### Or 
+
+### Build from Source :
 
 Build the game using the following command:
 
