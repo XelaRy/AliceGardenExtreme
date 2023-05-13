@@ -174,7 +174,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
         char charScore[4];
         sprintf(charScore, "%d", score);
         font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize-20);
-        char text[200] ="The score of ";
+        char text[100] ="The score of ";
         strcat(text,players[i].name);
         strcat(text," is ");
         strcat(text,charScore);
