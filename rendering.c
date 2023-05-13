@@ -43,7 +43,7 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
 }
 
 
-void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight, SDL_Texture* spritesheet, int variations[6][8]) {
+void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight, SDL_Texture* spritesheet, int variations[6][8], int posX, int posY, int width, int height) {
     SDL_Rect squareRect;
     squareRect.w = squareWidth;
     squareRect.h = squareWidth;
@@ -52,12 +52,20 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int win
     spriteRect.w = 64;
     spriteRect.h = 64;
 
-    int offsetX = (windowWidth - squareWidth * 8) / 2;
+    // int offsetX = (windowWidth - squareWidth * 8) / 2;
+
+    // If posX, posY, width and height are not specified, render the grid in the center of the screen
+    if (posX == -1) {
+        posX = (windowWidth - squareWidth * 8) / 2;
+    }
+    if (posY == -1) {
+        posY = 0;
+    }
 
     for (int y = 0; y < 6; y++) {
         for (int x = 0; x < 8; x++) {
-            squareRect.x = offsetX + x * squareWidth;
-            squareRect.y = y * squareWidth;
+            squareRect.x = posX + x * squareWidth;
+            squareRect.y = posY + y * squareWidth;
             if (grid[y][x] == 0) {
                 // Render the texture instead of the square
 
