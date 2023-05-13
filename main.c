@@ -46,10 +46,10 @@ for(i=0;i<6;i++){
     for(j=0;j<8;j++){
         if(player->board[i][j]==2){
             if(firstTree==0){
-                firstTree=j;
+                firstTree=j+1;
             }
             else{
-                lastTree=j+1;
+                lastTree=j+2;
             }
         }
     }
