@@ -13,20 +13,32 @@
 #include "board_operations.h"
 #include "piece_operations.h"
 #include "rendering.h"
-/*
+
 void scoreCount(Player player){
     player.score=0;
     int i,j;
 //Count for Chess pieces
 for(i=0;i<6;i++){
     for(j=3;j<5;j++){
-        if (player.board[i][j]==3)
-
+        if (player.board[i][j]==3){
+            player.score+=5;
+        }    }
+}
+//Count for Mushrooms
+int mushroomCount=0;
+for(j=0;j<8;j++){
+    for(i=0;i<6;i++){
+        if (player.board[i][j]==1){
+            mushroomCount+=1;
+        }    
     }
+    if (mushroomCount>1){
+        player.score+=8;
+    }
+    mushroomCount=0;
+}
 }
 
-}
-*/
 
 void renderMenu(SDL_Renderer* renderer, TTF_Font* font, int fontSize, int windowWidth, int windowHeight, int* playerCount, Player players[4], bool* quit) {
     // Initialize Menu Variables
