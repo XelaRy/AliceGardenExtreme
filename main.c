@@ -172,7 +172,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     for (int i=0;i<playerCount;i++){
         font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize-20);
         char text[200] =players[i].name;
-        char score[4] = players[i].score;
+        char score[4] = "123";
         strcat(text,", your score is : ");
         strcat(text,score);
         renderTextBox(renderer, windowWidth, windowHeight, quitButton.x-200, quitButton.y-(400+(50*i)), text, font, fontSize-20);
