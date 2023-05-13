@@ -182,11 +182,10 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     }
     // Quit Button
     font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
-    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y,"QUIT    " , font, fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y,"QUIT GAME   " , font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     }
-    printf("\nEndpage quit !\n");
 }
 
 
@@ -400,7 +399,6 @@ int main(int argc, char** argv) {
                     }
                     break;
 
-
                 case PieceSelection:
                     switch (event.type) {
                         case SDL_QUIT:
@@ -576,7 +574,7 @@ int main(int argc, char** argv) {
                 }
                 
                 SDL_GetMouseState(&x, &y);
-                renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "QUIT", font, fontSize);
+                renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "Endgame", font, fontSize);
                 for (int i = 0; i < playerCount + 1; i++) {
                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                         if (pieces[i].pickable) {
@@ -597,7 +595,7 @@ int main(int argc, char** argv) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
                     initPhase = false;
                 }
-                renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "QUIT", font, fontSize);
+                renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "Endgame", font, fontSize);
                 if (elapsedTime > 3000) {
                     // Display 'Cannot Place Piece ? / End Game' Button
                 }
