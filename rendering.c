@@ -196,6 +196,8 @@ void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWid
     spriteRect.w = 64;
     spriteRect.h = 64;
 
+    squareWidth = windowHeight * 0.5 / 10;
+
     pieceMax(pieces[0], &max_X, &max_Y);
     buttons[0].w = squareWidth * (max_X + 1);
     buttons[0].h = squareWidth * (max_Y + 1);
