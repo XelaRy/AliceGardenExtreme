@@ -73,7 +73,17 @@ for(i=0;i<6;i++){
     }
 }
 //Count for Empty squares
-
+int Adjempty;
+for(i=0;i<6;i++){
+    for(j=0;j<8;j++){
+        if(player->board[i][j]==0){
+            Adjempty=countAdjacentSquares(player->board,1,i,j);
+            player->score-=5;
+            player->board[i][j]=-1;
+            Adjempty=0;
+        }
+    }
+}
 }
 
 
