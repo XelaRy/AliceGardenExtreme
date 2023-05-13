@@ -83,16 +83,17 @@ for(i=0;i<6;i++){
     }
 }
 //Count for Empty squares
+int Adjempty;
 for(i=0;i<6;i++){
     for(j=0;j<8;j++){
         if(player.board[i][j]==0){
-            countAdjacentSquares(player.board,0,i,j);//disable near empty squares
+            Adjempty=countAdjacentSquares(player.board,0,i,j);//disable near empty squares
             player.score-=5;
             player.board[i][j]=-1;
+            Adjempty=0;
         }
     }
 }
-
 *player1score=player.score;
 }
 
@@ -452,40 +453,7 @@ int main(int argc, char** argv) {
                                 int y = event.button.y;
                                 // Change Later
                                 gridOriginY = 0;
-
-
-                                scoreCount(players[0],&players[0].score);
-                                 printf("score : %d\n",players[0].score);
-                            
-                                for(int i=0;i<6;i++){
-                                    for(int j=0;j<8;j++){
-                                        printf(" %-3d ",players[0].board[i][j]);
-                                    }
-                                    printf("\n");
-                                }
-                                printf("\n");
-                                printf("\n");
-                                printf("\n");
                                 
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
                                 // Loop over every square in the grid and check if the mouse click was inside it
                                 for (int i = 0; i < 6; i++) {
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
@@ -611,9 +579,11 @@ int main(int argc, char** argv) {
         // Wait for a few milliseconds
         SDL_Delay(10);
     }
-    for(int i=0;i<playerCount;i++){
-        scoreCount(players[i],  &players[i].score);
-    }
+
+for(int i=0;i<playerCount;i++){
+    scoreCount(players[i],&players[i].score);
+}
+
     // End Game Screen
     renderEndScreen(renderer, window, font, fontSize, windowWidth, windowHeight, playerCount, players, spriteSheet, variations);
 
