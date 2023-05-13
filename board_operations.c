@@ -8,6 +8,8 @@ int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
     int found = 1;
     int right = 0;
     int down = 0;
+    int up =0;
+    int left=0;
 
     // If the square is not the same symbol or is already counted, return 0
     if (grid[y][x] != sym && grid[y][x] != -1) {
@@ -27,9 +29,16 @@ int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
         down = 1;
         grid[y + 1][x] = -1;
     }
-
+    if (grid[y][x + 1] == sym) {
+        up = 1;
+        grid[y][x + 1] = -1;
+    }
+    if (grid[y + 1][x] == sym) {
+        left = 1;
+        grid[y + 1][x] = -1;
+    }
     // Return the number of adjacent squares and recursively call the function for each adjacent square
-    return found + (right ? countAdjacentSquares(grid, sym, x + 1, y) : 0) + (down ? countAdjacentSquares(grid, sym, x, y + 1) : 0);
+    return found + (right ? countAdjacentSquares(grid, sym, x + 1, y) : 0) + (down ? countAdjacentSquares(grid, sym, x, y + 1) : 0) + (up ? countAdjacentSquares(grid, sym, x, y + 1) : 0 )+ (left ? countAdjacentSquares(grid, sym, x, y + 1) : 0);
 }
 
 // Returns the maximum number of adjacent squares of the same symbol
