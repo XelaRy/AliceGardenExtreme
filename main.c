@@ -97,10 +97,6 @@ for(i=0;i<6;i++){
 *player1score=player.score;
 }
 
-
-
-
-
 void renderMenu(SDL_Renderer* renderer, TTF_Font* font, int fontSize, int windowWidth, int windowHeight, int* playerCount, Player players[4], bool* quit) {
     // Initialize Menu Variables
     SDL_Event event;
@@ -603,7 +599,9 @@ int main(int argc, char** argv) {
     // SCORE COUNT GO
     // GO GO GO
     // ICI
-
+    for(int i=0;i<playerCount;i++){
+        scoreCount(players[i],  &players[i].score);
+    }
     // End Game Screen
     renderEndScreen(renderer, window, font, fontSize, windowWidth, windowHeight, playerCount, players, spriteSheet, variations);
 
