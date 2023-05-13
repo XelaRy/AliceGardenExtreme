@@ -24,7 +24,7 @@ typedef struct {
 
 typedef struct {
 	char name[20];
-	int board[6][8];
+	Square board[6][8];
 	int score;
 	Piece piece;
 } Player;
