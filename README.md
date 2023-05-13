@@ -14,6 +14,14 @@ To install and play Alice Garden Extreme, follow the steps below:
 
 ## Installation
 
+### Using Release :
+
+Download the latest release from the [releases page](https://github.com/XelaRy/AliceGardenExtreme/releases).
+
+### Or 
+
+### Build from Source :
+
 Clone the repository using the following command:
 
 Bash / Windows etc:
@@ -23,14 +31,6 @@ Bash / Windows etc:
     cd AliceGardenExtreme
 
 ## Build
-
-### Using Release :
-
-Download the latest release from the [releases page](https://github.com/XelaRy/AliceGardenExtreme/releases).
-
-### Or 
-
-### Build from Source :
 
 Build the game using the following command:
 
