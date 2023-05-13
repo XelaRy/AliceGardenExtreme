@@ -93,10 +93,11 @@ int maxAdjacentSymbols(int grid[6][8], int symbol) {
     return max;
 }
 
-
+// Returns true if the game has ended
+// The game ends when there are less than 5 empty spaces adjacent
 bool gameEnd(int grid[6][8]) {
     // If there is less than 4 empty spaces adjacent, the player cannot place any normal piece
-    return maxAdjacentSymbols(grid, 0) < 4;
+    return maxAdjacentSymbols(grid, 0) < 5;
 }
 
 
