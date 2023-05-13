@@ -14,6 +14,86 @@
 #include "piece_operations.h"
 #include "rendering.h"
 
+void scoreCount(Player player1,int* player1score){
+    Player player;
+    for(int i=0;i<6;i++){
+        for(int j=0;j<8;j++){
+            player.board[i][j]=player1.board[i][j];
+        }
+    }
+
+
+
+
+    player.score=0;
+    int i,j;
+//1=ROSE, 2=Tree, 3=Gardener(play card), 4=Mushroom, 5=Chess piece
+//Count for Chess pieces
+for(i=0;i<6;i++){
+    for(j=3;j<5;j++){
+        if (player.board[i][j]==5){
+            player.score+=5;
+        }    }
+}
+//Count for Mushrooms
+int mushroomCount;
+for(j=0;j<8;j++){
+    mushroomCount=0;
+    for(i=0;i<6;i++){
+        if (player.board[i][j]==4){
+            mushroomCount+=1;
+        }    
+    }
+    if (mushroomCount>1){
+        player.score+=8;
+    }
+}
+//Count for Trees
+int firstTree,lastTree;
+for(i=0;i<6;i++){
+    firstTree=0;
+    lastTree=0;
+    for(j=0;j<8;j++){
+        if(player.board[i][j]==2){
+            if(firstTree==0){
+                firstTree=j+1;
+            }
+            else{
+                lastTree=j+2;
+            }
+        }
+    }
+    if(lastTree!=0){
+        player.score+=(lastTree-firstTree);
+    }
+}
+//Count for Roses
+int AdjRoses;
+for(i=0;i<6;i++){
+    for(j=0;j<8;j++){
+        if(player.board[i][j]==1){
+            AdjRoses=countAdjacentSquares(player.board,1,i,j);
+            if (AdjRoses>4){
+                AdjRoses=4;
+            }
+            player.score+=((AdjRoses+1)*(AdjRoses+1));
+            player.board[i][j]=-1;
+            AdjRoses=0;
+        }
+    }
+}
+//Count for Empty squares
+for(i=0;i<6;i++){
+    for(j=0;j<8;j++){
+        if(player.board[i][j]==0){
+            countAdjacentSquares(player.board,0,i,j);//disable near empty squares
+            player.score-=5;
+            player.board[i][j]=-1;
+        }
+    }
+}
+*player1score=player.score;
+}
 
 void renderMenu(SDL_Renderer* renderer, TTF_Font* font, int fontSize, int windowWidth, int windowHeight, int* playerCount, Player players[4], bool* quit) {
     // Initialize Menu Variables
@@ -498,25 +578,9 @@ int main(int argc, char** argv) {
         SDL_Delay(10);
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////                     ARNAUD                        ////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // PLACER ICI
-    // COMPTAGE DE SCORE
-    // OUI ALLER
-    // TU PEUX LE FAIRE
-    // JE CROIS EN TOI
-    // C'EST BIENTOT FINI
-    // TU VAS Y ARRIVER
-    // C'EST LA DERNIERE LIGNE DROITE
-    // UN DERNIER EFFORT
-    // ON Y EST PRESQUE
-    // SCORE COUNT GO
-    // GO GO GO
-    // ICI
+for(int i=0;i<playerCount;i++){
+    scoreCount(players[i],&players[i].score);
+}
 
     // End Game Screen
     renderEndScreen(renderer, window, font, fontSize, windowWidth, windowHeight, playerCount, players, spriteSheet, variations);
