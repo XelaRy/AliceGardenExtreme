@@ -127,22 +127,21 @@ bool gameEnd(int grid[6][8]) {
 
 void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[]){
     bool endScreen = true;
-    bool quit = false;
+    bool quit = false; 
     SDL_Event event;
     SDL_Renderer* renderer;
     Button playButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
     int fontSize = 24;
     TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
-
     // end screen
-    while (endScreen) {
+    while (!quit) {
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
-                    quit = true;
-                    endScreen = false;
+                    quit = false;
+                    endScreen = true;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                             if (event.button.button == SDL_BUTTON_LEFT) {
@@ -153,7 +152,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                                 if (x > playButton.x && x < playButton.x + playButton.w && y > playButton.y && y < playButton.y + playButton.h) {
                                     if (playerCount > 0) {
                                         endScreen = false;
-                                        quit=true;
+                                        quit=false;
                                         break;
                                     }
                                 }
@@ -404,7 +403,6 @@ int main(int argc, char** argv) {
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
                                         printf("HAHAHHA");
-                                        SDL_RenderClear(renderer);
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players);
                                         quit = true;
 
