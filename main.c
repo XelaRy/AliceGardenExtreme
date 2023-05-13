@@ -86,6 +86,9 @@ int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
     int right = 0;
     int down = 0;
 
+    if (grid[y][x] != sym && grid[y][x] != -1) {
+        return 0;
+    }
     if (x >= 8 || y >= 6) {
         return found;
     }
@@ -106,8 +109,8 @@ int maxAdjacentSymbols(int grid[6][8], int symbol) {
     int max = 0;
     int tmp;
 
-    for (int i = 0; i < 5; i++)
-        for (int j = 0; j < 7; j++)
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 8; j++)
             gridCopy[i][j] = grid[i][j];
 
     for (int i = 0; i < 6; i++)
@@ -126,6 +129,21 @@ bool gameEnd(int grid[6][8]) {
     return maxAdjacentSymbols(grid, 0) < 4;
 }
 
+bool isOnButton(Button button, int x, int y) {
+    return x >= button.x && x <= button.x + button.w && y >= button.y && y <= button.y + button.h;
+}
+
+bool isOnBoard(Piece piece, int x, int y) {
+    int maxX, maxY;
+    pieceMax(piece, &maxX, &maxY);
+    return x >= 0 && x <= 7 - maxX && y >= 0 && y <= 5 - maxY;
+}
+
+bool validPlacement(Piece piece, int grid[6][8], int x, int y) {
+    return isOnBoard(piece, x, y) && !pieceOverlap(piece, grid, x, y);
+}
+
+
 int main(int argc, char** argv) {
     // SDL Variables
     SDL_Window* window;
@@ -137,13 +155,16 @@ int main(int argc, char** argv) {
     if (initializeSDL(&window, &renderer, windowWidth, windowHeight) != 0) {
         return 1;
     }
-    
-    GameState gameState = BagSelection;
 
     // Create a cursor pointer
     SDL_Cursor* pointer = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
     // Create default cursor
     SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+
+    // Load Sprite Sheet
+    // SDL_Texture* spriteSheet = loadTexture(renderer, "assets/spritesheet.png");
+    // SDL_Texture* background = loadTexture(renderer, "assets/background.png");
+    // SDL_Texture* title = loadTexture(renderer, "assets/title.png");
 
     srand(time(NULL));
     int elapsedTime = 0;
@@ -165,7 +186,8 @@ int main(int argc, char** argv) {
                 players[i].board[j][k] = 0;
     
 
-    // Game Loop Exit Variable
+    // Game Loop Variable
+    GameState gameState = BagSelection;
     SDL_Event event;
     bool quit = false;
     bool initPhase = true;
@@ -177,7 +199,6 @@ int main(int argc, char** argv) {
     char name[50] = "";
     int name_length = 0;
     bool menu = true;
-    // Create a button that is 80% at the bottom of the screen centered horizontally
     Button playButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
 
     // Initialize TTF
@@ -228,7 +249,7 @@ int main(int argc, char** argv) {
                                 int x = event.button.x;
                                 int y = event.button.y;
 
-                                if (x > playButton.x && x < playButton.x + playButton.w && y > playButton.y && y < playButton.y + playButton.h) {
+                                if (isOnButton(playButton, x, y)) {
                                     if (playerCount > 0) {
                                         menu = false;
                                         break;
@@ -268,7 +289,6 @@ int main(int argc, char** argv) {
 
     Button buttons[10];
         
-
     // Game Loop
     while (!quit) {
 
@@ -287,7 +307,7 @@ int main(int argc, char** argv) {
                                 int y = event.button.y;
 
                                 for (int i = 0; i < 5; i++) {
-                                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
+                                    if (isOnButton(buttons[i], x, y)) {
                                         if (firstTurn) {
                                             for (int j = 0; j < playerCount + 1; j++)
                                                 generatePiece(pieces+j, buttons[i].id);
@@ -338,8 +358,8 @@ int main(int argc, char** argv) {
                                 int y = event.button.y;
                                 
                                 for (int i = 0; i < playerCount + 1; i++) {
-                                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
-                                        if (pieces[i].pickable) {
+                                    if (isOnButton(buttons[i], x, y)) {
+                                        if (!pieces[i].taken) {
                                             players[turn].piece = pieces[i];
                                             pieces[i].taken = true;
                                             pieces[i].pickable = false;
@@ -388,28 +408,21 @@ int main(int argc, char** argv) {
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
                                     for (int j = 0; j < 8; j++) {
                                         if (x >= gridOriginX && x <= gridOriginX + squareWidth && y >= gridOriginY && y <= gridOriginY + squareWidth) {
-                                            // Check if piece is hanging off the edge of the board
-                                            int maxX, maxY;
-                                            pieceMax(players[turn].piece, &maxX, &maxY);
-                                            if (j + maxX > 7 || i + maxY > 5) {
-                                                printf("Invalid Hanging\n");
+                                            // Verify Placement
+                                            if (!validPlacement(players[turn].piece, players[turn].board, j, i)) {
+                                                printf("Invalid Placement\n");
                                                 break;
                                             }
-                                            // Check if piece is overlapping another piece
-                                            if (pieceOverlap(players[turn].piece, players[turn].board, j, i)) {
-                                                printf("Invalid Overlap\n");
-                                                break;
-                                            }
+
                                             // Place piece
                                             placePiece(players[turn].piece, players[turn].board, j, i);
 
+                                            // Show Cursor and change game state
                                             SDL_ShowCursor(SDL_ENABLE);
                                             initPhase = true;
                                             gameState = BagSelection;
 
-                                            // DEBUG
-                                            printf("Max rose : %d\n", maxAdjacentSymbols(players[turn].board, 1));
-
+                                            // Change turn
                                             turn = (turn + 1) % playerCount;
                                             if (turn == leader) {
                                                 // New leader is the previous leader's left neighbour
@@ -473,8 +486,8 @@ int main(int argc, char** argv) {
                 }
 
                 SDL_GetMouseState(&x, &y);
-                for (int i = 0; i < playerCount + 1; i++) {
-                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
+                for (int i = 0; i < 5; i++) {
+                    if (isOnButton(buttons[i], x, y)) {
                         hovering = true;
                         break;
                     }
@@ -496,8 +509,8 @@ int main(int argc, char** argv) {
                 
                 SDL_GetMouseState(&x, &y);
                 for (int i = 0; i < playerCount + 1; i++) {
-                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
-                        if (pieces[i].pickable) {
+                    if (isOnButton(buttons[i], x, y)) {
+                        if (!pieces[i].taken) {
                             hovering = true;
                             break;
                         }  

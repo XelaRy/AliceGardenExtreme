@@ -203,7 +203,7 @@ void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWid
             //squareRect.x = (i + 1) * spacing + squareWidth * i + squareWidth * pieces[i].squares[j].x;
             //squareRect.y = windowHeight * 0.8 + squareWidth * pieces[i].squares[j].y;
 
-            if (!pieces[i].pickable) {
+            if (pieces[i].taken) {
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             }
             else {
