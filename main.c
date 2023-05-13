@@ -213,7 +213,6 @@ int main(int argc, char** argv) {
             for (int k = 0; k < 8; k++)
                 players[i].board[j][k] = 0;
     
-
     // Game Loop Variable
     GameState gameState = BagSelection;
     SDL_Event event;
