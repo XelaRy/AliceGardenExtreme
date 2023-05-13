@@ -103,70 +103,101 @@ void renderMenu(SDL_Renderer* renderer, TTF_Font* font, int fontSize, int window
     }
 }
 
+void renderEndScreen(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font, int fontSize, int windowWidth, int windowHeight, int playerCount, Player players[4], SDL_Texture* spriteSheet, int variations[6][8]) {
+    // Initialize Menu Variables
+    SDL_Event event;
+    bool menu = true;
+    int squareWidth = (windowWidth / 16) - windowWidth / 160;
+    // Positions to the 4 corners of the board
+    int gridPositions[4][2] = { {0, 0}, {windowWidth-8*squareWidth, 0}, {0, windowHeight-6*squareWidth}, {windowWidth-8*squareWidth, windowHeight-6*squareWidth} };
+    SDL_SetWindowMinimumSize(window, 800, 800);
+
+    while (menu) {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    menu = false;
+                    break;
+                case SDL_WINDOWEVENT:
+                        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                            windowWidth = event.window.data1;
+                            windowHeight = event.window.data2;
+                            if (windowWidth < windowHeight)
+                                squareWidth = (windowWidth / 18) ;
+                            else
+                                squareWidth = (windowHeight / 14) ;
+                            gridPositions[1][0] = windowWidth-8*squareWidth;
+                            gridPositions[2][1] = windowHeight-6*squareWidth;
+                            gridPositions[3][0] = windowWidth-8*squareWidth;
+                            gridPositions[3][1] = windowHeight-6*squareWidth;
+                        }
+                        break;
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.sym == SDLK_ESCAPE) {
+                        menu = false;
+                        break;
+                    }
+            }
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // Render Every Player's Name and Score
+        for (int i = 0; playerCount > i; i++) {
+            
+        }
+
+        // If there is only one player, render their grid in the center of the screen
+        if (playerCount == 1) {
+            renderGrid(renderer, players[0].board, windowWidth / 8, windowWidth, windowHeight, spriteSheet, variations, -1, -1, -1, -1);
+            char name[40];
+            char score[10];
+
+            // Convert the score to a string
+            sprintf(score, "%d", players[0].score);
+
+            // Concatenate the name and score
+            strcpy(name, players[0].name);
+            strcat(name, " - ");
+            strcat(name, score);
+
+            // Render the name and score
+            renderTextBox(renderer, windowWidth, windowHeight, (windowWidth / 2) - (strlen(name) * 7), windowHeight * 0.9, name, font, fontSize);
+        }
+        // Else Render Every Player's Grid
+        else {
+            renderGrid(renderer, players[0].board, squareWidth, windowWidth, windowHeight, spriteSheet, variations, 0, 0, 100, 100);
+
+            for (int i = 1; playerCount > i; i++) {
+                renderGrid(renderer, players[i].board, squareWidth, windowWidth, windowHeight, spriteSheet, variations, gridPositions[i][0], gridPositions[i][1], 100, 100);
+            }
+            for (int i = 0; i < playerCount; i++) {
+                char name[40];
+                char score[10];
+
+                // Convert the score to a string
+                sprintf(score, "%d", players[i].score);
+
+                // Concatenate the name and score
+                strcpy(name, players[i].name);
+                strcat(name, " - ");
+                strcat(name, score);
+
+                // Render the name and score
+                renderTextBox(renderer, windowWidth, windowHeight, (i * windowWidth / playerCount), windowHeight / 2, name, font, fontSize);
+            }
+        }
+
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(10);
+    }
+}
 
 
-// void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[],SDL_Renderer* renderer){
-//     bool quit = true; 
-//     SDL_Event event;
-//     Button quitButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
 
-//     TTF_Init();
-//     int fontSize = 44;
-//     TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
-//     SDL_StartTextInput();
-//     // end screen
-//     while (quit) {
-//         SDL_SetRenderDrawColor(renderer, 156, 255, 246, 255);
-//         SDL_RenderClear(renderer);
-//         while (SDL_PollEvent(&event)) {
-//             switch (event.type) {
 
-//                 case SDL_QUIT:
-//                     quit = false;
-//                     break;
-
-//                 case SDL_MOUSEBUTTONDOWN:
-//                             if (event.button.button == SDL_BUTTON_LEFT) {
-//                                 // handle left mouse button click
-//                                 int x = event.button.x;
-//                                 int y = event.button.y;
-//                                     if(x>=quitButton.x && x<=quitButton.x+quitButton.w && y>=quitButton.y && y<=quitButton.y + quitButton.h){
-//                                         quit = false;
-//                                     }
-//                             }
-//                     break;
-
-//                 case SDL_WINDOWEVENT:
-//                         if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-//                             windowWidth = event.window.data1;
-//                             windowHeight = event.window.data2;
-//                             quitButton.x =  windowWidth / 2 - 28;
-//                             quitButton.y = windowHeight * 0.75;
-//                             quitButton.w = windowWidth * 0.9;
-//                             quitButton.h = windowHeight * 0.1;
-//                         }
-//                     break;  
-//             }
-//         }
-//     //Score text
-//     for (int i=0;i<playerCount;i++){
-//         int score =players[i].score;
-//         char charScore[4];
-//         sprintf(charScore, "%d", score);
-//         font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize-20);
-//         char text[100] ="The score of ";
-//         strcat(text,players[i].name);
-//         strcat(text," is ");
-//         strcat(text,charScore);
-//         renderTextBox(renderer, windowWidth, windowHeight, quitButton.x-200, quitButton.y-(400+(50*i)), text, font, fontSize-20);
-//     }
-//     // Quit Button
-//     font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
-//     renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+100, quitButton.y,"QUIT GAME        " , font, fontSize+1);
-//     SDL_RenderPresent(renderer);        
-//     SDL_Delay(10);
-//     }
-// }
 
 int main(int argc, char** argv) {
     srand(time(NULL));
@@ -232,11 +263,11 @@ int main(int argc, char** argv) {
     renderMenu(renderer, font, fontSize, windowWidth, windowHeight, &playerCount, players, &quit);
 
     Button buttons[10];
-    Button quitbutton;
-    quitbutton.x =  windowWidth / 2 - 58;
-    quitbutton.w = windowWidth * 0.8;
-    quitbutton.y = windowHeight * 0.75;
-    quitbutton.h = windowHeight * 0.1;  
+    // Button quitbutton;
+    // quitbutton.x =  windowWidth / 2 - 58;
+    // quitbutton.w = windowWidth * 0.8;
+    // quitbutton.y = windowHeight * 0.75;
+    // quitbutton.h = windowHeight * 0.1;
 
     // Game Loop
     while (!quit) {
@@ -286,7 +317,7 @@ int main(int argc, char** argv) {
                                 windowWidth = event.window.data1;
                                 windowHeight = event.window.data2;
                                 squareWidth = windowHeight * 0.8 / 6;
-                                SDL_SetWindowMinimumSize(window, 8 * squareWidth, 480);
+                                SDL_SetWindowMinimumSize(window, 8 * squareWidth, 800);
                                 initPhase = true;
                             }
                             break;
@@ -331,7 +362,7 @@ int main(int argc, char** argv) {
                                 windowWidth = event.window.data1;
                                 windowHeight = event.window.data2;
                                 squareWidth = windowHeight * 0.8 / 6;
-                                SDL_SetWindowMinimumSize(window, 8 * squareWidth, 480);
+                                SDL_SetWindowMinimumSize(window, 8 * squareWidth, 800);
                                 initPhase = true;
                             }
                             break;
@@ -403,7 +434,7 @@ int main(int argc, char** argv) {
                                 windowWidth = event.window.data1;
                                 windowHeight = event.window.data2;
                                 squareWidth = windowHeight * 0.8 / 6;
-                                SDL_SetWindowMinimumSize(window, 8 * squareWidth, 480);
+                                SDL_SetWindowMinimumSize(window, 8 * squareWidth, 800);
                             }
                             break;
                         default:
@@ -416,7 +447,7 @@ int main(int argc, char** argv) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        renderGrid(renderer, players[turn].board, squareWidth, windowWidth, windowHeight, spriteSheet, variations);
+        renderGrid(renderer, players[turn].board, squareWidth, windowWidth, windowHeight, spriteSheet, variations, -1, -1, -1, -1);
 
         int x, y;
         bool hovering = false;
@@ -491,8 +522,11 @@ int main(int argc, char** argv) {
         SDL_Delay(10);
     }
 
+    // End Game Screen
+    renderEndScreen(renderer, window, font, fontSize, windowWidth, windowHeight, playerCount, players, spriteSheet,variations);
 
     // Clean up and exit
+    TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
