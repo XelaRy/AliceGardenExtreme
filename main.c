@@ -14,15 +14,26 @@
 #include "piece_operations.h"
 #include "rendering.h"
 
-void scoreCount(Player* player){
-    player->score=0;
+void scoreCount(Player player1,int* player1score){
+
+    Player player;
+    for(int i=0;i<6;i++){
+        for(int j=0;j<8;j++){
+            player.board[i][j]=player1.board[i][j];
+        }
+    }
+
+
+
+
+    player.score=0;
     int i,j;
 //1=ROSE, 2=Tree, 3=Gardener(play card), 4=Mushroom, 5=Chess piece
 //Count for Chess pieces
 for(i=0;i<6;i++){
     for(j=3;j<5;j++){
-        if (player->board[i][j]==5){
-            player->score+=5;
+        if (player.board[i][j]==5){
+            player.score+=5;
         }    }
 }
 //Count for Mushrooms
@@ -30,12 +41,12 @@ int mushroomCount;
 for(j=0;j<8;j++){
     mushroomCount=0;
     for(i=0;i<6;i++){
-        if (player->board[i][j]==4){
+        if (player.board[i][j]==4){
             mushroomCount+=1;
         }    
     }
     if (mushroomCount>1){
-        player->score+=8;
+        player.score+=8;
     }
 }
 //Count for Trees
@@ -44,7 +55,7 @@ for(i=0;i<6;i++){
     firstTree=0;
     lastTree=0;
     for(j=0;j<8;j++){
-        if(player->board[i][j]==2){
+        if(player.board[i][j]==2){
             if(firstTree==0){
                 firstTree=j+1;
             }
@@ -54,20 +65,20 @@ for(i=0;i<6;i++){
         }
     }
     if(lastTree!=0){
-        player->score+=(lastTree-firstTree);
+        player.score+=(lastTree-firstTree);
     }
 }
 //Count for Roses
 int AdjRoses;
 for(i=0;i<6;i++){
     for(j=0;j<8;j++){
-        if(player->board[i][j]==1){
-            AdjRoses=countAdjacentSquares(player->board,1,i,j);
+        if(player.board[i][j]==1){
+            AdjRoses=countAdjacentSquares(player.board,1,i,j);
             if (AdjRoses>4){
                 AdjRoses=4;
             }
-            player->score+=((AdjRoses+1)*(AdjRoses+1));
-            player->board[i][j]=-1;
+            player.score+=((AdjRoses+1)*(AdjRoses+1));
+            player.board[i][j]=-1;
             AdjRoses=0;
         }
     }
@@ -76,15 +87,16 @@ for(i=0;i<6;i++){
 int Adjempty;
 for(i=0;i<6;i++){
     for(j=0;j<8;j++){
-        if(player->board[i][j]==0){
-            Adjempty=countAdjacentSquares(player->board,0,i,j);//disable near empty squares
-            player->score-=5;
-            player->board[i][j]=-1;
+        if(player.board[i][j]==0){
+            Adjempty=countAdjacentSquares(player.board,0,i,j);//disable near empty squares
+            player.score-=5;
+            player.board[i][j]=-1;
             Adjempty=0;
         printf("disengaged from %d %d \n",i,j);
         }
     }
 }
+player1score=player.score;
 }
 
 
@@ -458,42 +470,8 @@ int main(int argc, char** argv) {
                                     gridOriginY += squareWidth;
                                 }
                             }
-
-
-
-
-
-
-
-
-
-
-                            Player player1;
-                            for(int i=0;i<6;i++){
-                                for(int j=0;j<8;j++){
-                                    player1.board[i][j]=players[0].board[i][j];
-                                }
-                            }
-                            scoreCount(&player1);
-                            printf("Score1  : %d\n",player1.score);
-                            players[0].score=player1.score;
+                            scoreCount(players[0],&players[0].score);
                              printf("Score  : %d\n",players[0].score);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                             break;
                         case SDL_KEYDOWN:
