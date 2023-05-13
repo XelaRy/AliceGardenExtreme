@@ -95,7 +95,7 @@ for(i=0;i<6;i++){
         }
     }
 }
-&player1score=player.score;
+*player1score=player.score;
 }
 
 
