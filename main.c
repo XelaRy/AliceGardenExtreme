@@ -126,11 +126,10 @@ bool gameEnd(int grid[6][8]) {
 }
 
 void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[]){
-    bool endScreen = true;
     bool quit = false; 
     SDL_Event event;
     SDL_Renderer* renderer;
-    Button playButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
+    Button quitButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
     int fontSize = 24;
     TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
     // end screen
@@ -141,39 +140,35 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
             switch (event.type) {
                 case SDL_QUIT:
                     quit = false;
-                    endScreen = true;
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                             if (event.button.button == SDL_BUTTON_LEFT) {
                                 // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-
-                                if (x > playButton.x && x < playButton.x + playButton.w && y > playButton.y && y < playButton.y + playButton.h) {
-                                    if (playerCount > 0) {
-                                        endScreen = false;
-                                        quit=false;
-                                        break;
+                                    if(x>=quitButton.x && x<=quitButton.x+quitButton.w && y>=quitButton.y && y<=quitButton.y + quitButton.h){
+                                        printf("HAHAHHA\n");
+                                        endScreen(windowWidth,windowHeight,name_length,name,playerCount,players);
+                                        printf("TEST3\n\n");
+                                        quit = true;
                                     }
-                                }
                             }
                             break;
                 case SDL_WINDOWEVENT:
                         if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                             windowWidth = event.window.data1;
                             windowHeight = event.window.data2;
-                            playButton.x =  windowWidth / 2 - 28;
-                            playButton.y = windowHeight * 0.75;
-                            playButton.w = windowWidth * 0.9;
-                            playButton.h = windowHeight * 0.1;
+                            quitButton.x =  windowWidth / 2 - 28;
+                            quitButton.y = windowHeight * 0.75;
+                            quitButton.w = windowWidth * 0.9;
+                            quitButton.h = windowHeight * 0.1;
                         }
                         break;
             }
         }
-
         // Quit Button
-        printf("TEST1");
-        renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "QUIT", font, fontSize);
+        printf("TEST2\n");
+        renderTextBox(renderer, windowWidth, windowHeight, quitButton.x, quitButton.y, "QUIT", font, fontSize);
         SDL_RenderPresent(renderer);        
         SDL_Delay(10);
     }
@@ -402,9 +397,15 @@ int main(int argc, char** argv) {
                                 int y = event.button.y;
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
-                                        printf("HAHAHHA");
+                                        printf("HAHAHHA\n");
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players);
+                                        printf("TEST1\n");
                                         quit = true;
+
+
+
+
+
 
 
 
