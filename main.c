@@ -137,7 +137,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     // end screen
     while (quit) {
         SDL_RenderClear(renderer);
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
 
@@ -170,11 +170,9 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
             }
         }
     // Quit Button
-    printf("TEST4\n");
     renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT", font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
-    printf("TEST5\n");
     }
 }
 
