@@ -122,13 +122,9 @@ int main(int argc, char** argv) {
     SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 
     // Load Sprite Sheet
-    // Create a surface from the sprite sheet
-    SDL_Surface* spriteSheetSurface = IMG_Load("assets/spritesheet.png");
-    // Create a texture from the surface
-    SDL_Texture* spriteSheet = SDL_CreateTextureFromSurface(renderer, spriteSheetSurface);
-    SDL_FreeSurface(spriteSheetSurface);
-    // SDL_Texture* background = loadTexture(renderer, "assets/background.png");
-    // SDL_Texture* title = loadTexture(renderer, "assets/title.png");
+    SDL_Surface* spriteSheetSurface = IMG_Load("assets/spritesheet.png"); // Create a surface from the sprite sheet
+    SDL_Texture* spriteSheet = SDL_CreateTextureFromSurface(renderer, spriteSheetSurface); // Create a texture from the surface
+    SDL_FreeSurface(spriteSheetSurface); // Free the surface
 
     // Game / Rendering Variables
     int gridOriginX, gridOriginY;
