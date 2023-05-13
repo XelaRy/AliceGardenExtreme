@@ -519,7 +519,7 @@ int main(int argc, char** argv) {
     // ICI
 
     // End Game Screen
-    renderEndScreen(renderer, window, font, fontSize, windowWidth, windowHeight, playerCount, players, spriteSheet,variations);
+    renderEndScreen(renderer, window, font, fontSize, windowWidth, windowHeight, playerCount, players, spriteSheet, variations);
 
     // Clean up and exit
     TTF_CloseFont(font);
