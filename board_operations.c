@@ -16,7 +16,7 @@ int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
         return 0;
     }
     // If the coordinates are on the edge of the grid, return 1
-    if (x >= 8 || y >= 6) {
+    if (x >= 8 || y >= 6 || x<0 || y<0) {
         return found;
     }
     // Search for adjacent squares
@@ -29,16 +29,16 @@ int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
         down = 1;
         grid[y + 1][x] = -1;
     }
-    if (grid[y][x + 1] == sym) {
+    if (grid[y-1][x] == sym) {
         up = 1;
-        grid[y][x + 1] = -1;
+        grid[y-1][x] = -1;
     }
-    if (grid[y + 1][x] == sym) {
+    if (grid[y][x-1] == sym) {
         left = 1;
-        grid[y + 1][x] = -1;
+        grid[y][x-1] = -1;
     }
     // Return the number of adjacent squares and recursively call the function for each adjacent square
-    return found + (right ? countAdjacentSquares(grid, sym, x + 1, y) : 0) + (down ? countAdjacentSquares(grid, sym, x, y + 1) : 0) + (up ? countAdjacentSquares(grid, sym, x, y + 1) : 0 )+ (left ? countAdjacentSquares(grid, sym, x, y + 1) : 0);
+    return found + (right ? countAdjacentSquares(grid, sym, x + 1, y) : 0) + (down ? countAdjacentSquares(grid, sym, x, y + 1) : 0) + (up ? countAdjacentSquares(grid, sym, x, y - 1) : 0 )+ (left ? countAdjacentSquares(grid, sym, x-1, y) : 0);
 }
 
 // Returns the maximum number of adjacent squares of the same symbol
