@@ -133,7 +133,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     int fontSize = 24;
     TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
     // end screen
-    while (!quit) {
+    while (quit) {
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
         while (SDL_PollEvent(&event)) {
@@ -147,9 +147,9 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                                 int x = event.button.x;
                                 int y = event.button.y;
                                     if(x>=quitButton.x && x<=quitButton.x+quitButton.w && y>=quitButton.y && y<=quitButton.y + quitButton.h){
-                                        printf("HAHAHHA\n");
+                                        printf("TEST3\n");
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players);
-                                        printf("TEST3\n\n");
+                                        printf("TEST4\n\n");
                                         quit = true;
                                     }
                             }
@@ -401,14 +401,6 @@ int main(int argc, char** argv) {
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players);
                                         printf("TEST1\n");
                                         quit = true;
-
-
-
-
-
-
-
-
 
 
 
