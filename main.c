@@ -67,6 +67,8 @@ for(i=0;i<6;i++){
                 AdjRoses=5;
             }
             player->score+=(AdjRoses*AdjRoses);
+            player->board[i][j]=0;
+            AdjRoses=0;
         }
     }
 }
