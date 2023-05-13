@@ -18,7 +18,7 @@ To install and play Alice Garden Extreme, follow the steps below:
 
 Download the latest release from the [releases page](https://github.com/XelaRy/AliceGardenExtreme/releases).
 
-### Or 
+## Or 
 
 ### Build from Source :
 
