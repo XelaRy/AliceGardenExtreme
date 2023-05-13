@@ -28,13 +28,9 @@ Build the game using the following command:
 
 Bash:
 
-    cd AliceGardenExtreme
-
     gcc *.c -o Alice.exe -lSDL2 -lSDL2_image -lSDL2_ttf
 
 Windows:
-
-    cd AliceGardenExtreme
 
     make
 
