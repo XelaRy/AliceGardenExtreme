@@ -434,8 +434,9 @@ int main(int argc, char** argv) {
                         default:
                             break;
                     }
-            printf("%d\n",players[0].score);
             }
+            scoreCount(players[0]);
+            printf("%d\n",players[0].score);
         }
 
         // Render screen
