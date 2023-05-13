@@ -29,17 +29,39 @@ int mushroomCount;
 for(j=0;j<8;j++){
     mushroomCount=0;
     for(i=0;i<6;i++){
-        if (player->board[i][j]==4){
+        if (player->board[i][j]==5){
             mushroomCount+=1;
         }    
     printf("mush : %d\n", mushroomCount);
     }
-
     if (mushroomCount>1){
         player->score+=8;
     }
 }
+//Count for Trees
+int firstTree,lastTree;
+for(i=0;i<6;i++){
+    firstTree=0;
+    lastTree=0;
+    for(j=0;j<8;j++){
+        if(player->board[i][j]==2){
+            if(firstTree==0){
+                firstTree=j+1;
+            }
+            else{
+                lastTree=j+1;
+            }
+        }
+    }
+    if(lastTree!=0){
+        player->score+=(lastTree-firstTree);
+    }
 }
+
+
+
+}
+
 
 
 void renderMenu(SDL_Renderer* renderer, TTF_Font* font, int fontSize, int windowWidth, int windowHeight, int* playerCount, Player players[4], bool* quit) {
