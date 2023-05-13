@@ -5,6 +5,7 @@
 
 #include "game_data_structures.h"
 #include "piece_operations.h"
+#include "buttons.h"
 #include "rendering.h"
 
 const int colors[6][3] = {

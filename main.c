@@ -9,6 +9,7 @@
 #include <time.h>
 
 #include "game_data_structures.h"
+#include "buttons.h"
 #include "piece_operations.h"
 #include "rendering.h"
 
@@ -16,30 +17,6 @@
 void renderMenu(SDL_Renderer* renderer) {
 }
 
-
-void initButtons(Button* buttons, int squareWidth, int squareHeight, int windowWidth, int windowHeight, GameState gameState, int playerCount) {
-    int spacing, buttonY;
-    switch(gameState) {
-        case BagSelection:
-            spacing = (windowWidth - squareWidth * 5) / 6;
-            buttonY = windowHeight - squareWidth * 1.5;
-            break;
-        case PieceSelection:
-            spacing = (windowWidth - squareWidth * (playerCount + 1)) / (playerCount + 2);
-            buttonY = windowHeight - squareHeight * 2;
-            break;
-        case PiecePlacement:
-            break;
-    }
-
-    for (int i = 0; i < 5; i++) {
-        buttons[i].x = (i + 1) * spacing + squareWidth * i;
-        buttons[i].y = buttonY;
-        buttons[i].w = squareWidth;
-        buttons[i].h = squareHeight;
-        buttons[i].id = i;
-    }
-}
 
 void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, int x, int y, char* text, TTF_Font* font, int fontSize) {
     // Display text box
@@ -64,22 +41,6 @@ void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, in
     SDL_DestroyTexture(textTexture);
 }
 
-// bool isPlaceable(int grid[6][8], Piece piece) {
-//     // First count the empty grid squares
-//     int emptySquares = 0;
-//     for (int i = 0; i < 6; i++)
-//         for (int j = 0; j < 8; j++)
-//             if (grid[i][j] == 0)
-//                 emptySquares++;
-    
-//     // Then checks if there are at least 4 empty squares to place the piece
-//     if (emptySquares < 4)
-//         return false;
-
-//     // Then check every position and rotation combinaison of the piece to see if it can be placed
-    
-
-// }
 
 int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
     int found = 1;
@@ -128,12 +89,6 @@ bool gameEnd(int grid[6][8]) {
     // If there is less than 4 empty spaces adjacent, the player cannot place any normal piece
     return maxAdjacentSymbols(grid, 0) < 4;
 }
-
-bool isOnButton(Button button, int x, int y) {
-    return x >= button.x && x <= button.x + button.w && y >= button.y && y <= button.y + button.h;
-}
-
-
 
 
 int main(int argc, char** argv) {
