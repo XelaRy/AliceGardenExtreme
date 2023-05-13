@@ -398,11 +398,11 @@ int main(int argc, char** argv) {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                for (int i = 0; i < playerCount + 1; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
                                        quit = true;
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
                                     }
+                                for (int i = 0; i < playerCount + 1; i++) {
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                                         if (pieces[i].pickable) {
                                             players[turn].piece = pieces[i];
