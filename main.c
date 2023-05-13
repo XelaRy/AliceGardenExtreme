@@ -136,7 +136,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     SDL_StartTextInput();
     // end screen
     while (quit) {
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 156, 255, 246, 255);
         SDL_RenderClear(renderer);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -151,7 +151,6 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                                 int x = event.button.x;
                                 int y = event.button.y;
                                     if(x>=quitButton.x && x<=quitButton.x+quitButton.w && y>=quitButton.y && y<=quitButton.y + quitButton.h){
-                                        printf("TEST3\n");
                                         quit = false;
                                     }
                             }
@@ -171,6 +170,10 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
         }
     // Quit Button
     renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT    ", font, fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x, quitButton.y-100, "P4    ", font, fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x, quitButton.y-200, "P3    ", font, fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x, quitButton.y-300, "P2    ", font, fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x, quitButton.y-400, "P1    ", font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     }
