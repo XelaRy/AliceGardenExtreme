@@ -146,7 +146,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                                 // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                    if(x>=quitButton.x && x<=quitButton.x+quitButton.w && y>=quitButton.y && y<=quitButton.y + quitButton.h){
+                                    if(x>=quitButton.x && x<=quitButton.x+quitButton.w+200 && y>=quitButton.y && y<=quitButton.y + quitButton.h){
                                         printf("TEST3\n");
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players);
                                         printf("TEST4\n\n");
@@ -169,7 +169,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     }
     // Quit Button
     printf("TEST2\n");
-    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x, quitButton.y, "QUIT", font, fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT", font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     printf("TEST5\n");
