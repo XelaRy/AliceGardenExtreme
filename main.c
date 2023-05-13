@@ -25,9 +25,10 @@ for(i=0;i<6;i++){
         }    }
 }
 //Count for Mushrooms
-int mushroomCount=0;
+int mushroomCount;
 for(j=0;j<8;j++){
     for(i=0;i<6;i++){
+        mushroomCount=0;
         if (player->board[i][j]==1){
             mushroomCount+=1;
         }    
@@ -35,7 +36,6 @@ for(j=0;j<8;j++){
     if (mushroomCount>1){
         player->score+=8;
     }
-    mushroomCount=0;
 }
 }
 
