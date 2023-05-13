@@ -45,7 +45,7 @@ for(i=0;i<6;i++){
     for(j=0;j<8;j++){
         if(player->board[i][j]==2){
             if(firstTree==0){
-                firstTree=j+1;
+                firstTree=j;
             }
             else{
                 lastTree=j+1;
