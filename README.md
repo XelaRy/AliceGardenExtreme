@@ -54,4 +54,4 @@ Arnaud .M [@arnaud.MRLN](https://github.com/Arnaudmrln)
 
 ## License
 
-Alice Garden Game Console is released under the MIT License. See LICENSE for more information.
+Alice Garden Extreme is released under the MIT License. See LICENSE for more information.
