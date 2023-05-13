@@ -32,7 +32,6 @@ for(j=0;j<8;j++){
         if (player->board[i][j]==5){
             mushroomCount+=1;
         }    
-    printf("mush : %d\n", mushroomCount);
     }
     if (mushroomCount>1){
         player->score+=8;
