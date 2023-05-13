@@ -457,8 +457,15 @@ int main(int argc, char** argv) {
                                     gridOriginY += squareWidth;
                                 }
                             }
-                            scoreCount(&players[0]);
-                             printf("rose  : %d\n",players[0].score);
+                            Player player1;
+                            for(int i=0;i<6;i++){
+                                for(int j=0;j<8;j++){
+                                    player1.board[i][j]=players[0].board[i][j];
+                                }
+                            }
+                            scoreCount(&player1);
+                            players[0].score=player1.score;
+                             printf("Score  : %d\n",players[0].score);
                             break;
                         case SDL_KEYDOWN:
                             // Handle Keyboard Inputs
