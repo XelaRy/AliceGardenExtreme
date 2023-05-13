@@ -196,12 +196,9 @@ int main(int argc, char** argv) {
     int squareWidth = windowHeight * 0.8 / 6;
     int elapsedTime = 0;
     int bagWidth = 50;
+
     // Initialize a Variations array to store the variations of each piece sprite on the board
     int variations[6][8];
-    // int piecesVariations[4][5];
-    // for (int i = 0; i < 6; i++)
-    //     for (int j = 0; j < 8; j++)
-    //         variations[i][j] = rand() % 4;
 
     // Initialize Piece Selection Variable
     Piece pieces[5];
