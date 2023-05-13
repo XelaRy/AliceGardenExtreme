@@ -434,6 +434,7 @@ int main(int argc, char** argv) {
                         default:
                             break;
                     }
+            printf("%d\n",players[0].score);
             }
         }
 
