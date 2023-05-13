@@ -132,7 +132,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
 
     TTF_Init();
     int fontSize = 44;
-    TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
+    TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize-20);
     SDL_StartTextInput();
     // end screen
     while (quit) {
@@ -170,7 +170,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
         }
     //Score text
     for (int i=0;i<playerCount;i++){
-        renderTextBox(renderer, windowWidth, windowHeight, quitButton.x-200, quitButton.y-(400+(50*i)), "Score player i : i               ", font, fontSize-30);
+        renderTextBox(renderer, windowWidth, windowHeight, quitButton.x-200, quitButton.y-(400+(50*i)), "Score player i : i               ", font, fontSize);
     }
     // Quit Button
     renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT    ", font, fontSize);
