@@ -12,9 +12,9 @@ Alice Garden Game is a puzzle game where the players must decorate a garden boar
 
 ## Installation
 
-To install and play Alice Garden Game Console, follow the steps below:
+To install and play Alice Garden Extreme, follow the steps below:
 
-    Clone the repository using the following command:
+Clone the repository using the following command:
 
 Bash / Windows etc:
 
