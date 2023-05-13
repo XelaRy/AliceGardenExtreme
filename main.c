@@ -170,7 +170,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
         }
     //Score text
     for (int i=0;i<playerCount;i++){
-        renderTextBox(renderer, windowWidth, windowHeight+50, quitButton.x-200, quitButton.y-(400+(50*i)), "Score player i : i               ", font, fontSize-15);
+        renderTextBox(renderer, windowWidth, windowHeight, quitButton.x-200, quitButton.y-(400+(50*i)), "Score player i : i               ", font, fontSize-30);
     }
     // Quit Button
     renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT    ", font, fontSize);
