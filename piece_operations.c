@@ -108,7 +108,21 @@ bool pieceOverlap(Piece piece, int grid[6][8], int x, int y) {
 	return false;
 }
 
-void placePiece(Piece piece, int grid[6][8], int x, int y) {
-	for (int i = 0; i < 4; i++)
-		grid[piece.squares[i].y + y][piece.squares[i].x + x] = piece.squares[i].symbol;
+bool isOnBoard(Piece piece, int x, int y) {
+    int maxX, maxY;
+    pieceMax(piece, &maxX, &maxY);
+    return x >= 0 && x <= 7 - maxX && y >= 0 && y <= 5 - maxY;
+}
+
+bool validPlacement(Piece piece, int grid[6][8], int x, int y) {
+    return isOnBoard(piece, x, y) && !pieceOverlap(piece, grid, x, y);
+}
+
+bool placePiece(Piece piece, int grid[6][8], int x, int y) {
+	if (validPlacement(piece, grid, x, y)) {
+		for (int i = 0; i < 4; i++)
+			grid[piece.squares[i].y + y][piece.squares[i].x + x] = piece.squares[i].symbol;
+		return true;
+	}
+	return false;
 }

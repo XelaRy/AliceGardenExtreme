@@ -172,10 +172,8 @@ int main(int argc, char** argv) {
     int squareWidth = 100;
     int gridOriginX, gridOriginY;
     Piece pieces[5];
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++)
         pieces[i].taken = false;
-        pieces[i].pickable = true;
-    }
 
     // Initialize Player Variables
     int playerCount = 0;
@@ -362,7 +360,6 @@ int main(int argc, char** argv) {
                                         if (!pieces[i].taken) {
                                             players[turn].piece = pieces[i];
                                             pieces[i].taken = true;
-                                            pieces[i].pickable = false;
                                             SDL_ShowCursor(SDL_DISABLE);
                                             gameState = PiecePlacement;
                                         }
@@ -428,9 +425,6 @@ int main(int argc, char** argv) {
                                                 // New leader is the previous leader's left neighbour
                                                 leader = (leader + playerCount - 1) % playerCount;
                                                 turn = leader;
-                                                for (int i = 0; i < playerCount + 1; i++) {
-                                                    pieces[i].pickable = true;
-                                                }
                                                 quit = gameEnd(players[turn].board);
                                             }
                                         }

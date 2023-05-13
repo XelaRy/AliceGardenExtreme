@@ -18,7 +18,6 @@ typedef struct {
 typedef struct {
 	Square squares[4];
     bool taken;
-    bool pickable;
 } Piece;
 
 
