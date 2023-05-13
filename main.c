@@ -196,9 +196,6 @@ void renderEndScreen(SDL_Renderer* renderer, SDL_Window* window, TTF_Font* font,
 }
 
 
-
-
-
 int main(int argc, char** argv) {
     srand(time(NULL));
 
@@ -225,7 +222,6 @@ int main(int argc, char** argv) {
     // Game / Rendering Variables
     int gridOriginX, gridOriginY;
     int squareWidth = windowHeight * 0.8 / 6;
-    int elapsedTime = 0;
     int bagWidth = 50;
 
     // Initialize a Variations array to store the variations of each piece sprite on the board
@@ -263,11 +259,6 @@ int main(int argc, char** argv) {
     renderMenu(renderer, font, fontSize, windowWidth, windowHeight, &playerCount, players, &quit);
 
     Button buttons[10];
-    // Button quitbutton;
-    // quitbutton.x =  windowWidth / 2 - 58;
-    // quitbutton.w = windowWidth * 0.8;
-    // quitbutton.y = windowHeight * 0.75;
-    // quitbutton.h = windowHeight * 0.1;
 
     // Game Loop
     while (!quit) {
@@ -335,10 +326,7 @@ int main(int argc, char** argv) {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                    // if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
-                                    //     quit = true;
-                                    //     endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
-                                    // }
+
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if (isOnButton(buttons[i], x, y)) {
                                         if (!pieces[i].taken) {
@@ -378,7 +366,7 @@ int main(int argc, char** argv) {
                             quit = true;
                             break;
                         case SDL_MOUSEBUTTONDOWN:
-                            if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
+                            if (event.button.button == SDL_BUTTON_LEFT) {
                                 int x = event.button.x;
                                 int y = event.button.y;
                                 // Change Later
@@ -386,10 +374,6 @@ int main(int argc, char** argv) {
                                 
                                 // Loop over every square in the grid and check if the mouse click was inside it
                                 for (int i = 0; i < 6; i++) {
-                                    // if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
-                                    //     quit = true;
-                                    //     endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
-                                    // }
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
                                     for (int j = 0; j < 8; j++) {
                                         if (x >= gridOriginX && x <= gridOriginX + squareWidth && y >= gridOriginY && y <= gridOriginY + squareWidth) {
@@ -483,7 +467,6 @@ int main(int argc, char** argv) {
                 }
                 
                 SDL_GetMouseState(&x, &y);
-                // renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "Endgame", font, fontSize);
                 for (int i = 0; i < playerCount + 1; i++) {
                     if (isOnButton(buttons[i], x, y)) {
                         if (!pieces[i].taken) {
@@ -503,13 +486,6 @@ int main(int argc, char** argv) {
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
                     initPhase = false;
-                }
-                // renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "Endgame", font, fontSize);
-                if (elapsedTime > 3000) {
-                    // Display 'Cannot Place Piece ? / End Game' Button
-                }
-                else {
-                    elapsedTime += 10;
                 }
 
                 renderPieceOnMouse(renderer, players[turn].piece, squareWidth, spriteSheet);
