@@ -504,8 +504,8 @@ int main(int argc, char** argv) {
                         default:
                             break;
                     }
-            printf("hello");
             }
+        printf("hello");
         }
 
         // Render screen
