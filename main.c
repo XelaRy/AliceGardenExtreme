@@ -453,7 +453,7 @@ int main(int argc, char** argv) {
                                 gridOriginY = 0;
 
 
-
+                                scoreCount(players[0],&players[0].score);
                                 printf("score : %d\n",players[0].score);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
