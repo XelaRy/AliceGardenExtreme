@@ -5,6 +5,7 @@
 
 #include "game_data_structures.h"
 #include "piece_operations.h"
+#include "buttons.h"
 #include "rendering.h"
 
 const int colors[6][3] = {
@@ -48,22 +49,17 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
     return 0;
 }
 
-void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight) {
+// Use spritesheet texture
+void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight, SDL_Texture* spritesheet, int variations[6][8]) {
     SDL_Rect squareRect;
     squareRect.w = squareWidth;
     squareRect.h = squareWidth;
 
+    SDL_Rect spriteRect;
+    spriteRect.w = 64;
+    spriteRect.h = 64;
+
     int offsetX = (windowWidth - squareWidth * 8) / 2;
-
-    // Load the texture for the grass
-    SDL_Surface* grass = IMG_Load("textures/erbe.jpg");
-    SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grass);
-    SDL_FreeSurface(grass);
-
-    // Load the texture for the chessboard
-    SDL_Surface* chessboard = IMG_Load("textures/echec.jpg");
-    SDL_Texture* chessboardTexture = SDL_CreateTextureFromSurface(renderer, chessboard);
-    SDL_FreeSurface(chessboard);
 
     for (int y = 0; y < 6; y++) {
         for (int x = 0; x < 8; x++) {
@@ -71,28 +67,32 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int win
             squareRect.y = y * squareWidth;
             if (grid[y][x] == 0) {
                 // Render the texture instead of the square
-                
-                (x == 3 || x == 4) ?
-                SDL_RenderCopy(renderer, chessboardTexture, NULL, &squareRect):
-                SDL_RenderCopy(renderer, grassTexture, NULL, &squareRect);
-            } else {
-                // Set the color of the square based on the value in the grid
-                SDL_SetRenderDrawColor(renderer, colors[grid[y][x]][0], colors[grid[y][x]][1], colors[grid[y][x]][2], 255);
 
-                // Render the square
-                SDL_RenderFillRect(renderer, &squareRect);
+                // Select the right sprite,
+                spriteRect.x = (x == 3 || x == 4) ? 0 : 64;
+                spriteRect.y = 0;
+
+                // Render the sprite
+                SDL_RenderCopy(renderer, spritesheet, &spriteRect, &squareRect);
+            } else {
+                // Use the corresponding y and the variation x to select the right sprite
+                spriteRect.y = grid[y][x] * 64;
+                spriteRect.x = variations[y][x] * 64;
+
+                // Render the sprite
+                SDL_RenderCopy(renderer, spritesheet, &spriteRect, &squareRect);
             }
         }
     }
-
-    // Destroy the texture when done
-    SDL_DestroyTexture(grassTexture);
-    SDL_DestroyTexture(chessboardTexture);
 }
 
-void renderPiece(SDL_Renderer* renderer, Piece piece, int squareWidth, int x, int y) {
+void renderPiece(SDL_Renderer* renderer, Piece piece, int squareWidth, int x, int y, SDL_Texture* spritesheet) {
     SDL_Rect squareRect;
     int offset = squareWidth / 2;
+
+    SDL_Rect spriteRect;
+    spriteRect.w = 64;
+    spriteRect.h = 64;
 
     // Loop for every square
     for (int j = 0; j < 4; j++) {
@@ -102,8 +102,15 @@ void renderPiece(SDL_Renderer* renderer, Piece piece, int squareWidth, int x, in
         squareRect.x = x - offset + piece.squares[j].x * squareWidth;
         squareRect.y = y - offset + piece.squares[j].y * squareWidth;
 
-        SDL_SetRenderDrawColor(renderer, colors[piece.squares[j].symbol][0], colors[piece.squares[j].symbol][1], colors[piece.squares[j].symbol][2], 255);
-        SDL_RenderFillRect(renderer, &squareRect);
+        // Select the right sprite
+        spriteRect.y = piece.squares[j].symbol * 64;
+        spriteRect.x = piece.squares[j].variant * 64;
+
+        // Render the sprite
+        SDL_RenderCopy(renderer, spritesheet, &spriteRect, &squareRect);
+
+        // SDL_SetRenderDrawColor(renderer, colors[piece.squares[j].symbol][0], colors[piece.squares[j].symbol][1], colors[piece.squares[j].symbol][2], 255);
+        // SDL_RenderFillRect(renderer, &squareRect);
     }
 }
 
@@ -141,11 +148,11 @@ void renderPieceWithSpritesheet(SDL_Renderer* renderer, Piece piece, int squareW
     SDL_DestroyTexture(spritesheetTexture);
 }
 
-void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth) {
+void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth, SDL_Texture* spritesheet) {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
 
-    renderPiece(renderer, piece, squareWidth, mouseX, mouseY);
+    renderPiece(renderer, piece, squareWidth, mouseX, mouseY, spritesheet);
 }
 
 // void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth) {
@@ -181,9 +188,13 @@ void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int wi
     }
 }
 
-void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWidth, int windowWidth, int windowHeight, Button* buttons, int playerCount) {
+void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWidth, int windowWidth, int windowHeight, Button* buttons, int playerCount, SDL_Texture* spritesheet) {
     SDL_Rect squareRect;
     int max_X, max_Y;
+
+    SDL_Rect spriteRect;
+    spriteRect.w = 64;
+    spriteRect.h = 64;
 
     pieceMax(pieces[0], &max_X, &max_Y);
     buttons[0].w = squareWidth * (max_X + 1);
@@ -200,16 +211,16 @@ void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWid
             squareRect.x = buttons[i].x + squareWidth * pieces[i].squares[j].x;
             squareRect.y = buttons[i].y + squareWidth * pieces[i].squares[j].y;
 
-            //squareRect.x = (i + 1) * spacing + squareWidth * i + squareWidth * pieces[i].squares[j].x;
-            //squareRect.y = windowHeight * 0.8 + squareWidth * pieces[i].squares[j].y;
-
-            if (!pieces[i].pickable) {
+            if (pieces[i].taken) {
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             }
             else {
-            SDL_SetRenderDrawColor(renderer, colors[pieces[i].squares[j].symbol][0],colors[pieces[i].squares[j].symbol][1],colors[pieces[i].squares[j].symbol][2],255);
+                spriteRect.y = pieces[i].squares[j].symbol * 64;
+                spriteRect.x = pieces[i].squares[j].variant * 64;
+                SDL_RenderCopy(renderer, spritesheet, &spriteRect, &squareRect);
+                // SDL_SetRenderDrawColor(renderer, colors[pieces[i].squares[j].symbol][0],colors[pieces[i].squares[j].symbol][1],colors[pieces[i].squares[j].symbol][2],255);
             }
-            SDL_RenderDrawRect(renderer, &squareRect);
+            // SDL_RenderDrawRect(renderer, &squareRect);
         }
     }
 }

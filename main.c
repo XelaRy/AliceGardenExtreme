@@ -9,35 +9,12 @@
 #include <time.h>
 
 #include "game_data_structures.h"
+#include "buttons.h"
 #include "piece_operations.h"
 #include "rendering.h"
 
 
 void renderMenu(SDL_Renderer* renderer) {
-}
-
-void initButtons(Button* buttons, int squareWidth, int squareHeight, int windowWidth, int windowHeight, GameState gameState, int playerCount) {
-    int spacing, buttonY;
-    switch(gameState) {
-        case BagSelection:
-            spacing = (windowWidth - squareWidth * 5) / 6;
-            buttonY = windowHeight - squareWidth * 1.5;
-            break;
-        case PieceSelection:
-            spacing = (windowWidth - squareWidth * (playerCount + 1)) / (playerCount + 2);
-            buttonY = windowHeight - squareHeight * 2;
-            break;
-        case PiecePlacement:
-            break;
-    }
-
-    for (int i = 0; i < 5; i++) {
-        buttons[i].x = (i + 1) * spacing + squareWidth * i;
-        buttons[i].y = buttonY;
-        buttons[i].w = squareWidth;
-        buttons[i].h = squareHeight;
-        buttons[i].id = i;
-    }
 }
 
 void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, int x, int y, char* text, TTF_Font* font, int fontSize) {
@@ -63,31 +40,23 @@ void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, in
     SDL_DestroyTexture(textTexture);
 }
 
-// bool isPlaceable(int grid[6][8], Piece piece) {
-//     // First count the empty grid squares
-//     int emptySquares = 0;
-//     for (int i = 0; i < 6; i++)
-//         for (int j = 0; j < 8; j++)
-//             if (grid[i][j] == 0)
-//                 emptySquares++;
-    
-//     // Then checks if there are at least 4 empty squares to place the piece
-//     if (emptySquares < 4)
-//         return false;
-
-//     // Then check every position and rotation combinaison of the piece to see if it can be placed
-    
-
-// }
-
+// Recursive function to count the number of adjacent squares of the same symbol
+// Returns the number of adjacent squares
 int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
     int found = 1;
     int right = 0;
     int down = 0;
 
+    // If the square is not the same symbol or is already counted, return 0
+    if (grid[y][x] != sym && grid[y][x] != -1) {
+        return 0;
+    }
+    // If the coordinates are on the edge of the grid, return 1
     if (x >= 8 || y >= 6) {
         return found;
     }
+    // Search for adjacent squares
+    // If the square is the same symbol, set it to -1 to avoid counting it again
     if (grid[y][x + 1] == sym) {
         right = 1;
         grid[y][x + 1] = -1;
@@ -97,21 +66,27 @@ int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
         grid[y + 1][x] = -1;
     }
 
+    // Return the number of adjacent squares and recursively call the function for each adjacent square
     return found + (right ? countAdjacentSquares(grid, sym, x + 1, y) : 0) + (down ? countAdjacentSquares(grid, sym, x, y + 1) : 0);
 }
 
+// Returns the maximum number of adjacent squares of the same symbol
 int maxAdjacentSymbols(int grid[6][8], int symbol) {
     int gridCopy[6][8];
     int max = 0;
     int tmp;
 
-    for (int i = 0; i < 5; i++)
-        for (int j = 0; j < 7; j++)
+    // Copy the grid to avoid modifying the original
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 8; j++)
             gridCopy[i][j] = grid[i][j];
 
     for (int i = 0; i < 6; i++)
         for (int j = 0; j < 8; j++) {
-            tmp = countAdjacentSquares(gridCopy, symbol, i, j);
+            // If the square is already counted, skip it
+            if (gridCopy[i][j] != -1)
+                tmp = countAdjacentSquares(gridCopy, symbol, i, j);
+            // If the number of adjacent squares is greater than the current max, set it as the new max
             if (tmp > max)
                 max = tmp;
         }
@@ -119,83 +94,16 @@ int maxAdjacentSymbols(int grid[6][8], int symbol) {
     return max;
 }
 
-
+// Returns true if the game has ended
+// The game ends when there are less than 5 empty spaces adjacent
 bool gameEnd(int grid[6][8]) {
     // If there is less than 4 empty spaces adjacent, the player cannot place any normal piece
-    return maxAdjacentSymbols(grid, 0) < 4;
+    return maxAdjacentSymbols(grid, 0) < 5;
 }
-
-void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[],SDL_Renderer* renderer){
-    bool quit = true; 
-    SDL_Event event;
-    Button quitButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
-
-    TTF_Init();
-    int fontSize = 44;
-    TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
-    SDL_StartTextInput();
-    // end screen
-    while (quit) {
-        SDL_SetRenderDrawColor(renderer, 156, 255, 246, 255);
-        SDL_RenderClear(renderer);
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-
-                case SDL_QUIT:
-                    quit = false;
-                    break;
-
-                case SDL_MOUSEBUTTONDOWN:
-                            if (event.button.button == SDL_BUTTON_LEFT) {
-                                // handle left mouse button click
-                                int x = event.button.x;
-                                int y = event.button.y;
-                                    if(x>=quitButton.x && x<=quitButton.x+quitButton.w && y>=quitButton.y && y<=quitButton.y + quitButton.h){
-                                        quit = false;
-                                    }
-                            }
-                    break;
-
-                case SDL_WINDOWEVENT:
-                        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                            windowWidth = event.window.data1;
-                            windowHeight = event.window.data2;
-                            quitButton.x =  windowWidth / 2 - 28;
-                            quitButton.y = windowHeight * 0.75;
-                            quitButton.w = windowWidth * 0.9;
-                            quitButton.h = windowHeight * 0.1;
-                        }
-                    break;  
-            }
-        }
-    //Score text
-    for (int i=0;i<playerCount;i++){
-        int score =players[i].score;
-        char charScore[4];
-        sprintf(charScore, "%d", score);
-        font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize-20);
-        char text[100] ="The score of ";
-        strcat(text,players[i].name);
-        strcat(text," is ");
-        strcat(text,charScore);
-        renderTextBox(renderer, windowWidth, windowHeight, quitButton.x-200, quitButton.y-(400+(50*i)), text, font, fontSize-20);
-    }
-    // Quit Button
-    font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
-    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+100, quitButton.y,"QUIT GAME        " , font, fontSize+1);
-    SDL_RenderPresent(renderer);        
-    SDL_Delay(10);
-    }
-}
-
-
-
-
-
-
-
 
 int main(int argc, char** argv) {
+    srand(time(NULL));
+
     // SDL Variables
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -203,27 +111,35 @@ int main(int argc, char** argv) {
     int windowHeight = 800;
 
     // Initialize SDL and exit if failed to do so
-    if (initializeSDL(&window, &renderer, windowWidth, windowHeight) != 0) {
+    if (initializeSDL(&window, &renderer, windowWidth, windowHeight) != 0)
         return 1;
-    }
-    
-    GameState gameState = BagSelection;
 
     // Create a cursor pointer
     SDL_Cursor* pointer = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
     // Create default cursor
     SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 
-    srand(time(NULL));
+    // Load Sprite Sheet
+    SDL_Surface* spriteSheetSurface = IMG_Load("assets/spritesheet.png"); // Create a surface from the sprite sheet
+    SDL_Texture* spriteSheet = SDL_CreateTextureFromSurface(renderer, spriteSheetSurface); // Create a texture from the surface
+    SDL_FreeSurface(spriteSheetSurface); // Free the surface
+
+    // Game / Rendering Variables
+    int gridOriginX, gridOriginY;
+    int squareWidth = 100;
     int elapsedTime = 0;
     int bagWidth = 50;
-    int squareWidth = 100;
-    int gridOriginX, gridOriginY;
+    // Initialize a Variations array to store the variations of each piece sprite on the board
+    int variations[6][8];
+    // int piecesVariations[4][5];
+    // for (int i = 0; i < 6; i++)
+    //     for (int j = 0; j < 8; j++)
+    //         variations[i][j] = rand() % 4;
+
+    // Initialize Piece Selection Variable
     Piece pieces[5];
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++)
         pieces[i].taken = false;
-        pieces[i].pickable = true;
-    }
 
     // Initialize Player Variables
     int playerCount = 0;
@@ -234,19 +150,19 @@ int main(int argc, char** argv) {
                 players[i].board[j][k] = 0;
     
 
-    // Game Loop Exit Variable
+    // Game Loop Variable
+    GameState gameState = BagSelection;
     SDL_Event event;
     bool quit = false;
-    bool initPhase = true;
     bool firstTurn = true;
-    int turn = 0;
+    bool initPhase = true;
     int leader = 0;
+    int turn = 0;
 
     // Initialize Menu Variables
     char name[50] = "";
     int name_length = 0;
     bool menu = true;
-    // Create a button that is 80% at the bottom of the screen centered horizontally
     Button playButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
 
     // Initialize TTF
@@ -297,7 +213,7 @@ int main(int argc, char** argv) {
                                 int x = event.button.x;
                                 int y = event.button.y;
 
-                                if (x > playButton.x && x < playButton.x + playButton.w && y > playButton.y && y < playButton.y + playButton.h) {
+                                if (isOnButton(playButton, x, y)) {
                                     if (playerCount > 0) {
                                         menu = false;
                                         break;
@@ -336,12 +252,6 @@ int main(int argc, char** argv) {
     }
 
     Button buttons[10];
-    Button quitbutton;
-    quitbutton.x =  windowWidth / 2 - 58;
-    quitbutton.w = windowWidth * 0.8;
-    quitbutton.y = windowHeight * 0.75;
-    quitbutton.h = windowHeight * 0.1;  
-
     // Game Loop
     while (!quit) {
 
@@ -360,7 +270,7 @@ int main(int argc, char** argv) {
                                 int y = event.button.y;
 
                                 for (int i = 0; i < 5; i++) {
-                                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
+                                    if (isOnButton(buttons[i], x, y)) {
                                         if (firstTurn) {
                                             for (int j = 0; j < playerCount + 1; j++)
                                                 generatePiece(pieces+j, buttons[i].id);
@@ -413,11 +323,10 @@ int main(int argc, char** argv) {
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
                                     }
                                 for (int i = 0; i < playerCount + 1; i++) {
-                                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
-                                        if (pieces[i].pickable) {
+                                    if (isOnButton(buttons[i], x, y)) {
+                                        if (!pieces[i].taken) {
                                             players[turn].piece = pieces[i];
                                             pieces[i].taken = true;
-                                            pieces[i].pickable = false;
                                             SDL_ShowCursor(SDL_DISABLE);
                                             gameState = PiecePlacement;
                                         }
@@ -467,36 +376,21 @@ int main(int argc, char** argv) {
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
                                     for (int j = 0; j < 8; j++) {
                                         if (x >= gridOriginX && x <= gridOriginX + squareWidth && y >= gridOriginY && y <= gridOriginY + squareWidth) {
-                                            // Check if piece is hanging off the edge of the board
-                                            int maxX, maxY;
-                                            pieceMax(players[turn].piece, &maxX, &maxY);
-                                            if (j + maxX > 7 || i + maxY > 5) {
-                                                printf("Invalid Hanging\n");
+                                            // Try to place piece
+                                            if (!placePiece(players[turn].piece, players[turn].board, variations, j, i))
                                                 break;
-                                            }
-                                            // Check if piece is overlapping another piece
-                                            if (pieceOverlap(players[turn].piece, players[turn].board, j, i)) {
-                                                printf("Invalid Overlap\n");
-                                                break;
-                                            }
-                                            // Place piece
-                                            placePiece(players[turn].piece, players[turn].board, j, i);
 
+                                            // Show Cursor and change game state
                                             SDL_ShowCursor(SDL_ENABLE);
                                             initPhase = true;
                                             gameState = BagSelection;
 
-                                            // DEBUG
-                                            printf("Max rose : %d\n", maxAdjacentSymbols(players[turn].board, 1));
-
+                                            // Change turn
                                             turn = (turn + 1) % playerCount;
                                             if (turn == leader) {
                                                 // New leader is the previous leader's left neighbour
                                                 leader = (leader + playerCount - 1) % playerCount;
                                                 turn = leader;
-                                                for (int i = 0; i < playerCount + 1; i++) {
-                                                    pieces[i].pickable = true;
-                                                }
                                                 quit = gameEnd(players[turn].board);
                                             }
                                         }
@@ -536,7 +430,7 @@ int main(int argc, char** argv) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        renderGrid(renderer, players[turn].board, squareWidth, windowWidth, windowHeight);
+        renderGrid(renderer, players[turn].board, squareWidth, windowWidth, windowHeight, spriteSheet, variations);
 
         int x, y;
         bool hovering = false;
@@ -552,14 +446,13 @@ int main(int argc, char** argv) {
                 }
 
                 SDL_GetMouseState(&x, &y);
-                for (int i = 0; i < playerCount + 1; i++) {
-                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
+                for (int i = 0; i < 5; i++) {
+                    if (isOnButton(buttons[i], x, y)) {
                         hovering = true;
                         break;
                     }
                 }
-                SDL_SetCursor(hovering ? pointer : cursor);    
-                
+                SDL_SetCursor(hovering ? pointer : cursor);
 
                 renderBags(renderer, bagWidth, windowWidth, windowHeight, buttons);
                 break;
@@ -576,8 +469,8 @@ int main(int argc, char** argv) {
                 SDL_GetMouseState(&x, &y);
                 renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "Endgame", font, fontSize);
                 for (int i = 0; i < playerCount + 1; i++) {
-                    if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
-                        if (pieces[i].pickable) {
+                    if (isOnButton(buttons[i], x, y)) {
+                        if (!pieces[i].taken) {
                             hovering = true;
                             break;
                         }  
@@ -585,7 +478,7 @@ int main(int argc, char** argv) {
                 }
                 SDL_SetCursor(hovering ? pointer : cursor);
 
-                renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, buttons, playerCount);
+                renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, buttons, playerCount, spriteSheet);
                 break;
 
 
@@ -603,7 +496,7 @@ int main(int argc, char** argv) {
                     elapsedTime += 10;
                 }
 
-                renderPieceOnMouse(renderer, players[turn].piece, squareWidth);
+                renderPieceOnMouse(renderer, players[turn].piece, squareWidth, spriteSheet);
                 break;
         }
         
