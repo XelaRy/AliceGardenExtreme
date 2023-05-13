@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -196,6 +197,8 @@ void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWid
     spriteRect.w = 64;
     spriteRect.h = 64;
 
+    squareWidth = windowHeight * 0.5 / 10;
+
     pieceMax(pieces[0], &max_X, &max_Y);
     buttons[0].w = squareWidth * (max_X + 1);
     buttons[0].h = squareWidth * (max_Y + 1);
@@ -223,4 +226,27 @@ void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWid
             // SDL_RenderDrawRect(renderer, &squareRect);
         }
     }
+}
+
+void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, int x, int y, char* text, TTF_Font* font, int fontSize) {
+    // Display text box
+    SDL_Rect textbox_rect = { x, y, 200, 20 };
+    textbox_rect.w = 10 + strlen(text) * 14;
+    textbox_rect.h = fontSize + 4;
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderFillRect(renderer, &textbox_rect);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(renderer, &textbox_rect);
+    
+
+    // Display text
+    SDL_Color color = { 255, 255, 255 };
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
+    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+    SDL_Rect text_rect = { x + 6, y - 4, 0, 0 };
+
+    SDL_QueryTexture(textTexture, NULL, NULL, &text_rect.w, &text_rect.h);
+    SDL_RenderCopy(renderer, textTexture, NULL, &text_rect);
+    SDL_FreeSurface(textSurface);
+    SDL_DestroyTexture(textTexture);
 }

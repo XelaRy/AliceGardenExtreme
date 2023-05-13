@@ -10,96 +10,163 @@
 
 #include "game_data_structures.h"
 #include "buttons.h"
+#include "board_operations.h"
 #include "piece_operations.h"
 #include "rendering.h"
 
 
-void renderMenu(SDL_Renderer* renderer) {
-}
+void renderMenu(SDL_Renderer* renderer, TTF_Font* font, int fontSize, int windowWidth, int windowHeight, int* playerCount, Player players[4], bool* quit) {
+    // Initialize Menu Variables
+    SDL_Event event;
+    char name[50] = "";
+    int name_length = 0;
+    bool menu = true;
+    Button playButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
 
-void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, int x, int y, char* text, TTF_Font* font, int fontSize) {
-    // Display text box
-    SDL_Rect textbox_rect = { x, y, 200, 20 };
-    textbox_rect.w = 10 + strlen(text) * 14;
-    textbox_rect.h = fontSize + 4;
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderFillRect(renderer, &textbox_rect);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDrawRect(renderer, &textbox_rect);
-    
+    while (menu) {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    *quit = true;
+                    menu = false;
+                    break;
+                case SDL_TEXTINPUT:
+                    if (name_length < 20)
+                        strcat(name, event.text.text); // append new characters to name buffer
+                    name_length = strlen(name);
+                    break;
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.sym == SDLK_BACKSPACE && name_length > 0) {
+                        name[name_length - 1] = '\0'; // remove last character from name buffer
+                        name_length = strlen(name);
+                        break;
+                    }
+                    if (event.key.keysym.sym == SDLK_ESCAPE) {
+                        *quit = true;
+                        menu = false;
+                        break;
+                    }
+                    if (event.key.keysym.sym == SDLK_RETURN) {
+                        if (name[0] != '\0') {
+                            strcpy(players[*playerCount].name, name);
+                            name[0] = '\0';
+                            (*playerCount)++;
+                            if (*playerCount == 4) {
+                                menu = false;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                case SDL_MOUSEBUTTONDOWN:
+                            if (event.button.button == SDL_BUTTON_LEFT) {
+                                // handle left mouse button click
+                                int x = event.button.x;
+                                int y = event.button.y;
 
-    // Display text
-    SDL_Color color = { 255, 255, 255 };
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    SDL_Rect text_rect = { x + 6, y - 4, 0, 0 };
-
-    SDL_QueryTexture(textTexture, NULL, NULL, &text_rect.w, &text_rect.h);
-    SDL_RenderCopy(renderer, textTexture, NULL, &text_rect);
-    SDL_FreeSurface(textSurface);
-    SDL_DestroyTexture(textTexture);
-}
-
-// Recursive function to count the number of adjacent squares of the same symbol
-// Returns the number of adjacent squares
-int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
-    int found = 1;
-    int right = 0;
-    int down = 0;
-
-    // If the square is not the same symbol or is already counted, return 0
-    if (grid[y][x] != sym && grid[y][x] != -1) {
-        return 0;
-    }
-    // If the coordinates are on the edge of the grid, return 1
-    if (x >= 8 || y >= 6) {
-        return found;
-    }
-    // Search for adjacent squares
-    // If the square is the same symbol, set it to -1 to avoid counting it again
-    if (grid[y][x + 1] == sym) {
-        right = 1;
-        grid[y][x + 1] = -1;
-    }
-    if (grid[y + 1][x] == sym) {
-        down = 1;
-        grid[y + 1][x] = -1;
-    }
-
-    // Return the number of adjacent squares and recursively call the function for each adjacent square
-    return found + (right ? countAdjacentSquares(grid, sym, x + 1, y) : 0) + (down ? countAdjacentSquares(grid, sym, x, y + 1) : 0);
-}
-
-// Returns the maximum number of adjacent squares of the same symbol
-int maxAdjacentSymbols(int grid[6][8], int symbol) {
-    int gridCopy[6][8];
-    int max = 0;
-    int tmp;
-
-    // Copy the grid to avoid modifying the original
-    for (int i = 0; i < 6; i++)
-        for (int j = 0; j < 8; j++)
-            gridCopy[i][j] = grid[i][j];
-
-    for (int i = 0; i < 6; i++)
-        for (int j = 0; j < 8; j++) {
-            // If the square is already counted, skip it
-            if (gridCopy[i][j] != -1)
-                tmp = countAdjacentSquares(gridCopy, symbol, i, j);
-            // If the number of adjacent squares is greater than the current max, set it as the new max
-            if (tmp > max)
-                max = tmp;
+                                if (isOnButton(playButton, x, y)) {
+                                    if (*playerCount > 0) {
+                                        menu = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                case SDL_WINDOWEVENT:
+                        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                            windowWidth = event.window.data1;
+                            windowHeight = event.window.data2;
+                            playButton.x =  windowWidth / 2 - 28;
+                            playButton.y = windowHeight * 0.75;
+                            playButton.w = windowWidth * 0.8;
+                            playButton.h = windowHeight * 0.1;
+                        }
+                        break;
+            }
         }
 
-    return max;
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        renderTextBox(renderer, windowWidth, windowHeight, windowWidth / 2 - strlen(name) * 7, (windowHeight * 0.2 - 10) + *playerCount * (windowHeight * 0.05), name, font, fontSize);
+
+        for (int i = 0; i < *playerCount; i++) {
+            renderTextBox(renderer, windowWidth, windowHeight, (windowWidth / 2) - (strlen(players[i].name) * 7), (windowHeight * 0.2 - 10) + i * (windowHeight * 0.05), players[i].name, font, fontSize);
+        }
+
+        // Play Button
+        renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "Play", font, fontSize);
+        
+        SDL_RenderPresent(renderer);        
+
+        SDL_Delay(10);
+    }
 }
 
-// Returns true if the game has ended
-// The game ends when there are less than 5 empty spaces adjacent
-bool gameEnd(int grid[6][8]) {
-    // If there is less than 4 empty spaces adjacent, the player cannot place any normal piece
-    return maxAdjacentSymbols(grid, 0) < 5;
-}
+
+
+// void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[],SDL_Renderer* renderer){
+//     bool quit = true; 
+//     SDL_Event event;
+//     Button quitButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
+
+//     TTF_Init();
+//     int fontSize = 44;
+//     TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
+//     SDL_StartTextInput();
+//     // end screen
+//     while (quit) {
+//         SDL_SetRenderDrawColor(renderer, 156, 255, 246, 255);
+//         SDL_RenderClear(renderer);
+//         while (SDL_PollEvent(&event)) {
+//             switch (event.type) {
+
+//                 case SDL_QUIT:
+//                     quit = false;
+//                     break;
+
+//                 case SDL_MOUSEBUTTONDOWN:
+//                             if (event.button.button == SDL_BUTTON_LEFT) {
+//                                 // handle left mouse button click
+//                                 int x = event.button.x;
+//                                 int y = event.button.y;
+//                                     if(x>=quitButton.x && x<=quitButton.x+quitButton.w && y>=quitButton.y && y<=quitButton.y + quitButton.h){
+//                                         quit = false;
+//                                     }
+//                             }
+//                     break;
+
+//                 case SDL_WINDOWEVENT:
+//                         if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+//                             windowWidth = event.window.data1;
+//                             windowHeight = event.window.data2;
+//                             quitButton.x =  windowWidth / 2 - 28;
+//                             quitButton.y = windowHeight * 0.75;
+//                             quitButton.w = windowWidth * 0.9;
+//                             quitButton.h = windowHeight * 0.1;
+//                         }
+//                     break;  
+//             }
+//         }
+//     //Score text
+//     for (int i=0;i<playerCount;i++){
+//         int score =players[i].score;
+//         char charScore[4];
+//         sprintf(charScore, "%d", score);
+//         font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize-20);
+//         char text[100] ="The score of ";
+//         strcat(text,players[i].name);
+//         strcat(text," is ");
+//         strcat(text,charScore);
+//         renderTextBox(renderer, windowWidth, windowHeight, quitButton.x-200, quitButton.y-(400+(50*i)), text, font, fontSize-20);
+//     }
+//     // Quit Button
+//     font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
+//     renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+100, quitButton.y,"QUIT GAME        " , font, fontSize+1);
+//     SDL_RenderPresent(renderer);        
+//     SDL_Delay(10);
+//     }
+// }
 
 int main(int argc, char** argv) {
     srand(time(NULL));
@@ -126,7 +193,7 @@ int main(int argc, char** argv) {
 
     // Game / Rendering Variables
     int gridOriginX, gridOriginY;
-    int squareWidth = 100;
+    int squareWidth = windowHeight * 0.8 / 6;
     int elapsedTime = 0;
     int bagWidth = 50;
     // Initialize a Variations array to store the variations of each piece sprite on the board
@@ -159,12 +226,6 @@ int main(int argc, char** argv) {
     int leader = 0;
     int turn = 0;
 
-    // Initialize Menu Variables
-    char name[50] = "";
-    int name_length = 0;
-    bool menu = true;
-    Button playButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
-
     // Initialize TTF
     TTF_Init();
     int fontSize = 24;
@@ -172,86 +233,15 @@ int main(int argc, char** argv) {
     SDL_StartTextInput();
 
     // Main Menu
-    while (menu) {
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    quit = true;
-                    menu = false;
-                    break;
-                case SDL_TEXTINPUT:
-                    if (name_length < 20)
-                        strcat(name, event.text.text); // append new characters to name buffer
-                    name_length = strlen(name);
-                    break;
-                case SDL_KEYDOWN:
-                    if (event.key.keysym.sym == SDLK_BACKSPACE && name_length > 0) {
-                        name[name_length - 1] = '\0'; // remove last character from name buffer
-                        name_length = strlen(name);
-                        break;
-                    }
-                    if (event.key.keysym.sym == SDLK_ESCAPE) {
-                        quit = true;
-                        menu = false;
-                        break;
-                    }
-                    if (event.key.keysym.sym == SDLK_RETURN) {
-                        if (name[0] != '\0') {
-                            strcpy(players[playerCount].name, name);
-                            name[0] = '\0';
-                            playerCount++;
-                            if (playerCount == 4) {
-                                menu = false;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                case SDL_MOUSEBUTTONDOWN:
-                            if (event.button.button == SDL_BUTTON_LEFT) {
-                                // handle left mouse button click
-                                int x = event.button.x;
-                                int y = event.button.y;
-
-                                if (isOnButton(playButton, x, y)) {
-                                    if (playerCount > 0) {
-                                        menu = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            break;
-                case SDL_WINDOWEVENT:
-                        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                            windowWidth = event.window.data1;
-                            windowHeight = event.window.data2;
-                            playButton.x =  windowWidth / 2 - 28;
-                            playButton.y = windowHeight * 0.75;
-                            playButton.w = windowWidth * 0.8;
-                            playButton.h = windowHeight * 0.1;
-                        }
-                        break;
-            }
-        }
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        renderTextBox(renderer, windowWidth, windowHeight, windowWidth / 2 - strlen(name) * 7, (windowHeight * 0.2 - 10) + playerCount * (windowHeight * 0.05), name, font, fontSize);
-
-        for (int i = 0; i < playerCount; i++) {
-            renderTextBox(renderer, windowWidth, windowHeight, (windowWidth / 2) - (strlen(players[i].name) * 7), (windowHeight * 0.2 - 10) + i * (windowHeight * 0.05), players[i].name, font, fontSize);
-        }
-
-        // Play Button
-        renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "Play", font, fontSize);
-        
-        SDL_RenderPresent(renderer);        
-
-        SDL_Delay(10);
-    }
+    renderMenu(renderer, font, fontSize, windowWidth, windowHeight, &playerCount, players, &quit);
 
     Button buttons[10];
+    Button quitbutton;
+    quitbutton.x =  windowWidth / 2 - 58;
+    quitbutton.w = windowWidth * 0.8;
+    quitbutton.y = windowHeight * 0.75;
+    quitbutton.h = windowHeight * 0.1;  
+
     // Game Loop
     while (!quit) {
 
@@ -318,10 +308,10 @@ int main(int argc, char** argv) {
                             if (event.button.button == SDL_BUTTON_LEFT) { // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                    if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
-                                       quit = true;
-                                        endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
-                                    }
+                                    // if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
+                                    //     quit = true;
+                                    //     endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
+                                    // }
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if (isOnButton(buttons[i], x, y)) {
                                         if (!pieces[i].taken) {
@@ -369,10 +359,10 @@ int main(int argc, char** argv) {
                                 
                                 // Loop over every square in the grid and check if the mouse click was inside it
                                 for (int i = 0; i < 6; i++) {
-                                    if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
-                                        quit = true;
-                                        endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
-                                    }
+                                    // if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
+                                    //     quit = true;
+                                    //     endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
+                                    // }
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
                                     for (int j = 0; j < 8; j++) {
                                         if (x >= gridOriginX && x <= gridOriginX + squareWidth && y >= gridOriginY && y <= gridOriginY + squareWidth) {
@@ -462,12 +452,11 @@ int main(int argc, char** argv) {
                 // Piece Selection Phase
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, playerCount);
-                    // printf("Player %d's turn\n", leader);
                     initPhase = false;
                 }
                 
                 SDL_GetMouseState(&x, &y);
-                renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "Endgame", font, fontSize);
+                // renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "Endgame", font, fontSize);
                 for (int i = 0; i < playerCount + 1; i++) {
                     if (isOnButton(buttons[i], x, y)) {
                         if (!pieces[i].taken) {
@@ -488,7 +477,7 @@ int main(int argc, char** argv) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
                     initPhase = false;
                 }
-                renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "Endgame", font, fontSize);
+                // renderTextBox(renderer, windowWidth, windowHeight, quitbutton.x, quitbutton.y, "Endgame", font, fontSize);
                 if (elapsedTime > 3000) {
                     // Display 'Cannot Place Piece ? / End Game' Button
                 }
