@@ -16,7 +16,7 @@
 
 void scoreCount(Player* player){
     player->score=0;
-    int i,j;/*
+    int i,j;
 //Count for Chess pieces
 for(i=0;i<6;i++){
     for(j=3;j<5;j++){
@@ -37,7 +37,6 @@ for(j=0;j<8;j++){
         player->score+=8;
     }
 }
-*/
 //Count for Trees
 int firstTree,lastTree;
 for(i=0;i<6;i++){
