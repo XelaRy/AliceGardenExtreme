@@ -125,7 +125,7 @@ bool gameEnd(int grid[6][8]) {
     return maxAdjacentSymbols(grid, 0) < 4;
 }
 
-void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[],SDL_Renderer* renderer){
+void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[],SDL_Renderer* renderer,bool* quitgame){
     bool quit = true; 
     SDL_Event event;
     Button quitButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
@@ -170,11 +170,12 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
             }
         }
     // Quit Button
-    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT\t\t\t", font, fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUITE    ", font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     }
     printf("\nEndpage quit !\n");
+    quitgame = true;
 }
 
 
@@ -400,10 +401,7 @@ int main(int argc, char** argv) {
                                 int y = event.button.y;
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
-                                        printf("HAHAHHA\n");
-                                        endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
-                                        printf("TEST1\n");
-                                        quit = true;
+                                        endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer,&quit);
                                     }
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                                         if (pieces[i].pickable) {
