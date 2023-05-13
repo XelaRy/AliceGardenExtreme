@@ -101,6 +101,69 @@ bool gameEnd(int grid[6][8]) {
     return maxAdjacentSymbols(grid, 0) < 5;
 }
 
+void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[],SDL_Renderer* renderer){
+    bool quit = true; 
+    SDL_Event event;
+    Button quitButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
+
+    TTF_Init();
+    int fontSize = 44;
+    TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
+    SDL_StartTextInput();
+    // end screen
+    while (quit) {
+        SDL_SetRenderDrawColor(renderer, 156, 255, 246, 255);
+        SDL_RenderClear(renderer);
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+
+                case SDL_QUIT:
+                    quit = false;
+                    break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                            if (event.button.button == SDL_BUTTON_LEFT) {
+                                // handle left mouse button click
+                                int x = event.button.x;
+                                int y = event.button.y;
+                                    if(x>=quitButton.x && x<=quitButton.x+quitButton.w && y>=quitButton.y && y<=quitButton.y + quitButton.h){
+                                        quit = false;
+                                    }
+                            }
+                    break;
+
+                case SDL_WINDOWEVENT:
+                        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                            windowWidth = event.window.data1;
+                            windowHeight = event.window.data2;
+                            quitButton.x =  windowWidth / 2 - 28;
+                            quitButton.y = windowHeight * 0.75;
+                            quitButton.w = windowWidth * 0.9;
+                            quitButton.h = windowHeight * 0.1;
+                        }
+                    break;  
+            }
+        }
+    //Score text
+    for (int i=0;i<playerCount;i++){
+        int score =players[i].score;
+        char charScore[4];
+        sprintf(charScore, "%d", score);
+        font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize-20);
+        char text[100] ="The score of ";
+        strcat(text,players[i].name);
+        strcat(text," is ");
+        strcat(text,charScore);
+        renderTextBox(renderer, windowWidth, windowHeight, quitButton.x-200, quitButton.y-(400+(50*i)), text, font, fontSize-20);
+    }
+    // Quit Button
+    font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+100, quitButton.y,"QUIT GAME        " , font, fontSize+1);
+    SDL_RenderPresent(renderer);        
+    SDL_Delay(10);
+    }
+}
+
 int main(int argc, char** argv) {
     srand(time(NULL));
 
@@ -252,6 +315,12 @@ int main(int argc, char** argv) {
     }
 
     Button buttons[10];
+    Button quitbutton;
+    quitbutton.x =  windowWidth / 2 - 58;
+    quitbutton.w = windowWidth * 0.8;
+    quitbutton.y = windowHeight * 0.75;
+    quitbutton.h = windowHeight * 0.1;  
+
     // Game Loop
     while (!quit) {
 
