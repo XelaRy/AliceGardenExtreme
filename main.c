@@ -20,7 +20,7 @@ void scoreCount(Player* player){
 //Count for Chess pieces
 for(i=0;i<6;i++){
     for(j=3;j<5;j++){
-        if (player->board[i][j]==3){
+        if (player->board[i][j]==5){
             player->score+=5;
         }    }
 }
