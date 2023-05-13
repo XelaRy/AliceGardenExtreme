@@ -456,8 +456,8 @@ int main(int argc, char** argv) {
                                 // Loop over every square in the grid and check if the mouse click was inside it
                                 for (int i = 0; i < 6; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
-                                        printf("HAHAHHA");
-                                        //quit = true;
+                                        quit = true;
+                                        endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
                                     }
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
                                     for (int j = 0; j < 8; j++) {
