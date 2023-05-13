@@ -337,7 +337,7 @@ int main(int argc, char** argv) {
 
     Button buttons[10];
     Button quitbutton;
-    quitbutton.x =  windowWidth / 2 - 35;
+    quitbutton.x =  windowWidth / 2 - 70;
     quitbutton.w = windowWidth * 0.8;
     quitbutton.y = windowHeight * 0.75;
     quitbutton.h = windowHeight * 0.1;  
