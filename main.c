@@ -130,12 +130,12 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     SDL_Event event;
     SDL_Renderer* renderer;
     Button quitButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
-    int fontSize = 24;
+    int fontSize = 44;
     TTF_Font* font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
     // end screen
     while (quit) {
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:
@@ -146,10 +146,8 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                                 // handle left mouse button click
                                 int x = event.button.x;
                                 int y = event.button.y;
-                                    if(x>=quitButton.x && x<=quitButton.x+quitButton.w+200 && y>=quitButton.y && y<=quitButton.y + quitButton.h){
+                                    if(x>=quitButton.x && x<=quitButton.x+quitButton.w && y>=quitButton.y && y<=quitButton.y + quitButton.h){
                                         printf("TEST3\n");
-                                        endScreen(windowWidth,windowHeight,name_length,name,playerCount,players);
-                                        printf("TEST4\n\n");
                                         quit = true;
                                     }
                             }
@@ -168,7 +166,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
         }
     }
     // Quit Button
-    printf("TEST2\n");
+    printf("TEST4\n");
     renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT", font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
@@ -316,8 +314,7 @@ int main(int argc, char** argv) {
         }
 
         // Play Button
-        //renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "Play", font, fontSize);
-        renderTextBox(renderer, windowWidth, windowHeight, playButton.x+200, playButton.y, "\n\t\tPlay\t\t\t", font, fontSize+50);
+        renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "Play", font, fontSize);
         
         SDL_RenderPresent(renderer);        
 
