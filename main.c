@@ -435,10 +435,9 @@ int main(int argc, char** argv) {
                             break;
                     }
             }
-            scoreCount(players[0]);
-            printf("%d\n",players[0].score);
         }
-
+        scoreCount(players[0]);
+        printf("%d\n",players[0].score);
         // Render screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
