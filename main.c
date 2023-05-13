@@ -63,10 +63,10 @@ for(i=0;i<6;i++){
     for(j=0;j<8;j++){
         if(player->board[i][j]==1){
             AdjRoses=countAdjacentSquares(player->board,1,i,j);
-            if (AdjRoses>5){
-                AdjRoses=5;
+            if (AdjRoses>4){
+                AdjRoses=4;
             }
-            player->score+=(AdjRoses*AdjRoses);
+            player->score+=((AdjRoses+1)*(AdjRoses+1));
             player->board[i][j]=-1;
             AdjRoses=0;
         }
