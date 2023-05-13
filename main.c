@@ -133,9 +133,10 @@ int main(int argc, char** argv) {
     int bagWidth = 50;
     // Initialize a Variations array to store the variations of each piece sprite on the board
     int variations[6][8];
-    for (int i = 0; i < 6; i++)
-        for (int j = 0; j < 8; j++)
-            variations[i][j] = rand() % 4;
+    // int piecesVariations[4][5];
+    // for (int i = 0; i < 6; i++)
+    //     for (int j = 0; j < 8; j++)
+    //         variations[i][j] = rand() % 4;
 
     // Initialize Piece Selection Variable
     Piece pieces[5];
@@ -373,7 +374,7 @@ int main(int argc, char** argv) {
                                     for (int j = 0; j < 8; j++) {
                                         if (x >= gridOriginX && x <= gridOriginX + squareWidth && y >= gridOriginY && y <= gridOriginY + squareWidth) {
                                             // Try to place piece
-                                            if (!placePiece(players[turn].piece, players[turn].board, j, i))
+                                            if (!placePiece(players[turn].piece, players[turn].board, variations, j, i))
                                                 break;
 
                                             // Show Cursor and change game state
@@ -473,7 +474,7 @@ int main(int argc, char** argv) {
                 }
                 SDL_SetCursor(hovering ? pointer : cursor);
 
-                renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, buttons, playerCount);
+                renderPieceSelection(renderer, pieces, 20, windowWidth, windowHeight, buttons, playerCount, spriteSheet);
                 break;
 
 
@@ -491,7 +492,7 @@ int main(int argc, char** argv) {
                     elapsedTime += 10;
                 }
 
-                renderPieceOnMouse(renderer, players[turn].piece, squareWidth);
+                renderPieceOnMouse(renderer, players[turn].piece, squareWidth, spriteSheet);
                 break;
         }
         

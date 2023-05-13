@@ -20,6 +20,7 @@ void generatePiece(Piece* piece, int Pack) {
 		piece->squares[i].x = positions[Pack][i][0];
 		piece->squares[i].y = positions[Pack][i][1];
 		piece->squares[i].symbol = (rand() % 5) + 1;
+		piece->squares[i].variant = rand() % 4;
 	}
 }
 
@@ -118,10 +119,12 @@ bool validPlacement(Piece piece, int grid[6][8], int x, int y) {
     return isOnBoard(piece, x, y) && !pieceOverlap(piece, grid, x, y);
 }
 
-bool placePiece(Piece piece, int grid[6][8], int x, int y) {
+bool placePiece(Piece piece, int grid[6][8], int variations[6][8], int x, int y) {
 	if (validPlacement(piece, grid, x, y)) {
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; i++) {
 			grid[piece.squares[i].y + y][piece.squares[i].x + x] = piece.squares[i].symbol;
+			variations[piece.squares[i].y + y][piece.squares[i].x + x] = piece.squares[i].variant;
+		}
 		return true;
 	}
 	return false;

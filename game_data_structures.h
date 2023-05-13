@@ -12,6 +12,7 @@ typedef struct {
 	unsigned char x;
 	unsigned char y;
 	unsigned char symbol;
+    unsigned char variant;
 } Square;
 
 
