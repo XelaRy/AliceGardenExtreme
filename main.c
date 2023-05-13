@@ -454,8 +454,19 @@ int main(int argc, char** argv) {
                                 gridOriginY = 0;
 
 
-                                scoreCount(players[0],&players[0].score);
-                                printf("score : %d\n",players[0].score);
+                                //scoreCount(players[0],&players[0].score);
+                                // printf("score : %d\n",players[0].score);
+                                for(int i=0;i<6;i++){
+                                    for(int j=0;j<8;j++){
+                                        printf(" %-3d ",players[0].board[i][j]);
+                                    }
+                                    printf("\n");
+                                }
+                                printf("\n");
+                                printf("\n");
+                                printf("\n");
+                                
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
