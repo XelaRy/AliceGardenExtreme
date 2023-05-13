@@ -133,15 +133,7 @@ bool isOnButton(Button button, int x, int y) {
     return x >= button.x && x <= button.x + button.w && y >= button.y && y <= button.y + button.h;
 }
 
-bool isOnBoard(Piece piece, int x, int y) {
-    int maxX, maxY;
-    pieceMax(piece, &maxX, &maxY);
-    return x >= 0 && x <= 7 - maxX && y >= 0 && y <= 5 - maxY;
-}
 
-bool validPlacement(Piece piece, int grid[6][8], int x, int y) {
-    return isOnBoard(piece, x, y) && !pieceOverlap(piece, grid, x, y);
-}
 
 
 int main(int argc, char** argv) {
@@ -405,14 +397,9 @@ int main(int argc, char** argv) {
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
                                     for (int j = 0; j < 8; j++) {
                                         if (x >= gridOriginX && x <= gridOriginX + squareWidth && y >= gridOriginY && y <= gridOriginY + squareWidth) {
-                                            // Verify Placement
-                                            if (!validPlacement(players[turn].piece, players[turn].board, j, i)) {
-                                                printf("Invalid Placement\n");
+                                            // Try to place piece
+                                            if (!placePiece(players[turn].piece, players[turn].board, j, i))
                                                 break;
-                                            }
-
-                                            // Place piece
-                                            placePiece(players[turn].piece, players[turn].board, j, i);
 
                                             // Show Cursor and change game state
                                             SDL_ShowCursor(SDL_ENABLE);
