@@ -8,5 +8,6 @@ void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int wi
 void renderPieceSelection(SDL_Renderer *renderer, Piece pieces[5], int squareWidth, int windowWidth, int windowHeight, Button *buttons, int playerCount, SDL_Texture *spritesheet);
 void renderPieceOnMouse(SDL_Renderer *renderer, Piece piece, int squareWidth, SDL_Texture *spritesheet);
 //void renderPiece(SDL_Renderer *renderer, Piece piece, int squareWidth, int x, int y);
+void renderTextBox(SDL_Renderer *renderer, int windowWidth, int windowHeight, int x, int y, char *text, TTF_Font *font, int fontSize);
 
 #endif

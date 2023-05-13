@@ -10,32 +10,10 @@
 
 #include "game_data_structures.h"
 #include "buttons.h"
+#include "board_operations.h"
 #include "piece_operations.h"
 #include "rendering.h"
 
-
-void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, int x, int y, char* text, TTF_Font* font, int fontSize) {
-    // Display text box
-    SDL_Rect textbox_rect = { x, y, 200, 20 };
-    textbox_rect.w = 10 + strlen(text) * 14;
-    textbox_rect.h = fontSize + 4;
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderFillRect(renderer, &textbox_rect);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderDrawRect(renderer, &textbox_rect);
-    
-
-    // Display text
-    SDL_Color color = { 255, 255, 255 };
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    SDL_Rect text_rect = { x + 6, y - 4, 0, 0 };
-
-    SDL_QueryTexture(textTexture, NULL, NULL, &text_rect.w, &text_rect.h);
-    SDL_RenderCopy(renderer, textTexture, NULL, &text_rect);
-    SDL_FreeSurface(textSurface);
-    SDL_DestroyTexture(textTexture);
-}
 
 void renderMenu(SDL_Renderer* renderer, TTF_Font* font, int fontSize, int windowWidth, int windowHeight, int* playerCount, Player players[4], bool* quit) {
     // Initialize Menu Variables
@@ -125,66 +103,7 @@ void renderMenu(SDL_Renderer* renderer, TTF_Font* font, int fontSize, int window
     }
 }
 
-// Recursive function to count the number of adjacent squares of the same symbol
-// Returns the number of adjacent squares
-int countAdjacentSquares(int grid[6][8], int sym, int x, int y) {
-    int found = 1;
-    int right = 0;
-    int down = 0;
 
-    // If the square is not the same symbol or is already counted, return 0
-    if (grid[y][x] != sym && grid[y][x] != -1) {
-        return 0;
-    }
-    // If the coordinates are on the edge of the grid, return 1
-    if (x >= 8 || y >= 6) {
-        return found;
-    }
-    // Search for adjacent squares
-    // If the square is the same symbol, set it to -1 to avoid counting it again
-    if (grid[y][x + 1] == sym) {
-        right = 1;
-        grid[y][x + 1] = -1;
-    }
-    if (grid[y + 1][x] == sym) {
-        down = 1;
-        grid[y + 1][x] = -1;
-    }
-
-    // Return the number of adjacent squares and recursively call the function for each adjacent square
-    return found + (right ? countAdjacentSquares(grid, sym, x + 1, y) : 0) + (down ? countAdjacentSquares(grid, sym, x, y + 1) : 0);
-}
-
-// Returns the maximum number of adjacent squares of the same symbol
-int maxAdjacentSymbols(int grid[6][8], int symbol) {
-    int gridCopy[6][8];
-    int max = 0;
-    int tmp;
-
-    // Copy the grid to avoid modifying the original
-    for (int i = 0; i < 6; i++)
-        for (int j = 0; j < 8; j++)
-            gridCopy[i][j] = grid[i][j];
-
-    for (int i = 0; i < 6; i++)
-        for (int j = 0; j < 8; j++) {
-            // If the square is already counted, skip it
-            if (gridCopy[i][j] != -1)
-                tmp = countAdjacentSquares(gridCopy, symbol, i, j);
-            // If the number of adjacent squares is greater than the current max, set it as the new max
-            if (tmp > max)
-                max = tmp;
-        }
-
-    return max;
-}
-
-// Returns true if the game has ended
-// The game ends when there are less than 5 empty spaces adjacent
-bool gameEnd(int grid[6][8]) {
-    // If there is less than 4 empty spaces adjacent, the player cannot place any normal piece
-    return maxAdjacentSymbols(grid, 0) < 5;
-}
 
 // void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[],SDL_Renderer* renderer){
 //     bool quit = true; 
@@ -533,7 +452,6 @@ int main(int argc, char** argv) {
                 // Piece Selection Phase
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, playerCount);
-                    // printf("Player %d's turn\n", leader);
                     initPhase = false;
                 }
                 
