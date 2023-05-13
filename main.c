@@ -20,7 +20,7 @@ void scoreCount(Player* player){
 //Count for Chess pieces
 for(i=0;i<6;i++){
     for(j=3;j<5;j++){
-        if (player->board[i][j]==5){
+        if (player->board[i][j]==1){
             player->score+=5;
         }    }
 }
@@ -32,9 +32,9 @@ for(j=0;j<8;j++){
         if (player->board[i][j]==1){
             mushroomCount+=1;
         }    
-    printf("mush : %d", mushroomCount);
+    printf("mush : %d\n", mushroomCount);
     }
-    
+
     if (mushroomCount>1){
         player->score+=8;
     }
