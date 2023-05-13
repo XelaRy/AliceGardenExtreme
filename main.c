@@ -174,6 +174,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     }
+    printf("\nEndpage quit !\n");
 }
 
 
