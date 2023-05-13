@@ -87,7 +87,7 @@ for(i=0;i<6;i++){
     for(j=0;j<8;j++){
         if(player.board[i][j]==0){
             countAdjacentSquares(player.board,0,i,j);//disable near empty squares
-            player.score-=5;
+            player.score-=4;
             player.board[i][j]=-1;
         }
     }
