@@ -56,7 +56,11 @@ for(i=0;i<6;i++){
         player->score+=(lastTree-firstTree);
     }
 }
+//Count for Roses
 
+
+
+//Count for Empty squares
 
 
 }
@@ -433,8 +437,8 @@ int main(int argc, char** argv) {
                                     gridOriginY += squareWidth;
                                 }
                             }
-                             scoreCount(&players[0]);
-                             printf("score  : %d\n",players[0].score);
+                             int a=countAdjacentSquares(players[0].board,1,1,1);
+                             printf("score  : %a\n",players[0].score);
                             break;
                         case SDL_KEYDOWN:
                             // Handle Keyboard Inputs
