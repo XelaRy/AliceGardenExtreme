@@ -451,7 +451,7 @@ int main(int argc, char** argv) {
                                 int y = event.button.y;
                                 // Change Later
                                 gridOriginY = 0;
-                                
+                                printf("hello");
                                 // Loop over every square in the grid and check if the mouse click was inside it
                                 for (int i = 0; i < 6; i++) {
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
@@ -563,7 +563,6 @@ int main(int argc, char** argv) {
 
             case PiecePlacement:
                 // Piece Placement Phase
-                printf("hello");
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
                     initPhase = false;
