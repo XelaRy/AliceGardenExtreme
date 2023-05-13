@@ -9,14 +9,6 @@
 #include "buttons.h"
 #include "rendering.h"
 
-const int colors[6][3] = {
-    { 0, 0, 0 },        // 0 : black
-    { 255, 0, 0 },      // 1 : red
-    { 0, 255, 0 },      // 2 : green
-    { 0, 0, 255 },      // 3 : blue
-    { 255, 0, 255 },    // 4 : purple
-    { 255, 255, 255 }   // 5 : white
-};
 
 int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth, int screenHeight) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -50,7 +42,7 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
     return 0;
 }
 
-// Use spritesheet texture
+
 void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight, SDL_Texture* spritesheet, int variations[6][8]) {
     SDL_Rect squareRect;
     squareRect.w = squareWidth;
@@ -97,9 +89,11 @@ void renderPiece(SDL_Renderer* renderer, Piece piece, int squareWidth, int x, in
 
     // Loop for every square
     for (int j = 0; j < 4; j++) {
+        // Set the size of the square
         squareRect.w = squareWidth;
         squareRect.h = squareWidth;
 
+        // Set the position of the square
         squareRect.x = x - offset + piece.squares[j].x * squareWidth;
         squareRect.y = y - offset + piece.squares[j].y * squareWidth;
 
@@ -109,9 +103,6 @@ void renderPiece(SDL_Renderer* renderer, Piece piece, int squareWidth, int x, in
 
         // Render the sprite
         SDL_RenderCopy(renderer, spritesheet, &spriteRect, &squareRect);
-
-        // SDL_SetRenderDrawColor(renderer, colors[piece.squares[j].symbol][0], colors[piece.squares[j].symbol][1], colors[piece.squares[j].symbol][2], 255);
-        // SDL_RenderFillRect(renderer, &squareRect);
     }
 }
 
@@ -156,26 +147,6 @@ void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth, SD
     renderPiece(renderer, piece, squareWidth, mouseX, mouseY, spritesheet);
 }
 
-// void renderPieceOnMouse(SDL_Renderer* renderer, Piece piece, int squareWidth) {
-//     SDL_Rect squareRect;
-//     int offset = squareWidth / 2;
-
-//     int mouseX, mouseY;
-//     SDL_GetMouseState(&mouseX, &mouseY);
-
-//     // Loop for every square
-//     for (int j = 0; j < 4; j++) {
-//         squareRect.w = squareWidth;
-//         squareRect.h = squareWidth;
-
-//         squareRect.x = mouseX - offset + piece.squares[j].x * squareWidth;
-//         squareRect.y = mouseY - offset + piece.squares[j].y * squareWidth;
-
-//         SDL_SetRenderDrawColor(renderer, colors[piece.squares[j].symbol][0],colors[piece.squares[j].symbol][1],colors[piece.squares[j].symbol][2],255);
-//         SDL_RenderFillRect(renderer, &squareRect);
-//     }
-// }
-
 void renderBags(SDL_Renderer* renderer, int squareWidth, int windowWidth, int windowHeight, Button* buttons) {
     // Convert buttons to SDL_Rect
     SDL_Rect buttonRect;
@@ -214,16 +185,15 @@ void renderPieceSelection(SDL_Renderer* renderer, Piece pieces[5], int squareWid
             squareRect.x = buttons[i].x + squareWidth * pieces[i].squares[j].x;
             squareRect.y = buttons[i].y + squareWidth * pieces[i].squares[j].y;
 
-            if (pieces[i].taken) {
+            // If the piece is taken, render a black square
+            if (pieces[i].taken)
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            }
+            // Else render the sprite
             else {
                 spriteRect.y = pieces[i].squares[j].symbol * 64;
                 spriteRect.x = pieces[i].squares[j].variant * 64;
                 SDL_RenderCopy(renderer, spritesheet, &spriteRect, &squareRect);
-                // SDL_SetRenderDrawColor(renderer, colors[pieces[i].squares[j].symbol][0],colors[pieces[i].squares[j].symbol][1],colors[pieces[i].squares[j].symbol][2],255);
             }
-            // SDL_RenderDrawRect(renderer, &squareRect);
         }
     }
 }
@@ -244,7 +214,6 @@ void renderTextBox(SDL_Renderer* renderer, int windowWidth, int windowHeight, in
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
     SDL_Rect text_rect = { x + 6, y - 4, 0, 0 };
-
     SDL_QueryTexture(textTexture, NULL, NULL, &text_rect.w, &text_rect.h);
     SDL_RenderCopy(renderer, textTexture, NULL, &text_rect);
     SDL_FreeSurface(textSurface);

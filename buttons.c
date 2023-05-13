@@ -12,7 +12,7 @@ void initButtons(Button* buttons, int squareWidth, int squareHeight, int windowW
             break;
         case PieceSelection:
             spacing = (windowWidth - squareWidth * (playerCount + 1)) / (playerCount + 2);
-            buttonY = windowHeight - squareHeight * 2;
+            buttonY = windowHeight * 0.8;
             break;
         case PiecePlacement:
             break;
