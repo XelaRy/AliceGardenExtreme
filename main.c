@@ -77,6 +77,7 @@ int maxAdjacentSymbols(int grid[6][8], int symbol) {
     int max = 0;
     int tmp;
 
+    // Copy the grid to avoid modifying the original
     for (int i = 0; i < 6; i++)
         for (int j = 0; j < 8; j++)
             gridCopy[i][j] = grid[i][j];
@@ -86,6 +87,7 @@ int maxAdjacentSymbols(int grid[6][8], int symbol) {
             // If the square is already counted, skip it
             if (gridCopy[i][j] != -1)
                 tmp = countAdjacentSquares(gridCopy, symbol, i, j);
+            // If the number of adjacent squares is greater than the current max, set it as the new max
             if (tmp > max)
                 max = tmp;
         }
@@ -102,6 +104,8 @@ bool gameEnd(int grid[6][8]) {
 
 
 int main(int argc, char** argv) {
+    srand(time(NULL));
+
     // SDL Variables
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -109,9 +113,8 @@ int main(int argc, char** argv) {
     int windowHeight = 800;
 
     // Initialize SDL and exit if failed to do so
-    if (initializeSDL(&window, &renderer, windowWidth, windowHeight) != 0) {
+    if (initializeSDL(&window, &renderer, windowWidth, windowHeight) != 0)
         return 1;
-    }
 
     // Create a cursor pointer
     SDL_Cursor* pointer = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
@@ -119,15 +122,26 @@ int main(int argc, char** argv) {
     SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
 
     // Load Sprite Sheet
-    // SDL_Texture* spriteSheet = loadTexture(renderer, "assets/spritesheet.png");
+    // Create a surface from the sprite sheet
+    SDL_Surface* spriteSheetSurface = IMG_Load("assets/spritesheet.png");
+    // Create a texture from the surface
+    SDL_Texture* spriteSheet = SDL_CreateTextureFromSurface(renderer, spriteSheetSurface);
+    SDL_FreeSurface(spriteSheetSurface);
     // SDL_Texture* background = loadTexture(renderer, "assets/background.png");
     // SDL_Texture* title = loadTexture(renderer, "assets/title.png");
 
-    srand(time(NULL));
+    // Game / Rendering Variables
+    int gridOriginX, gridOriginY;
+    int squareWidth = 100;
     int elapsedTime = 0;
     int bagWidth = 50;
-    int squareWidth = 100;
-    int gridOriginX, gridOriginY;
+    // Initialize a Variations array to store the variations of each piece sprite on the board
+    int variations[6][8];
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 8; j++)
+            variations[i][j] = rand() % 4;
+
+    // Initialize Piece Selection Variable
     Piece pieces[5];
     for (int i = 0; i < 5; i++)
         pieces[i].taken = false;
@@ -145,10 +159,10 @@ int main(int argc, char** argv) {
     GameState gameState = BagSelection;
     SDL_Event event;
     bool quit = false;
-    bool initPhase = true;
     bool firstTurn = true;
-    int turn = 0;
+    bool initPhase = true;
     int leader = 0;
+    int turn = 0;
 
     // Initialize Menu Variables
     char name[50] = "";
@@ -416,7 +430,7 @@ int main(int argc, char** argv) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        renderGrid(renderer, players[turn].board, squareWidth, windowWidth, windowHeight);
+        renderGrid(renderer, players[turn].board, squareWidth, windowWidth, windowHeight, spriteSheet, variations);
 
         int x, y;
         bool hovering = false;
@@ -438,8 +452,7 @@ int main(int argc, char** argv) {
                         break;
                     }
                 }
-                SDL_SetCursor(hovering ? pointer : cursor);    
-                
+                SDL_SetCursor(hovering ? pointer : cursor);
 
                 renderBags(renderer, bagWidth, windowWidth, windowHeight, buttons);
                 break;

@@ -49,22 +49,27 @@ int initializeSDL(SDL_Window** window, SDL_Renderer** renderer, int screenWidth,
     return 0;
 }
 
-void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight) {
+// Use spritesheet texture
+void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int windowWidth, int windowHeight, SDL_Texture* spritesheet, int variations[6][8]) {
     SDL_Rect squareRect;
     squareRect.w = squareWidth;
     squareRect.h = squareWidth;
 
+    SDL_Rect spriteRect;
+    spriteRect.w = 64;
+    spriteRect.h = 64;
+
     int offsetX = (windowWidth - squareWidth * 8) / 2;
 
-    // Load the texture for the grass
-    SDL_Surface* grass = IMG_Load("textures/erbe.jpg");
-    SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grass);
-    SDL_FreeSurface(grass);
+    // // Load the texture for the grass
+    // SDL_Surface* grass = IMG_Load("textures/erbe.jpg");
+    // SDL_Texture* grassTexture = SDL_CreateTextureFromSurface(renderer, grass);
+    // SDL_FreeSurface(grass);
 
-    // Load the texture for the chessboard
-    SDL_Surface* chessboard = IMG_Load("textures/echec.jpg");
-    SDL_Texture* chessboardTexture = SDL_CreateTextureFromSurface(renderer, chessboard);
-    SDL_FreeSurface(chessboard);
+    // // Load the texture for the chessboard
+    // SDL_Surface* chessboard = IMG_Load("textures/echec.jpg");
+    // SDL_Texture* chessboardTexture = SDL_CreateTextureFromSurface(renderer, chessboard);
+    // SDL_FreeSurface(chessboard);
 
     for (int y = 0; y < 6; y++) {
         for (int x = 0; x < 8; x++) {
@@ -72,23 +77,33 @@ void renderGrid(SDL_Renderer* renderer, int grid[6][8], int squareWidth, int win
             squareRect.y = y * squareWidth;
             if (grid[y][x] == 0) {
                 // Render the texture instead of the square
-                
-                (x == 3 || x == 4) ?
-                SDL_RenderCopy(renderer, chessboardTexture, NULL, &squareRect):
-                SDL_RenderCopy(renderer, grassTexture, NULL, &squareRect);
+
+                // Select the right sprite,
+                spriteRect.x = (x == 3 || x == 4) ? 0 : 64;
+                spriteRect.y = 0;
+
+                // Render the sprite
+                SDL_RenderCopy(renderer, spritesheet, &spriteRect, &squareRect);
             } else {
                 // Set the color of the square based on the value in the grid
-                SDL_SetRenderDrawColor(renderer, colors[grid[y][x]][0], colors[grid[y][x]][1], colors[grid[y][x]][2], 255);
+                // SDL_SetRenderDrawColor(renderer, colors[grid[y][x]][0], colors[grid[y][x]][1], colors[grid[y][x]][2], 255);
 
-                // Render the square
-                SDL_RenderFillRect(renderer, &squareRect);
+                // Use the corresponding y and the variation x to select the right sprite
+                spriteRect.y = grid[y][x] * 64;
+                spriteRect.x = variations[y][x] * 64;
+
+                // Render the sprite
+                SDL_RenderCopy(renderer, spritesheet, &spriteRect, &squareRect);
+
+                // // Render the square
+                // SDL_RenderFillRect(renderer, &squareRect);
             }
         }
     }
 
     // Destroy the texture when done
-    SDL_DestroyTexture(grassTexture);
-    SDL_DestroyTexture(chessboardTexture);
+    // SDL_DestroyTexture(grassTexture);
+    // SDL_DestroyTexture(chessboardTexture);
 }
 
 void renderPiece(SDL_Renderer* renderer, Piece piece, int squareWidth, int x, int y) {
