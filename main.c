@@ -136,8 +136,8 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     SDL_StartTextInput();
     // end screen
     while (quit) {
-        SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+        SDL_RenderClear(renderer);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
 
