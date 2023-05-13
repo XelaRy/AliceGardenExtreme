@@ -298,6 +298,11 @@ int main(int argc, char** argv) {
     SDL_Texture* spriteSheet = SDL_CreateTextureFromSurface(renderer, spriteSheetSurface); // Create a texture from the surface
     SDL_FreeSurface(spriteSheetSurface); // Free the surface
 
+    // Load Icon
+    SDL_Surface* iconSurface = IMG_Load("assets/icon.png");
+    SDL_SetWindowIcon(window, iconSurface);
+    SDL_FreeSurface(iconSurface);
+
     // Game / Rendering Variables
     int gridOriginX, gridOriginY;
     int squareWidth = windowHeight * 0.8 / 6;
