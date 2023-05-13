@@ -438,7 +438,7 @@ int main(int argc, char** argv) {
                                 }
                             }
                              int a=countAdjacentSquares(players[0].board,1,1,1);
-                             printf("score  : %a\n",players[0].score);
+                             printf("score  : %d\n",a);
                             break;
                         case SDL_KEYDOWN:
                             // Handle Keyboard Inputs
