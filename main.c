@@ -468,6 +468,7 @@ int main(int argc, char** argv) {
 
 
                             Player player1;
+                            player1.score=0;
                             for(int i=0;i<6;i++){
                                 for(int j=0;j<8;j++){
                                     player1.board[i][j]=players[0].board[i][j];
