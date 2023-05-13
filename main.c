@@ -67,16 +67,14 @@ for(i=0;i<6;i++){
                 AdjRoses=5;
             }
             player->score+=(AdjRoses*AdjRoses);
-            player->board[i][j]=0;
+            player->board[i][j]=-1;
             AdjRoses=0;
         }
     }
 }
 //Count for Empty squares
 
-
 }
-
 
 
 void renderMenu(SDL_Renderer* renderer, TTF_Font* font, int fontSize, int windowWidth, int windowHeight, int* playerCount, Player players[4], bool* quit) {
