@@ -451,7 +451,28 @@ int main(int argc, char** argv) {
                                 int y = event.button.y;
                                 // Change Later
                                 gridOriginY = 0;
-                                printf("hello");
+
+
+
+                                printf("score : %d\n",players[0].score);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                                 // Loop over every square in the grid and check if the mouse click was inside it
                                 for (int i = 0; i < 6; i++) {
                                     gridOriginX = (windowWidth - 8 * squareWidth) / 2;
