@@ -32,6 +32,8 @@ Windows:
 
     make
 
+## Usage
+
 Run the game using the following command:
 
 Bash / Windows etc:
@@ -47,8 +49,8 @@ Screenshots
 ## Credits
 
 Alice Garden Game was created by :  
-Alexandre R. @xelary  
-Arnaud .M @arnaud.MRLN
+Alexandre R. [@xelary](https://github.com/XelaRy)  
+Arnaud .M [@arnaud.MRLN](https://github.com/Arnaudmrln)
 
 ## License
 
