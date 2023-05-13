@@ -437,7 +437,7 @@ int main(int argc, char** argv) {
                                     gridOriginY += squareWidth;
                                 }
                             }
-                             int a=countAdjacentSquares(players[0].board,1,1,1);
+                             int a=countAdjacentSquares(players[0].board,1,0,0);
                              printf("score  : %d\n",a);
                             break;
                         case SDL_KEYDOWN:
