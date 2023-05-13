@@ -82,6 +82,7 @@ for(i=0;i<6;i++){
         }
     }
 }
+/*
 //Count for Empty squares
 for(i=0;i<6;i++){
     for(j=0;j<8;j++){
@@ -92,6 +93,7 @@ for(i=0;i<6;i++){
         }
     }
 }
+*/
 *player1score=player.score;
 }
 
