@@ -182,7 +182,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
     }
     // Quit Button
     font = TTF_OpenFont("fonts/RobotoMono-Regular.ttf", fontSize);
-    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y,"QUIT GAME   " , font, fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+100, quitButton.y,"QUIT GAME               " , font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     }
