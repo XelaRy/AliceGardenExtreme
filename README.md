@@ -2,11 +2,11 @@
 
 Alice Garden Game Logo
 
-Welcome to the console version of Alice Garden Game, a project created for academic purposes. This project aims to recreate the popular game "Alice Garden" using the C programming language.
+Welcome to the console version of Alice Garden Game, a project created for academic purposes. This project aims to recreate the popular game "Alice's Garden" using the C programming language and SDL2.
 
 ## About the Game
 
-Alice Garden Game is a puzzle game where the player must guide Alice through a garden filled with obstacles and traps. The player must use logic and problem-solving skills to help Alice reach the end of each level. The game features multiple levels with increasing difficulty, and the player must complete each level to progress to the next.
+Alice Garden Game is a puzzle game where the players must decorate a garden board using tiles of different shapes. The players must use logic and problem-solving skills and optimizing to maximize their score by different ways. The game features images, full mouse input support and up to 4 players.
 
 ## Installation
 
