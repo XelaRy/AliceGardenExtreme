@@ -22,6 +22,8 @@ Bash / Windows etc:
 
     cd AliceGardenExtreme
 
+Build the game using the following command:
+
 Bash:
 
     cd AliceGardenExtreme
