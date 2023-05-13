@@ -170,7 +170,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
             }
         }
     // Quit Button
-    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT\t", font, fontSize);
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT\t\t\t", font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     }
