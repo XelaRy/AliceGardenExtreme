@@ -317,7 +317,7 @@ int main(int argc, char** argv) {
 
         // Play Button
         //renderTextBox(renderer, windowWidth, windowHeight, playButton.x, playButton.y, "Play", font, fontSize);
-        renderTextBox(renderer, windowWidth+90, windowHeight+90, playButton.x, playButton.y, "\n\tPlay\t\t\t", font, fontSize+50);
+        renderTextBox(renderer, windowWidth, windowHeight, playButton.x+200, playButton.y+200, "\n\t\tPlay\t\t\t", font, fontSize+50);
         
         SDL_RenderPresent(renderer);        
 
