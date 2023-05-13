@@ -24,11 +24,11 @@ bash
 
 cd alice-garden-game
 
-    gcc main.c -o Alice.exe
+    gcc *.c -o Alice.exe -lSDL2 -lSDL2_image -lSDL2_ttf
 
 css
 
-gcc main.c -o alice-garden-game
+    make
 
     Run the game using the following command:
 
