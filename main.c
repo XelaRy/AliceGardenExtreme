@@ -178,10 +178,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
         SDL_RenderPresent(renderer);        
         SDL_Delay(10);
     }
-
 }
-
-
 
 
 
@@ -407,8 +404,19 @@ int main(int argc, char** argv) {
                                 for (int i = 0; i < playerCount + 1; i++) {
                                     if(x>=quitbutton.x && x<=quitbutton.x+quitbutton.w && y>=quitbutton.y && y<=quitbutton.y + quitbutton.h){
                                         printf("HAHAHHA");
+                                        SDL_RenderClear(renderer);
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players);
                                         quit = true;
+
+
+
+
+
+
+
+
+
+
                                     }
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                                         if (pieces[i].pickable) {
