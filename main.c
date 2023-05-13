@@ -506,7 +506,6 @@ int main(int argc, char** argv) {
                     }
             }
         }
-        printf("hello");
 
         // Render screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -564,6 +563,7 @@ int main(int argc, char** argv) {
 
             case PiecePlacement:
                 // Piece Placement Phase
+                printf("hello");
                 if (initPhase) {
                     initButtons(buttons, bagWidth, bagWidth, windowWidth, windowHeight, gameState, 0);
                     initPhase = false;
