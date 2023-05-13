@@ -81,8 +81,8 @@ for(i=0;i<6;i++){
             player->score-=5;
             player->board[i][j]=-1;
             Adjempty=0;
-        }
         printf("disengaged from %d %d \n",i,j);
+        }
     }
 }
 }
