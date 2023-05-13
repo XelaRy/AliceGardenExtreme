@@ -17,6 +17,7 @@
 void scoreCount(Player* player){
     player->score=0;
     int i,j;
+//1=ROSE, 2=Tree, 3=Gardener(play card), 4=Mushroom, 5=Chess piece
 //Count for Chess pieces
 for(i=0;i<6;i++){
     for(j=3;j<5;j++){
@@ -57,9 +58,18 @@ for(i=0;i<6;i++){
     }
 }
 //Count for Roses
-
-
-
+int AdjRoses;
+for(i=0;i<6;i++){
+    for(j=0;j<8;j++){
+        if(player->board[i][j]==1){
+            AdjRoses=countAdjacentSquares(player->board,1,i,j);
+            if (AdjRoses>5){
+                AdjRoses=5;
+            }
+            player->score+=(AdjRoses*AdjRoses);
+        }
+    }
+}
 //Count for Empty squares
 
 
@@ -438,7 +448,7 @@ int main(int argc, char** argv) {
                                 }
                             }
                              int a=countAdjacentSquares(players[0].board,1,0,0);
-                             printf("score  : %d\n",a);
+                             printf("rose  : %d\n",a);
                             break;
                         case SDL_KEYDOWN:
                             // Handle Keyboard Inputs
