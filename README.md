@@ -1,10 +1,10 @@
-# Alice Garden Game Console
+# Alice Garden Extreme
 
 <p align="center">
   <img src="./assets/alice-header.jpg" alt="alt text" width="100%">
 </p>
 
-Welcome to the console version of Alice Garden Game, a project created for academic purposes. This project aims to recreate the popular game "Alice's Garden" using the C programming language and SDL2.
+Welcome to the application version of Alice Garden Game, a project created for academic purposes. This project aims to recreate the popular game "Alice's Garden" using the C programming language and SDL2.
 
 ## About the Game
 
