@@ -170,7 +170,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
             }
         }
     // Quit Button
-    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x+200, quitButton.y, "QUIT", font, fontSize);
+    renderTextBox(renderer, windowWidth+300, windowHeight, quitButton.x+200, quitButton.y, "QUIT", font, fontSize);
     SDL_RenderPresent(renderer);        
     SDL_Delay(10);
     }
@@ -404,13 +404,6 @@ int main(int argc, char** argv) {
                                         endScreen(windowWidth,windowHeight,name_length,name,playerCount,players,renderer);
                                         printf("TEST1\n");
                                         quit = true;
-
-
-
-
-
-
-
                                     }
                                     if (x >= buttons[i].x && x <= buttons[i].x + buttons[i].w && y >= buttons[i].y && y <= buttons[i].y + buttons[i].h) {
                                         if (pieces[i].pickable) {
