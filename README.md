@@ -1,6 +1,6 @@
 # Alice Garden Game Console
 
-<img src="./assets/alice-header.jpg" alt="alt text" width="200"/>
+<img src="./assets/alice-header.jpg" alt="alt text" />
 
 Alice Garden Game Logo
 
