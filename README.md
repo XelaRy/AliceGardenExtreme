@@ -10,9 +10,9 @@ Welcome to the console version of Alice Garden Game, a project created for acade
 
 Alice Garden Game is a puzzle game where the players must decorate a garden board using tiles of different shapes. The players must use logic and problem-solving skills and optimizing to maximize their score by different ways. The game features images, full mouse input support and up to 4 players.
 
-## Installation
-
 To install and play Alice Garden Extreme, follow the steps below:
+
+## Installation
 
 Clone the repository using the following command:
 
@@ -21,6 +21,8 @@ Bash / Windows etc:
     git clone https://github.com/XelaRy/AliceGardenExtreme
 
     cd AliceGardenExtreme
+
+## Build
 
 Build the game using the following command:
 
