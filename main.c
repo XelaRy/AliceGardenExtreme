@@ -126,7 +126,7 @@ bool gameEnd(int grid[6][8]) {
 }
 
 void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],int playerCount,Player players[]){
-    bool quit = false; 
+    bool quit = true; 
     SDL_Event event;
     SDL_Renderer* renderer;
     Button quitButton = { windowWidth / 2 - 28, windowHeight * 0.75, windowWidth * 0.8, windowHeight * 0.1, 0 };
@@ -153,7 +153,7 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                                         quit = true;
                                     }
                             }
-                            break;
+                        break;
                 case SDL_WINDOWEVENT:
                         if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                             windowWidth = event.window.data1;
@@ -166,12 +166,12 @@ void endScreen(int windowWidth,int windowHeight,int name_length,char name[50],in
                         break;
             }
         }
-        // Quit Button
-        printf("TEST2\n");
-        renderTextBox(renderer, windowWidth, windowHeight, quitButton.x, quitButton.y, "QUIT", font, fontSize);
-        SDL_RenderPresent(renderer);        
-        SDL_Delay(10);
     }
+    // Quit Button
+    printf("TEST2\n");
+    renderTextBox(renderer, windowWidth, windowHeight, quitButton.x, quitButton.y, "QUIT", font, fontSize);
+    SDL_RenderPresent(renderer);        
+    SDL_Delay(10);
     printf("TEST5\n");
     
 }
