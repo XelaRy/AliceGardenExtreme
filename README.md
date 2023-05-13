@@ -14,27 +14,29 @@ To install and play Alice Garden Game Console, follow the steps below:
 
     Clone the repository using the following command:
 
-bash
+Bash / Windows etc:
 
-git clone https://github.com/XelaRy/AliceGardenExtreme
+    git clone https://github.com/XelaRy/AliceGardenExtreme
 
     cd AliceGardenExtreme
 
-bash
+Bash:
 
-cd alice-garden-game
+    cd AliceGardenExtreme
 
     gcc *.c -o Alice.exe -lSDL2 -lSDL2_image -lSDL2_ttf
 
-css
+Windows:
+
+    cd AliceGardenExtreme
 
     make
 
-    Run the game using the following command:
+Run the game using the following command:
 
-bash
+Bash / Windows etc:
 
-./alice-garden-game
+    ./export/Alice.exe
 
 Screenshots
 
